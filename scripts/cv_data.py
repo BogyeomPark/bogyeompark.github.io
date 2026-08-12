@@ -67,7 +67,10 @@ JOURNAL_ARTICLES = [
             "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, "
             "and Kyoungwon Seo"
         ),
-        "venue": "Journal of Medical Internet Research, 26, e54538 (2024) - SCIE; JCR Top 3%; Q1",
+        "venue": (
+            "Journal of Medical Internet Research, 26, e54538 (2024) - "
+            "JCR Q1; 96th percentile; JIF 8.2 (2025 JCR)"
+        ),
         "url": "/publications/multimodal-biomarkers-jmir/",
     },
 ]
@@ -76,7 +79,10 @@ EXTENDED_ABSTRACTS = [
     {
         "title": "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
         "authors": "Bogyeom Park and Kyoungwon Seo",
-        "venue": "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
+        "venue": (
+            "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems - "
+            "Late-Breaking Work (32.7% acceptance; 619/1,888)"
+        ),
         "url": "/publications/debate-chatbot/",
     },
     {
@@ -85,7 +91,10 @@ EXTENDED_ABSTRACTS = [
             "and Self-Reflection in Academic Stress Assessment"
         ),
         "authors": "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
-        "venue": "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
+        "venue": (
+            "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems - "
+            "Late-Breaking Work (32.7% acceptance; 619/1,888)"
+        ),
         "url": "/publications/self-disclosure-chatbot/",
     },
     {
@@ -94,7 +103,10 @@ EXTENDED_ABSTRACTS = [
             "to Address Career Decision-Making Difficulties and Enhance Engagement"
         ),
         "authors": "Hyerim Han, Bogyeom Park, and Kyoungwon Seo",
-        "venue": "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
+        "venue": (
+            "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems - "
+            "Late-Breaking Work (32.7% acceptance; 619/1,888)"
+        ),
         "url": "/publications/sdt-career-chatbot/",
     },
     {
@@ -106,7 +118,10 @@ EXTENDED_ABSTRACTS = [
             "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, "
             "and Kyoungwon Seo"
         ),
-        "venue": "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
+        "venue": (
+            "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems - "
+            "Late-Breaking Work (33.9% acceptance; 391/1,154)"
+        ),
         "url": "/publications/vr-mri-chi/",
     },
     {
