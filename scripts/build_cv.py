@@ -260,6 +260,16 @@ def build():
         "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
     )
     story += publication(
+        "How Self-Disclosing Chatbots Influence Student Engagement, Assessment Accuracy, and Self-Reflection in Academic Stress Assessment",
+        "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
+        "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
+    )
+    story += publication(
+        "A Self-Determination Theory-Based Career Counseling Chatbot: Motivational Interactions to Address Career Decision-Making Difficulties and Enhance Engagement",
+        "Hyerim Han, Bogyeom Park, and Kyoungwon Seo",
+        "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
+    )
+    story += publication(
         "Exploring the Multimodal Integration of VR and MRI Biomarkers for Enhanced Early Detection of Mild Cognitive Impairment",
         "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
         "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
