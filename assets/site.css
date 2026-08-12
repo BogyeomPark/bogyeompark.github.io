@@ -200,6 +200,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .news-date span { margin-top: 5px; color: var(--accent); font-size: 0.66rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .news-item h3, .publication-item h3, .project-item h3 { margin: 0 0 6px; font-size: 1.04rem; line-height: 1.42; }
 .news-item p, .publication-item p, .project-item p { margin: 0; color: var(--muted); font-size: 0.91rem; }
+.news-item p + p { margin-top: 10px; }
 .news-entry { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 24px; align-items: start; }
 .news-copy { padding-top: 2px; }
 .news-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 13px; }
