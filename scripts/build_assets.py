@@ -16,7 +16,7 @@ Usage:  python scripts/build_assets.py
 import os
 import sys
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ASSETS = os.path.join(ROOT, "assets")
@@ -47,6 +47,18 @@ def font(name, size):
     return ImageFont.truetype(FONTS[name], size)
 
 
+def load_upright(path):
+    """Open an image with its EXIF rotation baked into the pixels.
+
+    Phone photos store rotation as an EXIF tag rather than rotating the pixels.
+    Browsers honour that tag on the original JPEG, but re-encoding drops it — so
+    without this the derived thumbnail comes out sideways (chi-2025.jpg is
+    orientation 6).
+    """
+    with Image.open(path) as im:
+        return ImageOps.exif_transpose(im).convert("RGB")
+
+
 def kb(path):
     return int(round(os.path.getsize(path) / 1024))
 
@@ -63,15 +75,14 @@ def build_news_thumbs():
         if not os.path.isfile(src) or ext.lower() not in {".jpg", ".jpeg", ".png"}:
             continue
 
-        with Image.open(src) as im:
-            im = im.convert("RGB")
-            if im.width > THUMB_WIDTH:
-                height = round(im.height * THUMB_WIDTH / im.width)
-                im = im.resize((THUMB_WIDTH, height), Image.LANCZOS)
-            quality = 90 if stem in HIGH_QUALITY_STEMS else 80
-            out = os.path.join(out_dir, stem + ".webp")
-            im.save(out, "WEBP", quality=quality, method=6)
-            rows.append((name, kb(src), stem + ".webp", kb(out), im.size))
+        im = load_upright(src)
+        if im.width > THUMB_WIDTH:
+            height = round(im.height * THUMB_WIDTH / im.width)
+            im = im.resize((THUMB_WIDTH, height), Image.LANCZOS)
+        quality = 90 if stem in HIGH_QUALITY_STEMS else 80
+        out = os.path.join(out_dir, stem + ".webp")
+        im.save(out, "WEBP", quality=quality, method=6)
+        rows.append((name, kb(src), stem + ".webp", kb(out), im.size))
 
     return rows
 
@@ -79,11 +90,10 @@ def build_news_thumbs():
 def build_portrait():
     src = os.path.join(ASSETS, "bogyeom-park.jpg")
     out = os.path.join(ASSETS, "bogyeom-park-224.webp")
-    with Image.open(src) as im:
-        im = im.convert("RGB")
-        height = round(im.height * 224 / im.width)
-        im = im.resize((224, height), Image.LANCZOS)
-        im.save(out, "WEBP", quality=88, method=6)
+    im = load_upright(src)
+    height = round(im.height * 224 / im.width)
+    im = im.resize((224, height), Image.LANCZOS)
+    im.save(out, "WEBP", quality=88, method=6)
     return kb(src), kb(out)
 
 
@@ -134,15 +144,14 @@ def build_og_card():
     diameter = 300
     cx, cy = 950, 315
     box = (cx - diameter // 2, cy - diameter // 2)
-    with Image.open(os.path.join(ASSETS, "bogyeom-park.jpg")) as photo:
-        photo = photo.convert("RGB")
-        side = min(photo.size)
-        photo = photo.crop((
-            (photo.width - side) // 2,
-            (photo.height - side) // 2,
-            (photo.width + side) // 2,
-            (photo.height + side) // 2,
-        )).resize((diameter, diameter), Image.LANCZOS)
+    photo = load_upright(os.path.join(ASSETS, "bogyeom-park.jpg"))
+    side = min(photo.size)
+    photo = photo.crop((
+        (photo.width - side) // 2,
+        (photo.height - side) // 2,
+        (photo.width + side) // 2,
+        (photo.height + side) // 2,
+    )).resize((diameter, diameter), Image.LANCZOS)
     mask = Image.new("L", (diameter, diameter), 0)
     ImageDraw.Draw(mask).ellipse([0, 0, diameter - 1, diameter - 1], fill=255)
     card.paste(photo, box, mask)
