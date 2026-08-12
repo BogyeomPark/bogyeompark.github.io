@@ -484,6 +484,22 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .tag { padding: 3px 8px; border-radius: 999px; background: var(--accent-pale); color: var(--accent-dark); font-size: 0.7rem; font-weight: 600; }
 
+/* CV page: generated from scripts/cv_data.py, the same module the PDF reads. */
+.cv-summary { max-width: 690px; margin: 0; color: var(--body); font-size: 0.95rem; }
+.cv-list { max-width: 690px; margin: 9px 0 0; padding-left: 19px; color: var(--body); font-size: 0.92rem; }
+.cv-list li { margin: 5px 0; }
+.cv-entry, .cv-affiliation { margin-top: 22px; }
+.cv-entry:first-child, .cv-affiliation:first-child { margin-top: 0; }
+.cv-affiliation { padding-bottom: 4px; }
+.cv-affiliation + .cv-entry { margin-top: 14px; padding-left: 16px; border-left: 2px solid var(--line); }
+.cv-affiliation + .cv-entry ~ .cv-entry { padding-left: 16px; border-left: 2px solid var(--line); }
+.cv-row { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; }
+.cv-row h3 { margin: 0; font-size: 1.02rem; font-weight: 600; letter-spacing: -0.01em; }
+.cv-row h3 a { color: var(--ink); text-decoration: none; }
+.cv-row h3 a:hover { color: var(--accent); }
+.cv-when { color: var(--muted); font-size: 0.82rem; font-weight: 500; white-space: nowrap; }
+.cv-sub { margin: 4px 0 0; color: var(--muted); font-size: 0.89rem; }
+
 .cv-panel { padding: 30px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); }
 .cv-panel h3 { margin: 0 0 8px; font-family: var(--serif); font-size: 1.45rem; }
 .cv-panel p { max-width: 650px; margin: 0; color: var(--muted); }

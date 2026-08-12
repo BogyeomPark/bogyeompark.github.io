@@ -17,6 +17,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+import cv_data
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets" / "cv" / "Bogyeom_Park_CV.pdf"
@@ -225,12 +227,15 @@ def build():
     )
     doc.addPageTemplates(PageTemplate(id="CV", frames=[frame], onPage=footer))
 
+    c = cv_data.CONTACT
     contact = Paragraph(
-        '+82 10-3816-8811<br/>'
-        '<link href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</link><br/>'
-        '<link href="https://bogyeompark.github.io/">bogyeompark.github.io</link><br/>'
-        '<link href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en">Google Scholar</link> · '
-        '<link href="https://github.com/BogyeomPark">GitHub</link>',
+        '%s<br/>'
+        '<link href="mailto:%s">%s</link><br/>'
+        '<link href="https://%s/">%s</link><br/>'
+        '<link href="%s">Google Scholar</link> · '
+        '<link href="%s">GitHub</link>'
+        % (c["phone"], c["email"], c["email"], c["site"], c["site"],
+           c["scholar"].replace("&", "&amp;"), c["github"]),
         styles["Contact"],
     )
     header = Table(
@@ -252,177 +257,52 @@ def build():
     story = [header, Spacer(1, 5)]
 
     story += section("Research Interest")
-    story += [
-        Paragraph(
-            "I design and study <b>human-centered agentic AI systems</b> that support learning, decision-making, and accessibility, at the intersection of Human-AI Interaction, AI in Education, and Learning Analytics.",
-            styles["Body"],
-        ),
-        bullet("<b>Agentic AI for learning and decision support</b> - designing agents that reason with people, use tools, and adapt support while preserving human goals and oversight"),
-        bullet("<b>Human-centered interaction and evaluation</b> - analyzing conversational and behavioral traces to understand engagement, accessibility, and real-world outcomes"),
-    ]
+    story.append(Paragraph(cv_data.RESEARCH_INTEREST["summary"], styles["Body"]))
+    story += [bullet(text) for text in cv_data.RESEARCH_INTEREST["bullets"]]
 
     story += section("Education")
-    story += [
-        two_col("Seoul National University of Science and Technology", "Seoul, South Korea"),
-        two_col("Integrated Ph.D. in Applied Artificial Intelligence", "Mar. 2023 - Present", "CVItalic", "CVItalicRight"),
-        bullet("Advisor: Kyoungwon Seo"),
-        Spacer(1, 6),
-        two_col("Seoul National University of Science and Technology", "Seoul, South Korea"),
-        two_col("B.S. in Electrical and Information Engineering", "Mar. 2019 - Feb. 2023", "CVItalic", "CVItalicRight"),
-        bullet("Thesis: Online Learning Support System Based on Facial Recognition"),
-    ]
+    for index, school in enumerate(cv_data.EDUCATION):
+        if index:
+            story.append(Spacer(1, 6))
+        story.append(two_col(school["org"], school["place"]))
+        story.append(two_col(school["degree"], school["dates"], "CVItalic", "CVItalicRight"))
+        story += [bullet(text) for text in school["bullets"]]
 
     story += section("Honors & Awards")
-    story += [
-        bullet("AI SeoulTech Graduate Scholarship (KRW 10,000,000), Seoul Scholarship Foundation, 2025"),
-        bullet("Best Paper Award (co-author), HCI Korea 2025"),
-        bullet("Best Student Paper Bronze Award, IEEE Seoul Section, 2024"),
-        bullet("National Science and Engineering Undergraduate Scholarship (full tuition), Korea Student Aid Foundation, 2021-2022"),
-        bullet("Best Capstone Design Award, Seoul National University of Science and Technology, 2022"),
-    ]
+    story += [bullet(text) for text in cv_data.AWARDS]
 
     story += section("Refereed Journal Article")
-    story.append(publication(
-        "Integrating Biomarkers From Virtual Reality and Magnetic Resonance Imaging for the Early Detection of Mild Cognitive Impairment Using a Multimodal Learning Approach: Validation Study",
-        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
-        "Journal of Medical Internet Research, 26, e54538 (2024) - SCIE; JCR Top 3%; Q1",
-    ))
+    story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.JOURNAL_ARTICLES]
 
     story += section("Extended Abstracts")
-    story.append(publication(
-        "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
-        "Bogyeom Park and Kyoungwon Seo",
-        "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    ))
-    story.append(publication(
-        "How Self-Disclosing Chatbots Influence Student Engagement, Assessment Accuracy, and Self-Reflection in Academic Stress Assessment",
-        "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
-        "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    ))
-    story.append(publication(
-        "A Self-Determination Theory-Based Career Counseling Chatbot: Motivational Interactions to Address Career Decision-Making Difficulties and Enhance Engagement",
-        "Hyerim Han, Bogyeom Park, and Kyoungwon Seo",
-        "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    ))
-    story.append(publication(
-        "Exploring the Multimodal Integration of VR and MRI Biomarkers for Enhanced Early Detection of Mild Cognitive Impairment",
-        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
-        "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
-    ))
+    story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.EXTENDED_ABSTRACTS]
 
     story += section("Domestic Conference Papers & Presentations")
-    story.append(publication(
-        "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
-        "Bogyeom Park, Mina Yoo, Dongkuk Lee, Mi-ae Choi, Seona Park, So Young Jo, and Kyoungwon Seo",
-        "Proceedings of HCI Korea 2026 - Oral Presentation",
-    ))
-    story.append(publication(
-        "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
-        "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
-        "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
-    ))
-    story.append(publication(
-        "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
-        "Hyobin Park (now Bogyeom Park) and Kyoungwon Seo",
-        "Proceedings of HCI Korea 2023, pp. 828-835",
-    ))
+    story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.DOMESTIC]
 
     story += section("Research Experience")
-    story += [
-        two_col("Human-centered Artificial Intelligence (HAI) Lab, SeoulTech", "Seoul, South Korea"),
-        two_col("Graduate Researcher (Advisor: Kyoungwon Seo)", "Mar. 2023 - Present"),
-    ]
-    story += project(
-        "ICAP-Based AI Tutoring System for Probability and Statistics Learning",
-        "Lead Researcher | Korea Education & Research Information Service",
-        "Mar. 2026 - Aug. 2026",
-        [
-            "Designed and evaluated an ICAP-based AI tutor that uses staged elicitation to promote active, constructive, and interactive engagement rather than answer delivery",
-            "Developed an utterance-level coding and analytics workflow linking dialogue evidence with tutor correctness, usage patterns, and learning outcomes",
-            "Built an interactive research dashboard for reviewing engagement labels and comparing AI-tutored learning processes",
-        ],
-    )
-
-    story += project(
-        "GUI Agent Technologies for Automated UX Accessibility Evaluation",
-        "Research Assistant | National Research Foundation of Korea",
-        "Sep. 2025 - Present",
-        [
-            "Designed a GUI agent capable of performing expert-level automated evaluations of UX accessibility",
-            "Planned experimental protocols for validating human-AI comparative performance in accessibility assessments",
-        ],
-    )
-    story += project(
-        "Agentic AI for Personalized Career, Academic, and Counseling Support",
-        "Lead Researcher | Korean Educational Development Institute",
-        "Jun. 2025 - Dec. 2025",
-        ["Investigated how agentic AI could support personalized educational pathways, counseling, and decision-making"],
-    )
-    story += project(
-        "AI Copilot Technologies for Adaptive, Teacher-Augmented Learning",
-        "Research Assistant | Institute for Information & Communications Technology Planning & Evaluation",
-        "Jul. 2023 - Aug. 2025",
-        [
-            "Built counseling chatbot and analysis models supporting AI-driven student coaching",
-            "Co-developed an integrated platform enabling personalized teacher-augmented learning",
-        ],
-    )
-    story += [
-        two_col("Human-centered Artificial Intelligence (HAI) Lab, SeoulTech", "Seoul, South Korea"),
-        two_col("Undergraduate Researcher (Advisor: Kyoungwon Seo)", "Jul. 2021 - Feb. 2023"),
-    ]
-    story += project(
-        "LLMs to Support Teachers in Educational Settings",
-        "Research Assistant | Lab Project",
-        "Mar. 2023 - Feb. 2024",
-        [
-            "Fine-tuned an LLM to generate student competency-analysis reports and assessed its usefulness through expert interviews",
-            "Identified opportunities and limitations of LLM support for competency assessment and report generation",
-        ],
-    )
-    story += project(
-        "Multimodal Digital Biomarkers for Early Dementia Diagnosis",
-        "Research Assistant | National Research Foundation of Korea",
-        "Mar. 2022 - Feb. 2024",
-        [
-            "Collected VR kiosk interaction data from participants with mild cognitive impairment and healthy controls in collaboration with Hanyang University Guri Hospital",
-            "Developed multimodal predictive models integrating VR behavioral and MRI biomarkers for early detection of mild cognitive impairment",
-        ],
-    )
+    for affiliation in cv_data.RESEARCH_EXPERIENCE:
+        story.append(two_col(affiliation["org"], affiliation["place"]))
+        story.append(two_col(affiliation["role"], affiliation["dates"]))
+        for proj in affiliation["projects"]:
+            story += project(proj["title"], proj["role"], proj["dates"], proj["bullets"])
 
     story += section("Teaching & Mentoring")
-    story += [
-        two_col("Deep Learning", "Fall 2023"),
-        Paragraph("Teaching Assistant, Seoul National University of Science and Technology", styles["Meta"]),
-        bullet("Designed a final project using CNN-based models to predict drivers' physical and cognitive states from image data"),
-        bullet("Supported lectures, advised student projects, and graded assignments and examinations"),
-        Spacer(1, 6),
-        two_col("2026 AX Academy Big Data Boot Camp", "May 2026 - Present"),
-        Paragraph("Tutor, Hyundai Motor Group", styles["Meta"]),
-        bullet("Mentored participants through project-based big data sprints and supported the development of their team projects"),
-    ]
+    for index, course in enumerate(cv_data.TEACHING):
+        if index:
+            story.append(Spacer(1, 6))
+        story.append(two_col(course["title"], course["dates"]))
+        story.append(Paragraph(course["role"], styles["Meta"]))
+        story += [bullet(text) for text in course["bullets"]]
 
     story += section("Skills")
-    story += [
-        bullet("<b>Research Methods</b> - experimental design, usability evaluation, user research, prototyping, multimodal learning analytics, statistical analysis, qualitative coding"),
-        bullet("<b>AI and Data</b> - machine learning, deep learning, feature engineering, LLM applications, AI agents"),
-        bullet("<b>Programming and Analysis</b> - Python, C/C#, SPSS"),
-        bullet("<b>Design</b> - HCI theory, UX design, interaction prototyping, usability testing"),
-    ]
+    story += [bullet(text) for text in cv_data.SKILLS]
 
     story += section("Patent")
-    story += [
-        Paragraph(
-            "Explainable AI-Based System for Early Diagnosis and Prognosis Prediction of Alzheimer's Disease Using VR Biomarkers, and Method Thereof (Korean Patent Application No. 10-2023-0105821, filed Aug. 2023)",
-            styles["Body"],
-        )
-    ]
+    story.append(Paragraph(cv_data.PATENT, styles["Body"]))
 
     story += section("Academic Service")
-    story += [
-        bullet("Student Volunteer, AIED 2026"),
-        bullet("Publicity Manager, SeoulTech Human-centered Artificial Intelligence Lab"),
-    ]
+    story += [bullet(text) for text in cv_data.SERVICE]
 
     doc.build(story)
     print(OUTPUT)
