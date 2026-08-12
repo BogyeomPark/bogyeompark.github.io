@@ -43,13 +43,13 @@ PORTRAIT_SIZE = (224, 288)
 OG_IMAGE = "/assets/og-card.jpg"
 OG_IMAGE_ALT = f"{NAME} ({NAME_KO}), {ROLE} at the {LAB_SHORT}"
 
-# research/ and projects/ were deliberately taken out of the nav in fd5d842.
-# The files still exist and Home still links to them; add entries back here if
-# they are ever reinstated.
+# research/ and projects/ were retired: dropped from the nav in fd5d842 and
+# deleted outright afterwards. Their content lives on Home and Publications.
 NAV = [
     ("home", "Home", "/"),
     ("publications", "Publications", "/publications/"),
     ("news", "News", "/news/"),
+    ("demos", "Demos", "/demos/"),
     ("cv", "CV", "/cv/"),
 ]
 
@@ -71,25 +71,6 @@ PAGES = [
         "person_schema": True,
     },
     {
-        "file": "research/index.html",
-        "url": "/research/",
-        "nav": "research",
-        "title": f"Research | {NAME}",
-        "og_title": f"Research — {NAME}",
-        "description": (
-            f"Research interests of {NAME}: human-centered Agentic AI, AI in Education, "
-            "accessibility, and agent evaluation."
-        ),
-    },
-    {
-        "file": "projects/index.html",
-        "url": "/projects/",
-        "nav": "projects",
-        "title": f"Projects | {NAME}",
-        "og_title": f"Projects — {NAME}",
-        "description": f"Selected Agentic AI research projects by {NAME}.",
-    },
-    {
         "file": "publications/index.html",
         "url": "/publications/",
         "nav": "publications",
@@ -107,6 +88,17 @@ PAGES = [
         "title": f"News | {NAME}",
         "og_title": f"Research news — {NAME}",
         "description": f"Research news and milestones from {NAME}.",
+    },
+    {
+        "file": "demos/index.html",
+        "url": "/demos/",
+        "nav": "demos",
+        "title": f"Demos | {NAME}",
+        "og_title": f"Systems and demos — {NAME}",
+        "description": (
+            f"Interactive systems built by {NAME}: an ICAP-based AI tutor, a multi-agent "
+            "debate chatbot, and agentic counseling systems."
+        ),
     },
     {
         "file": "cv/index.html",
