@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -9,7 +9,7 @@ from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
     HRFlowable,
-    PageBreak,
+    KeepTogether,
     PageTemplate,
     Paragraph,
     Spacer,
@@ -22,14 +22,12 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets" / "cv" / "Bogyeom_Park_CV.pdf"
 
 PAGE_W, PAGE_H = letter
-MARGIN_X = 0.62 * inch
-MARGIN_TOP = 0.42 * inch
-MARGIN_BOTTOM = 0.42 * inch
+MARGIN_X = 0.80 * inch
+MARGIN_TOP = 0.68 * inch
+MARGIN_BOTTOM = 0.52 * inch
 
-INK = colors.HexColor("#17242a")
-TEAL = colors.HexColor("#0f4c5c")
-MUTED = colors.HexColor("#5f6f75")
-RULE = colors.HexColor("#b9c9cc")
+INK = colors.black
+RULE = colors.black
 
 
 styles = getSampleStyleSheet()
@@ -37,116 +35,138 @@ styles.add(
     ParagraphStyle(
         name="Name",
         parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=22,
-        leading=24,
+        fontName="Times-Bold",
+        fontSize=24,
+        leading=27,
         textColor=INK,
         alignment=TA_CENTER,
-        spaceAfter=3,
+        spaceAfter=0,
     )
 )
 styles.add(
     ParagraphStyle(
         name="Contact",
         parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=8.2,
-        leading=10.2,
-        textColor=MUTED,
-        alignment=TA_CENTER,
-        spaceAfter=7,
+        fontName="Times-Roman",
+        fontSize=9.2,
+        leading=10.7,
+        textColor=INK,
+        alignment=TA_RIGHT,
+        spaceAfter=0,
     )
 )
 styles.add(
     ParagraphStyle(
         name="Section",
         parent=styles["Normal"],
-        fontName="Helvetica-Bold",
-        fontSize=9.2,
-        leading=11,
-        textColor=TEAL,
-        spaceBefore=5,
-        spaceAfter=3,
+        fontName="Times-Bold",
+        fontSize=11.5,
+        leading=13.5,
+        textColor=INK,
+        spaceBefore=11,
+        spaceAfter=1,
+        keepWithNext=True,
     )
 )
 styles.add(
     ParagraphStyle(
         name="Body",
         parent=styles["Normal"],
-        fontName="Helvetica",
-        fontSize=8.15,
-        leading=10.35,
+        fontName="Times-Roman",
+        fontSize=10.4,
+        leading=12.6,
         textColor=INK,
-        spaceAfter=2.4,
+        spaceAfter=3,
     )
 )
 styles.add(
     ParagraphStyle(
         name="CVBullet",
         parent=styles["Body"],
-        leftIndent=10,
-        firstLineIndent=-7,
-        bulletIndent=0,
-        spaceAfter=1.5,
+        leftIndent=17,
+        firstLineIndent=-10,
+        bulletIndent=4,
+        spaceAfter=2,
     )
 )
 styles.add(
     ParagraphStyle(
         name="EntryTitle",
         parent=styles["Body"],
-        fontName="Helvetica-Bold",
-        fontSize=8.55,
-        leading=10.4,
-        spaceAfter=1,
+        fontName="Times-Bold",
+        fontSize=10.7,
+        leading=12.6,
+        spaceAfter=0.5,
     )
 )
 styles.add(
     ParagraphStyle(
         name="Meta",
         parent=styles["Body"],
-        fontSize=7.9,
-        leading=9.7,
-        textColor=MUTED,
-        spaceAfter=1.5,
+        fontName="Times-Italic",
+        fontSize=10.2,
+        leading=12.2,
+        textColor=INK,
+        spaceAfter=2,
     )
 )
 styles.add(
     ParagraphStyle(
         name="Small",
         parent=styles["Body"],
-        fontSize=7.65,
-        leading=9.25,
+        fontSize=10.1,
+        leading=12.1,
+        spaceAfter=1,
+    )
+)
+styles.add(
+    ParagraphStyle(
+        name="Right",
+        parent=styles["Body"],
+        alignment=TA_RIGHT,
+        spaceAfter=0.5,
+    )
+)
+styles.add(
+    ParagraphStyle(
+        name="CVItalic",
+        parent=styles["Meta"],
+        spaceAfter=0.5,
+    )
+)
+styles.add(
+    ParagraphStyle(
+        name="CVItalicRight",
+        parent=styles["Meta"],
+        alignment=TA_RIGHT,
+        spaceAfter=0.5,
     )
 )
 
 
 def footer(canvas, doc):
     canvas.saveState()
-    canvas.setStrokeColor(RULE)
-    canvas.setLineWidth(0.45)
-    canvas.line(MARGIN_X, 0.30 * inch, PAGE_W - MARGIN_X, 0.30 * inch)
-    canvas.setFont("Helvetica", 7)
-    canvas.setFillColor(MUTED)
-    canvas.drawString(MARGIN_X, 0.17 * inch, "Bogyeom Park - Academic CV")
-    canvas.drawRightString(PAGE_W - MARGIN_X, 0.17 * inch, str(doc.page))
+    canvas.setFont("Times-Roman", 9)
+    canvas.setFillColor(INK)
+    canvas.drawCentredString(PAGE_W / 2, 0.24 * inch, str(doc.page))
     canvas.restoreState()
 
 
 def section(title):
     return [
         Paragraph(title.upper(), styles["Section"]),
-        HRFlowable(width="100%", thickness=0.55, color=RULE, spaceAfter=3),
+        HRFlowable(width="100%", thickness=0.6, color=RULE, spaceAfter=6),
     ]
 
 
 def bullet(text):
-    return Paragraph(f"- {text}", styles["CVBullet"])
+    return Paragraph(text, styles["CVBullet"], bulletText="•")
 
 
-def two_col(left, right):
+def two_col(left, right, left_style="EntryTitle", right_style="Right"):
     table = Table(
-        [[Paragraph(left, styles["EntryTitle"]), Paragraph(right, styles["Meta"]) ]],
-        colWidths=[4.45 * inch, 2.15 * inch],
+        [[Paragraph(left, styles[left_style]), Paragraph(right, styles[right_style])]],
+        colWidths=[4.35 * inch, 1.75 * inch],
         hAlign="LEFT",
     )
     table.setStyle(
@@ -165,19 +185,19 @@ def two_col(left, right):
 
 
 def publication(title, authors, venue):
-    return [
+    return KeepTogether([
         Paragraph(title, styles["EntryTitle"]),
-        Paragraph(authors, styles["Small"]),
+        Paragraph(authors.replace("Bogyeom Park", "<b>Bogyeom Park</b>"), styles["Small"]),
         Paragraph(venue, styles["Meta"]),
-        Spacer(1, 1.5),
-    ]
+        Spacer(1, 6),
+    ])
 
 
 def project(title, role, dates, bullets):
-    items = [Paragraph(title, styles["EntryTitle"]), two_col(role, dates)]
+    items = [Paragraph(title, styles["EntryTitle"]), two_col(role, dates, "CVItalic", "CVItalicRight")]
     items.extend(bullet(item) for item in bullets)
-    items.append(Spacer(1, 2))
-    return items
+    items.append(Spacer(1, 6))
+    return [KeepTogether(items)]
 
 
 def build():
@@ -205,75 +225,102 @@ def build():
     )
     doc.addPageTemplates(PageTemplate(id="CV", frames=[frame], onPage=footer))
 
-    story = [
-        Paragraph("BOGYEOM PARK", styles["Name"]),
-        Paragraph(
-            'Seoul, South Korea | <link href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</link> | +82 10-3816-8811<br/>'
-            '<link href="https://bogyeompark.github.io/">bogyeompark.github.io</link> | '
-            '<link href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en">Google Scholar</link> | '
-            '<link href="https://github.com/BogyeomPark">GitHub</link>',
-            styles["Contact"],
-        ),
-    ]
+    contact = Paragraph(
+        '+82 10-3816-8811<br/>'
+        '<link href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</link><br/>'
+        '<link href="https://bogyeompark.github.io/">bogyeompark.github.io</link><br/>'
+        '<link href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en">Google Scholar</link> · '
+        '<link href="https://github.com/BogyeomPark">GitHub</link>',
+        styles["Contact"],
+    )
+    header = Table(
+        [[Paragraph("", styles["Body"]), Paragraph("Bogyeom Park", styles["Name"]), contact]],
+        colWidths=[1.50 * inch, 2.90 * inch, 1.70 * inch],
+        hAlign="LEFT",
+    )
+    header.setStyle(
+        TableStyle(
+            [
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ]
+        )
+    )
+    story = [header, Spacer(1, 5)]
 
     story += section("Research Interest")
     story += [
         Paragraph(
-            "I design and study AI-supported learning systems that promote deeper cognitive engagement, at the intersection of AI in Education, Human-AI Interaction, and Learning Analytics.",
+            "I design and study <b>human-centered agentic AI systems</b> that support learning, decision-making, and accessibility, at the intersection of Human-AI Interaction, AI in Education, and Learning Analytics.",
             styles["Body"],
         ),
-        bullet("Eliciting deeper engagement - designing AI tutors that prompt learners to explain, compare, reflect, and build on dialogue rather than receive answers passively"),
-        bullet("Understanding learning processes - analyzing conversational and behavioral traces to characterize cognitive engagement and connect interaction patterns with learning outcomes"),
+        bullet("<b>Agentic AI for learning and decision support</b> - designing agents that reason with people, use tools, and adapt support while preserving human goals and oversight"),
+        bullet("<b>Human-centered interaction and evaluation</b> - analyzing conversational and behavioral traces to understand engagement, accessibility, and real-world outcomes"),
     ]
 
     story += section("Education")
     story += [
         two_col("Seoul National University of Science and Technology", "Seoul, South Korea"),
-        two_col("Integrated Ph.D. in Applied Artificial Intelligence", "Mar. 2023 - Present"),
+        two_col("Integrated Ph.D. in Applied Artificial Intelligence", "Mar. 2023 - Present", "CVItalic", "CVItalicRight"),
         bullet("Advisor: Kyoungwon Seo"),
-        Spacer(1, 1.5),
+        Spacer(1, 6),
         two_col("Seoul National University of Science and Technology", "Seoul, South Korea"),
-        two_col("B.S. in Electrical and Information Engineering", "Mar. 2019 - Feb. 2023"),
-        bullet("GPA: 4.14/4.5 (Major GPA: 4.5/4.5)"),
+        two_col("B.S. in Electrical and Information Engineering", "Mar. 2019 - Feb. 2023", "CVItalic", "CVItalicRight"),
         bullet("Thesis: Online Learning Support System Based on Facial Recognition"),
     ]
 
     story += section("Honors & Awards")
     story += [
         bullet("AI SeoulTech Graduate Scholarship (KRW 10,000,000), Seoul Scholarship Foundation, 2025"),
-        bullet("Best Student Paper Award, IEEE Seoul Section, 2024"),
+        bullet("Best Paper Award (co-author), HCI Korea 2025"),
+        bullet("Best Student Paper Bronze Award, IEEE Seoul Section, 2024"),
         bullet("National Science and Engineering Undergraduate Scholarship (full tuition), Korea Student Aid Foundation, 2021-2022"),
         bullet("Best Capstone Design Award, Seoul National University of Science and Technology, 2022"),
     ]
 
     story += section("Refereed Journal Article")
-    story += publication(
+    story.append(publication(
         "Integrating Biomarkers From Virtual Reality and Magnetic Resonance Imaging for the Early Detection of Mild Cognitive Impairment Using a Multimodal Learning Approach: Validation Study",
-        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
+        "Bogyeom Park, Yujin Kim, Jiwoo Park, Hyunbin Choi, Se Eun Kim, Hojin Ryu, and Kyoungwon Seo",
         "Journal of Medical Internet Research, 26, e54538 (2024) - SCIE; JCR Top 3%; Q1",
-    )
+    ))
 
     story += section("Extended Abstracts")
-    story += publication(
+    story.append(publication(
         "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
         "Bogyeom Park and Kyoungwon Seo",
         "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    )
-    story += publication(
+    ))
+    story.append(publication(
         "How Self-Disclosing Chatbots Influence Student Engagement, Assessment Accuracy, and Self-Reflection in Academic Stress Assessment",
         "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
         "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    )
-    story += publication(
+    ))
+    story.append(publication(
         "A Self-Determination Theory-Based Career Counseling Chatbot: Motivational Interactions to Address Career Decision-Making Difficulties and Enhance Engagement",
         "Hyerim Han, Bogyeom Park, and Kyoungwon Seo",
         "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems",
-    )
-    story += publication(
+    ))
+    story.append(publication(
         "Exploring the Multimodal Integration of VR and MRI Biomarkers for Enhanced Early Detection of Mild Cognitive Impairment",
-        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
+        "Bogyeom Park, Yujin Kim, Jiwoo Park, Hyunbin Choi, Se Eun Kim, Hojin Ryu, and Kyoungwon Seo",
         "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
-    )
+    ))
+
+    story += section("Domestic Conference Papers & Presentations")
+    story.append(publication(
+        "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
+        "Bogyeom Park and Kyoungwon Seo",
+        "Proceedings of HCI Korea 2026 - Oral Presentation",
+    ))
+    story.append(publication(
+        "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
+        "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
+        "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
+    ))
 
     story += section("Research Experience")
     story += [
@@ -290,8 +337,6 @@ def build():
             "Built an interactive research dashboard for reviewing engagement labels and comparing AI-tutored learning processes",
         ],
     )
-
-    story.append(PageBreak())
 
     story += project(
         "GUI Agent Technologies for Automated UX Accessibility Evaluation",
@@ -340,12 +385,16 @@ def build():
         ],
     )
 
-    story += section("Teaching")
+    story += section("Teaching & Mentoring")
     story += [
         two_col("Deep Learning", "Fall 2023"),
         Paragraph("Teaching Assistant, Seoul National University of Science and Technology", styles["Meta"]),
         bullet("Designed a final project using CNN-based models to predict drivers' physical and cognitive states from image data"),
         bullet("Supported lectures, advised student projects, and graded assignments and examinations"),
+        Spacer(1, 6),
+        two_col("2026 AX Academy Big Data Boot Camp", "May 2026 - Present"),
+        Paragraph("Tutor, Hyundai Motor Group", styles["Meta"]),
+        bullet("Mentored participants through project-based big data sprints and supported the development of their team projects"),
     ]
 
     story += section("Skills")
@@ -364,8 +413,11 @@ def build():
         )
     ]
 
-    story += section("Service")
-    story += [bullet("Publicity Manager, SeoulTech Human-centered Artificial Intelligence Lab")]
+    story += section("Academic Service")
+    story += [
+        bullet("Student Volunteer, AIED 2026"),
+        bullet("Publicity Manager, SeoulTech Human-centered Artificial Intelligence Lab"),
+    ]
 
     doc.build(story)
     print(OUTPUT)
