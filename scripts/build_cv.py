@@ -313,7 +313,7 @@ def build():
     story += section("Domestic Conference Papers & Presentations")
     story.append(publication(
         "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
-        "Bogyeom Park and Kyoungwon Seo",
+        "Bogyeom Park, Mina Yoo, Dongkuk Lee, Mi-ae Choi, Seona Park, So Young Jo, and Kyoungwon Seo",
         "Proceedings of HCI Korea 2026 - Oral Presentation",
     ))
     story.append(publication(
