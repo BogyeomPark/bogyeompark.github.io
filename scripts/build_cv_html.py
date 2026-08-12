@@ -81,7 +81,7 @@ def render():
 
     parts.append(section("Honors & Awards", bullets(cv_data.AWARDS)))
     parts.append(section("Refereed Journal Article", publications(cv_data.JOURNAL_ARTICLES)))
-    parts.append(section("Extended Abstracts", publications(cv_data.EXTENDED_ABSTRACTS)))
+    parts.append(section("International Conference Publications", publications(cv_data.EXTENDED_ABSTRACTS)))
     parts.append(section("Domestic Conference Papers & Presentations", publications(cv_data.DOMESTIC)))
 
     experience = ""

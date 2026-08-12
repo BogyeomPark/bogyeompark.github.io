@@ -274,7 +274,7 @@ def build():
     story += section("Refereed Journal Article")
     story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.JOURNAL_ARTICLES]
 
-    story += section("Extended Abstracts")
+    story += section("International Conference Publications")
     story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.EXTENDED_ABSTRACTS]
 
     story += section("Domestic Conference Papers & Presentations")

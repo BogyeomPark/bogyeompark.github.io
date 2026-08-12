@@ -109,6 +109,33 @@ EXTENDED_ABSTRACTS = [
         "venue": "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
         "url": "/publications/vr-mri-chi/",
     },
+    {
+        "title": "Multimodal Machine Learning Model for MCI Detection Using EEG, MRI and VR Data",
+        "authors": "Mariem Kallel, Bogyeom Park, Kyoungwon Seo, and Seong-Eun Kim",
+        "venue": "2024 International Technical Conference on Circuits/Systems, Computers, and Communications (ITC-CSCC), pp. 1-6",
+        "url": "https://doi.org/10.1109/ITC-CSCC62988.2024.10628204",
+    },
+    {
+        "title": (
+            "Advancing Mild Cognitive Impairment Detection: Integrating VR, MRI, and "
+            "Neuropsychological Insights for Comprehensive Diagnosis"
+        ),
+        "authors": "Bogyeom Park, Jinseok Park, Hojin Choi, Hokyoung Ryu, and Kyoungwon Seo",
+        "venue": "2024 International Technical Conference on Circuits/Systems, Computers, and Communications (ITC-CSCC), pp. 1-6",
+        "url": "https://doi.org/10.1109/ITC-CSCC62988.2024.10628151",
+    },
+    {
+        "title": (
+            "Early Screening of Mild Cognitive Impairment Using Multimodal VR-EP-EEG-MRI "
+            "(VEEM) Biomarkers via Machine Learning"
+        ),
+        "authors": (
+            "Se Young Kim, Bogyeom Park, Dohyun Kim, Hojin Choi, Jinseok Park, Hokyoung Ryu, "
+            "and Kyoungwon Seo"
+        ),
+        "venue": "2024 International Conference on Electronics, Information, and Communication (ICEIC), pp. 1-4",
+        "url": "https://doi.org/10.1109/ICEIC61013.2024.10457109",
+    },
 ]
 
 DOMESTIC = [
@@ -124,6 +151,14 @@ DOMESTIC = [
         "title": "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
         "authors": "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
         "venue": "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
+    },
+    {
+        "title": (
+            "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: "
+            "A Case Study of Zelkova serrata"
+        ),
+        "authors": "Sabin Lee, Bogyeom Park, Daejung Kim, and Kyoungwon Seo",
+        "venue": "Proceedings of HCI Korea 2024, pp. 212-219",
     },
     {
         "title": "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
