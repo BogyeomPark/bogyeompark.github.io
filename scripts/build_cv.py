@@ -284,7 +284,7 @@ def build():
     story += section("Refereed Journal Article")
     story.append(publication(
         "Integrating Biomarkers From Virtual Reality and Magnetic Resonance Imaging for the Early Detection of Mild Cognitive Impairment Using a Multimodal Learning Approach: Validation Study",
-        "Bogyeom Park, Yujin Kim, Jiwoo Park, Hyunbin Choi, Se Eun Kim, Hojin Ryu, and Kyoungwon Seo",
+        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
         "Journal of Medical Internet Research, 26, e54538 (2024) - SCIE; JCR Top 3%; Q1",
     ))
 
@@ -306,7 +306,7 @@ def build():
     ))
     story.append(publication(
         "Exploring the Multimodal Integration of VR and MRI Biomarkers for Enhanced Early Detection of Mild Cognitive Impairment",
-        "Bogyeom Park, Yujin Kim, Jiwoo Park, Hyunbin Choi, Se Eun Kim, Hojin Ryu, and Kyoungwon Seo",
+        "Bogyeom Park, Yuwon Kim, Jinseok Park, Hojin Choi, Seong-Eun Kim, Hokyoung Ryu, and Kyoungwon Seo",
         "CHI EA '24: Extended Abstracts of the 2024 CHI Conference on Human Factors in Computing Systems",
     ))
 
