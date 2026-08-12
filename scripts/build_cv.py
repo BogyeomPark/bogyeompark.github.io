@@ -187,7 +187,7 @@ def two_col(left, right, left_style="EntryTitle", right_style="Right"):
 def publication(title, authors, venue):
     return KeepTogether([
         Paragraph(title, styles["EntryTitle"]),
-        Paragraph(authors.replace("Bogyeom Park", "<b>Bogyeom Park</b>"), styles["Small"]),
+        Paragraph(authors.replace("Bogyeom Park", "<b>Bogyeom Park</b>").replace("Hyobin Park", "<b>Hyobin Park</b>"), styles["Small"]),
         Paragraph(venue, styles["Meta"]),
         Spacer(1, 6),
     ])
@@ -320,6 +320,11 @@ def build():
         "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
         "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
         "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
+    ))
+    story.append(publication(
+        "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
+        "Hyobin Park (now Bogyeom Park) and Kyoungwon Seo",
+        "Proceedings of HCI Korea 2023, pp. 828-835",
     ))
 
     story += section("Research Experience")
