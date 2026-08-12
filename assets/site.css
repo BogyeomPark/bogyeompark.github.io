@@ -196,8 +196,18 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .news-item, .publication-item, .project-item { display: grid; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--line); }
 .news-item { grid-template-columns: 115px minmax(0, 1fr); }
 .news-date { color: var(--muted); font-size: 0.8rem; font-weight: 700; letter-spacing: .02em; }
+.news-date time, .news-date span { display: block; }
+.news-date span { margin-top: 5px; color: var(--accent); font-size: 0.66rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 .news-item h3, .publication-item h3, .project-item h3 { margin: 0 0 6px; font-size: 1.04rem; line-height: 1.42; }
 .news-item p, .publication-item p, .project-item p { margin: 0; color: var(--muted); font-size: 0.91rem; }
+.news-entry { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 24px; align-items: start; }
+.news-copy { padding-top: 2px; }
+.news-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 13px; }
+.news-links a { font-size: 0.76rem; font-weight: 800; text-decoration: none; }
+.news-photo-link { display: block; overflow: hidden; aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
+.news-photo-link img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 180ms ease; }
+.news-photo-link:hover img { transform: scale(1.018); }
+.news-photo-contain img { object-fit: contain; background: white; }
 
 .publication-item { grid-template-columns: 92px minmax(0, 1fr); }
 .pub-year { color: var(--accent); font-family: Georgia, serif; font-size: 1.25rem; font-weight: 700; }
@@ -310,6 +320,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
   .feature { grid-template-columns: 1fr; }
   .feature-side { padding-top: 22px; border-top: 1px solid rgba(255,255,255,.18); border-left: 0; }
   .publication-card { grid-template-columns: 190px minmax(0, 1fr); }
+  .news-entry { grid-template-columns: minmax(0, 1fr) 210px; }
 }
 
 @media (max-width: 680px) {
@@ -330,6 +341,8 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
   .research-question span { display: none; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
   .news-item, .publication-item, .project-item { grid-template-columns: 1fr; gap: 7px; }
+  .news-entry { grid-template-columns: 1fr; gap: 16px; }
+  .news-photo-link { aspect-ratio: 16 / 9; }
   .publication-card { grid-template-columns: 1fr; }
   .publication-thumb { height: 190px; }
   .metric-grid { grid-template-columns: 1fr; }
