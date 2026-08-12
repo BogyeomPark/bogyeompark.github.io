@@ -226,6 +226,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .domestic-thumb:hover img { transform: scale(1.018); }
 .domestic-thumb.contain img { object-fit: contain; background: white; }
 .former-name-note { color: var(--muted); font-size: 0.78rem; }
+.author-note { display: block; margin-top: 6px; color: var(--muted); font-size: 0.78rem; }
 .paper-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 .paper-links a { color: var(--muted); font-size: 0.78rem; font-weight: 600; text-decoration: none; }
 .paper-links a:first-child { color: var(--accent-dark); font-weight: 750; }
