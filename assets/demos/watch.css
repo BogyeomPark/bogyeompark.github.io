@@ -1,0 +1,12 @@
+/* The Watchable section of /demos/: systems that need their own stack, shown
+   working. The video is the exhibit, so it takes the column with its caption
+   block underneath, like a figure with its legend. */
+.watch-card { max-width: 720px; }
+.watch-card video {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: 11px;
+  background: var(--soft);
+}
+.watch-copy { margin-top: 14px; }
+.watch-copy h3 { margin: 6px 0; font-size: 1.12rem; font-weight: 600; letter-spacing: -0.012em; }
+.watch-copy p { margin: 0 0 10px; max-width: 660px; color: var(--body); font-size: 0.91rem; line-height: 1.6; }

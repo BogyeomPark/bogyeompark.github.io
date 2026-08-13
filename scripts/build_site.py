@@ -96,11 +96,12 @@ PAGES = [
         "file": "demos/index.html",
         "url": "/demos/",
         "nav": "demos",
+        "assets": ["/assets/demos/watch.css"],
         "title": f"Demos | {NAME}",
         "og_title": f"Systems and demos — {NAME}",
         "description": (
-            f"Interactive systems built by {NAME}: an ICAP-based AI tutor, a multi-agent "
-            "debate chatbot, and agentic counseling systems."
+            f"Demos from {NAME}'s research: a playable virtual kiosk test and a narrated "
+            "agentic career-counseling system."
         ),
     },
     {
