@@ -553,7 +553,12 @@
       '<h3>Your measurements, against the study</h3>' + vs + orderNote +
 
       '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers</b> &mdash; and how a report words ' +
-      'them changes what its reader does next. A second study wrote the same result two ways.</p>' +
+      // Attention, not behaviour: the study asked its readers what the report made
+      // them think about rather than watching what they did, and this line is the
+      // first the reader meets. Promising a change in behaviour here and explaining
+      // a change in attention two screens later is the same overclaim twice.
+      'them changes where its reader&rsquo;s attention goes. A second study wrote the same result ' +
+      'two ways.</p>' +
       '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
 
       '<div id="kiosk-report-body" hidden>' +
