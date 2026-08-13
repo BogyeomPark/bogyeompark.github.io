@@ -21,6 +21,7 @@ import hashlib
 import os
 import re
 import sys
+from datetime import date
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://bogyeompark.github.io"
@@ -542,6 +543,11 @@ def build_head(page, css_v, js_v):
         if pdf and os.path.isfile(os.path.join(ROOT, pdf.lstrip("/"))):
             out.append(f'  <meta name="citation_pdf_url" content="{SITE}{pdf}">')
 
+    # The two latin subsets carry the first paint on every page; preloading them
+    # removes the swap flash. The -ext subsets stay lazy — they cover accented
+    # latin that rarely appears at all.
+    out.append('  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>')
+    out.append('  <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>')
     out.append(f'  <link rel="stylesheet" href="/assets/site.css?v={css_v}">')
     # Pages with their own stylesheet or script (the demos) list them here; each is
     # versioned by content hash like the shared assets.
@@ -591,6 +597,15 @@ def build_sidebar(page):
 
 HEAD_RE = re.compile(r"<head>.*?</head>", re.DOTALL)
 SIDEBAR_RE = re.compile(r'<aside class="sidebar".*?</aside>', re.DOTALL)
+
+# The home footer's "Last updated" month. Hand-maintained it goes stale the
+# moment a month passes; stamped at build time it is right exactly when
+# something ships, because --check flags the page in a new month and forces a
+# rebuild before the commit. Months are spelled out here so the stamp cannot
+# vary with the machine's locale.
+MONTHS = ("January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December")
+UPDATED_RE = re.compile(r"(<span data-last-updated>)[^<]*(</span>)")
 
 
 def replace_once(text, pattern, replacement, what, rel):
@@ -654,6 +669,9 @@ def main():
         text = replace_once(text, HEAD_RE, build_head(page, css_v, js_v), "head", rel)
         if page.get("sidebar", True):
             text = replace_once(text, SIDEBAR_RE, build_sidebar(page), "sidebar", rel)
+        today = date.today()
+        stamp = f"{MONTHS[today.month - 1]} {today.year}"
+        text = UPDATED_RE.sub(lambda m: m.group(1) + stamp + m.group(2), text)
 
         write_if_changed(path, text, check, changed, newline)
 

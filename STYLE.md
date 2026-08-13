@@ -11,6 +11,7 @@
 |---|---|---|
 | 모든 페이지의 `<head>`, 사이드바 | `scripts/build_site.py` | 스크립트의 `PAGES`·`NAV`를 고치고 다시 실행 |
 | `sitemap.xml`, `robots.txt` | `scripts/build_site.py` | 직접 고치지 않는다 |
+| 홈 푸터의 "Last updated" 달 (`<span data-last-updated>`) | `scripts/build_site.py` | 손대지 않는다 — 빌드가 그 달로 찍고, 달이 바뀌면 `--check`가 잡아 커밋 전 갱신을 강제한다 |
 | `/cv/` 본문 (`cv:start`~`cv:end` 사이) | `scripts/build_cv_html.py` | 아래 순서대로 다시 실행 |
 | `assets/cv/Bogyeom_Park_CV.pdf` | `scripts/build_cv.py` | `scripts/cv_data.py`를 고친다 |
 | `assets/cv/pages/page-N.webp` | `scripts/build_assets.py` | PDF를 다시 만들고 실행 |
@@ -162,6 +163,19 @@ venue가 센 순서로 고르지 않는다 — 그러면 홈이 실적 진열대
 세 편 모두 **1저자 또는 공동 1저자**여야 한다. 홈 첫 화면의 대표작에 남이 주도한 연구를
 올리지 않는다 (공저 연구는 Publications에 그대로 실린다).
 헤드라인을 바꾸면 이 세 편도 다시 고른다.
+
+### 3-3-1-B. 홈의 Demo 카드
+
+Selected Work 아래에 **플레이 가능한 데모 하나**를 카드로 둔다 (`.demo-teaser`).
+헤드라인이 "measuring whether they do"를 주장하므로, 방문자가 직접 만질 수 있는
+측정이 홈에 있어야 주장이 선다. 규칙:
+
+- 카드는 **하나만.** 데모가 늘면 카드를 늘리지 말고 대표 하나를 고른다 — 나머지는
+  섹션 헤딩의 `All demos →`가 감당한다.
+- **카드 전체가 링크**다 (`.work`와 같은 패턴). 안에 별도 `<a>`를 두지 않고,
+  `Try the demo →`는 시각 신호용 `<span>`이다.
+- 카피는 `/demos/` 카드의 요약을 **echo해도 되지만 대체하면 안 된다** — 상세 설명과
+  논문 연결은 /demos/와 데모 페이지의 몫이다.
 
 ### 3-3-2. 논문 상세 페이지의 Key Findings
 

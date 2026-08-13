@@ -104,6 +104,10 @@
 
   const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
 
+  // scrollIntoView with an explicit behavior ignores the CSS reduced-motion
+  // override, so the OS setting has to be read here too.
+  const SCROLL = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
   // Every screen is laid down once, stacked, and stays in the page for good.
   // Stepping through the task only changes which one is opaque, so no image is
   // ever created, fetched or decoded mid-run — the three things that made the
@@ -452,9 +456,9 @@
     el('#kiosk-open-report').addEventListener('click', (e) => {
       el('#kiosk-report-body').hidden = false;
       e.currentTarget.parentNode.hidden = true;
-      el('#kiosk-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el('#kiosk-report').scrollIntoView({ behavior: SCROLL, block: 'start' });
     });
-    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    result.scrollIntoView({ behavior: SCROLL, block: 'start' });
   }
 
   function reveal(pick) {
