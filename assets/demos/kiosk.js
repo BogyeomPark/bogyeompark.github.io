@@ -418,7 +418,9 @@
     // patients with mild cognitive impairment (n=32). All four biomarkers are
     // quoted; the two this page cannot take show the study's own figures with
     // an empty You cell, which says the same thing a footnote would.
-    const HC = { time: 39.48, errors: 1.73, speed: '0.23 m/s', scan: '23.66 m' };
+    // Means as the study printed them, and the control group's spread on time,
+    // which is what decides below whether a run has anything to say about it.
+    const HC = { time: 39.48, timeSD: 18.96, errors: 1.73, speed: '0.23 m/s', scan: '23.66 m' };
     const MCI = { time: 105.39, errors: 4, speed: '0.17 m/s', scan: '60.36 m' };
     const nearHc = v => (a, b) => Math.abs(v - a) <= Math.abs(v - b);
     const timeHc = nearHc(seconds)(HC.time, MCI.time);
@@ -486,15 +488,20 @@
     // sentence holds whether the run came in over it or under it.
     const taken = Math.max(1, Math.round(seconds));
     const hc = Math.round(HC.time);
-    // One wrong item, or ten seconds off the study's mean. Below that there is no
-    // better run to describe and both wordings come out saying that the run would
-    // have been what it already was. The margin is a number here rather than a
-    // hedge inside a sentence, because "about" cannot hide a difference of nothing.
-    const room = errors > 0 || seconds > HC.time + 10;
+    // One wrong item, or a time outside the control group's own spread: 39.48 s,
+    // SD 18.96, both from the study's table. A run inside that spread is an
+    // ordinary control-group time, so there is no better run to describe and both
+    // wordings come out saying the run would have been what it already was. The
+    // line is the study's number rather than a round one picked here, because a
+    // margin invented for the occasion is the same unfounded figure the time claim
+    // was dropped for — and because this boundary decides what half the visitors
+    // read. It also keeps the smallest improvement the report ever offers at about
+    // twenty seconds, which is a difference worth a sentence.
+    const room = errors > 0 || seconds > HC.time + HC.timeSD;
     const perfect = 'You got every item right, and ' +
       (seconds <= HC.time
         ? 'came in under the healthy-control mean the study reported.'
-        : 'came within a few seconds of the healthy-control mean the study reported.') +
+        : 'came in inside the spread of the study&rsquo;s healthy controls.') +
       ' There is no counterfactual to write &mdash; which is also why the study&rsquo;s two reports ' +
       'needed a result with something in it to explain.';
     const pair = !errors
