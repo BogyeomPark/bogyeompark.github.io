@@ -561,6 +561,14 @@ def build_head(page, css_v, js_v):
         out.append(f'  <script src="/assets/site.js?v={js_v}" defer></script>')
     if page.get("person_schema"):
         out.append(f'  <script type="application/ld+json">{person_schema()}</script>')
+    # GoatCounter (dashboard: bogyeompark.goatcounter.com) — free, cookieless
+    # visitor counts, so no consent banner is owed. count.js skips localhost on
+    # its own, keeping local runs out of the numbers. kiosk.js sends two custom
+    # events (run started / finished) through the same object; see its tally().
+    out.append(
+        '  <script data-goatcounter="https://bogyeompark.goatcounter.com/count" '
+        'async src="https://gc.zgo.at/count.js"></script>'
+    )
     out.append("</head>")
     return "\n".join(out)
 

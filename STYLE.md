@@ -287,3 +287,16 @@ CSS 주석에도 표시해 두었다.
 
 푸시하면 곧바로 공개된다(GitHub Pages, `main` 브랜치). 커밋 전에 `--check`를 돌린다.
 새 파일이 페이지에서 참조되는데 untracked로 남으면 라이브에서 깨지므로 `git add -A`를 쓴다.
+
+## 7. 방문자 집계 (GoatCounter)
+
+- 대시보드: **https://bogyeompark.goatcounter.com** (무료·쿠키 없음 → 동의 배너 불필요).
+- 스니펫은 `scripts/build_site.py`의 `build_head()` **한 곳**에만 있고 빌드가 전 페이지에
+  넣는다. 페이지에 직접 붙이지 않는다.
+- `count.js`는 localhost를 스스로 건너뛰므로 로컬 확인은 집계를 오염시키지 않는다
+  (로컬 콘솔에 "not counting" 경고가 보이는 것이 정상).
+- **커스텀 이벤트는 kiosk.js의 `tally()` 둘뿐**: `kiosk-run-started`(시작 버튼) ·
+  `kiosk-run-finished`(리포트 도달). 시작 대비 완주율이 대시보드에서 나온다.
+- **철칙: 이벤트는 사실만 보내고 측정값(시간·오답·선택)은 절대 보내지 않는다.**
+  데모 리포트의 문구 "the page counts runs, not results"가 이 약속이다 — 이벤트를
+  늘리면 이 문구와 함께 다시 따져본다.

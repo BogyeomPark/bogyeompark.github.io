@@ -14,7 +14,9 @@
  * kiosk itself said nothing. Each screen's own instruction is written under it,
  * never spoken: narrating the steps would cue the memory being measured.
  *
- * Everything stays in the browser.
+ * Measurements stay in the browser. The only things that leave are two
+ * anonymous GoatCounter events — a run started, a run finished — sent by
+ * tally() below, carrying no times, errors or choices.
  */
 (() => {
   // Measured off the panels rather than eyeballed, so the targets sit on the
@@ -107,6 +109,11 @@
   // scrollIntoView with an explicit behavior ignores the CSS reduced-motion
   // override, so the OS setting has to be read here too.
   const SCROLL = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  // Participation is counted, results are not: these events carry no time,
+  // errors or choices — only that a run began or reached the report. The
+  // optional chain keeps the demo whole if the counter is blocked or unloaded.
+  const tally = (path, title) => window.goatcounter?.count?.({ path, title, event: true });
 
   // Every screen is laid down once, stacked, and stays in the page for good.
   // Stepping through the task only changes which one is opaque, so no image is
@@ -262,6 +269,7 @@
     spendOrder();                      // it is not repeated once you begin
     Object.assign(state, { step: 1, started: performance.now(), errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false });
     result.hidden = true;
+    tally('kiosk-run-started', 'Kiosk run started');
     renderStep();
   }
 
@@ -298,6 +306,7 @@
   function finish() {
     const seconds = (performance.now() - state.started) / 1000;
     const speed = state.distance / seconds;
+    tally('kiosk-run-finished', 'Kiosk run finished');
     state.step = -1;
     caption.textContent = '';
     showPanel('panel08');
@@ -447,7 +456,7 @@
       '<div id="kiosk-reveal"></div></div>' +
       '<p class="kiosk-note"><strong>A demonstration, not a screening test.</strong> The study reached a diagnosis ' +
       'through clinical assessment, an MRI scan and an eye-tracking headset; this page reproduces the task and three ' +
-      'of its measures. Nothing you do here leaves your browser.</p>' +
+      'of its measures. Your measurements never leave your browser &mdash; the page counts runs, not results.</p>' +
       '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a>' +
       '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
 
