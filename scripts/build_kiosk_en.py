@@ -26,9 +26,11 @@ OUT = os.path.join(ROOT, "assets", "demos", "kiosk-en.js")
 # Each entry is a search window on the panel, not a measured box: the script
 # finds the Korean inside it and fits the English chip to what it finds, so the
 # labels stay aligned even if a panel is re-exported.
-#   (x, y, w, h, english, align, run[, radius])
+#   (x, y, w, h, english, align, run[, radius[, span]])
 #   run 0 = first line of text in the window; radius (cqw) rounds the chip's
-#   corners for chips that cover a whole rounded control, like the delete key.
+#   corners for chips that cover a whole rounded control, like the delete key;
+#   span = (x, w) widens the chip past the fitted Korean, like the menu grids,
+#   so a short Korean name does not shrink its longer English.
 L, C = "left", "center"
 LAYERS = {
     "panel01": [(4, 24, 86, 17, "To start your order,|press the START button.", L, None),
@@ -43,19 +45,25 @@ LAYERS = {
                 (1, 62, 97, 14, "Choose a SIDE.", L, 0),
                 (1, 76, 97, 12, "Choose a DRINK.", L, 0)],
     "panel04": [(69, 3.0, 23, 3.4, "Back", C, None),
-                # Collapsed headers end 0.4% short of the chosen-item thumbnail
-                # (left edge 79.94) — at 80 wide the chip shaved its corner off.
-                (1, 25.6, 78.5, 4.4, "Choose a BURGER.", L, None),
-                (1, 39.2, 78.5, 4.4, "Choose a SIDE.", L, None),
+                # Collapsed headers run to 79.1 — the thumbnail card's straight
+                # edge is at 79.25 (79.94 was measured across its rounded
+                # corner). Reaching the card shaved its corner; stopping early
+                # left a smudge of half-covered drop shadow.
+                (1, 25.6, 78.1, 4.4, "Choose a BURGER.", L, None),
+                (1, 39.2, 78.1, 4.4, "Choose a SIDE.", L, None),
+                # The chosen item's name, like the menu tiles: English name,
+                # Korean price.
+                (80.5, 25.4, 15.2, 1.7, "Shrimp Burger", C, None, None, (80.8, 14.6)),
                 (1, 78, 97, 12, "Choose a DRINK.", L, 0)],
     "panel05": [(69, 3.0, 23, 3.4, "Back", C, None),
-                # Tight rows under the circled numbers, ending 0.9% before the
-                # item thumbnails (left edge 79.29): the Korean line ends at
-                # 76.6, and a wider or taller window either let its last glyphs
-                # peek out past the chip (w=70) or swallowed the thumbnail and
-                # blew the chip up to the whole band (w=80).
-                (1, 25.0, 77.4, 4.7, "Choose a BURGER.", L, None),
-                (1, 38.8, 77.4, 4.8, "Choose a SIDE.", L, None),
+                # Same windows as panel04's collapsed headers — these are the
+                # same bands, and a window that opens 0.6 higher grazes the
+                # circled number's rim and fits the header a size larger, so
+                # the text would jump as the screens advance.
+                (1, 25.6, 78.1, 4.4, "Choose a BURGER.", L, None),
+                (1, 39.2, 78.1, 4.4, "Choose a SIDE.", L, None),
+                (80.5, 25.4, 15.2, 1.7, "Shrimp Burger", C, None, None, (80.8, 14.6)),
+                (80.5, 39.55, 15.2, 1.55, "Cheese Sticks", C, None, None, (80.8, 14.6)),
                 (1, 48, 97, 12, "Choose a DRINK.", L, 0)],
     "panel06": [(69, 3.0, 23, 3.4, "Back", C, None),
                 (4, 18, 86, 12, "Check your order.", L, 0),
@@ -217,7 +225,8 @@ def build():
         for entry in LAYERS.get(panel, []):
             x, y, w, h, text, align, run = entry[:7]
             got = label(im, (x, y, w, h), text, align, run, aspect,
-                        radius=entry[7] if len(entry) > 7 else None)
+                        radius=entry[7] if len(entry) > 7 else None,
+                        span=entry[8] if len(entry) > 8 else None)
             if got:
                 items.append(got)
             else:

@@ -178,18 +178,28 @@
   };
 
   // The standing warning — played once, memorise it — sits beside the button,
-  // where it is read before anything is pressed. These two only track what to
-  // do now.
+  // where it is read before anything is pressed. These three only track what
+  // to do now.
   const READY_NOTE = 'Press play when you are ready.';
+  const PLAYING_NOTE = 'Hold it in memory.';
   const HELD_NOTE = 'That was the only time it is played. Touch Start when you have it.';
+
+  // The Start button on screen: held until the order has been heard, because a
+  // run started cold has nothing to remember — unusable numbers and a worse
+  // report to read at the end.
+  let startHit = null;
+  const releaseStart = () => { if (startHit) startHit.disabled = false; };
 
   const sayOrder = () => {
     if (orderSpent) return;
     player.src = '/assets/demos/kiosk/audio/order.mp3';
+    player.onended = () => { caption.textContent = HELD_NOTE; releaseStart(); };
     const played = player.play();
-    // Spend it only once it is really sounding: if the browser refuses to
-    // play, the button has to survive.
-    if (played) played.then(() => { spendOrder(); caption.textContent = HELD_NOTE; }, () => {});
+    // Spend it only once it is really sounding — and if the browser refuses to
+    // play, unlock Start anyway rather than locking the demo shut.
+    if (played) played.then(
+      () => { spendOrder(); caption.textContent = PLAYING_NOTE; },
+      () => { releaseStart(); });
   };
 
   /* --- pointer path ------------------------------------------------------ */
@@ -302,7 +312,9 @@
     // spent before anyone was listening, and where it is blocked it would not
     // sound at all — the button is the one behaviour every browser agrees on,
     // and it also means the clip starts when the participant is ready.
-    el('[data-i]').addEventListener('click', begin);
+    startHit = el('[data-i]');
+    startHit.disabled = true;
+    startHit.addEventListener('click', begin);
   }
 
   /* --- results ----------------------------------------------------------- */

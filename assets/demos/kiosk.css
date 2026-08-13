@@ -17,6 +17,10 @@
 .kiosk-options-old {
  margin: 9px 0 0; color: var(--muted); font-size: 0.79rem; }
 
+/* Before the task, not after it: someone who searched their way here worried
+   about their own memory must read this line before they hold a score. */
+.kiosk-disclaimer { max-width: 660px; margin: 14px 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
 .kiosk-stage { margin-top: 22px; }
 /* Every panel is 1238x2475, give or take three pixels. The ratio lives on the
    frame because the screens inside it are stacked and cannot size it. */
@@ -69,7 +73,8 @@
   padding: 0;
   cursor: pointer;
 }
-.kiosk-hit:hover { border-color: var(--accent); background: rgba(31, 66, 117, 0.08); }
+.kiosk-hit:hover:not(:disabled) { border-color: var(--accent); background: rgba(31, 66, 117, 0.08); }
+.kiosk-hit:disabled { cursor: default; }
 .kiosk-hit:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.45); outline-offset: 2px; }
 .kiosk-hit.round { border-radius: 50%; }
 
