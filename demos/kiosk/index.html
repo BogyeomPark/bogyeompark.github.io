@@ -20,9 +20,9 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Bogyeom Park (박보겸), Integrated Ph.D. Student at the SeoulTech HAI Lab">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="/assets/site.css?v=d3847169">
-  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=1dea038c">
-  <script src="/assets/demos/kiosk.js?v=3c530061" defer></script>
+  <link rel="stylesheet" href="/assets/site.css?v=7a78d5e2">
+  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=a237867c">
+  <script src="/assets/demos/kiosk.js?v=405def0b" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -40,7 +40,7 @@
       </header>
 
       <section class="content-section">
-        <p class="kiosk-options"><button type="button" id="kiosk-say">🔊 Replay</button><label><input type="checkbox" id="kiosk-mute"> Mute</label><span>The screens are the Korean originals from the study; the task is spoken once in English before you start, and not repeated.</span></p>
+        <p class="kiosk-options"><span>The order is played <b>once</b> and never repeated. Memorise it, then complete it yourself on the kiosk below.</span><button type="button" id="kiosk-say">🔊 Play the order</button></p>
 
         <div class="kiosk-stage" id="kiosk-stage"></div>
         <p class="kiosk-caption" id="kiosk-caption"></p>
@@ -50,14 +50,14 @@
 
       <section class="content-section">
         <div class="section-heading"><h2>What this measures</h2></div>
-        <p>The study drew four biomarkers from the virtual kiosk test. Three of them survive the move to a browser, because a mouse or a fingertip stands in for the hand controller well enough:</p>
+        <p>The study drew four biomarkers from this task. Three of them survive the move to a browser, because a mouse or a fingertip stands in for the hand controller well enough:</p>
         <ul class="takeaway-list">
-          <li><b>Time to completion</b> &mdash; how long all six steps take. Measured here exactly as in the study.</li>
-          <li><b>Number of errors</b> &mdash; selections that were not the item asked for. Measured here exactly as in the study.</li>
-          <li><b>Hand movement speed</b> &mdash; total distance the hand travelled, divided by time. <b>Mouse only.</b> A mouse is dragged between targets, so it traces a path the way the tracked controller did; a finger reports only where it lands, and the straight lines between taps are not a path a hand took. On a touchscreen this measure is left blank rather than filled with a number that means nothing.</li>
-          <li><b>Scanpath length</b> &mdash; how far the eyes travelled. <b>Not reproduced.</b> This one needed the eye tracker built into the headset, and it is the clearest answer to why the study used VR rather than a screen.</li>
+          <li><b>Time to completion</b> &mdash; how long the six steps take.</li>
+          <li><b>Number of errors</b> &mdash; selections that were not the item asked for.</li>
+          <li><b>Hand movement speed</b> &mdash; distance travelled, divided by time. <b>Mouse only:</b> a dragged mouse traces a path, a fingertip only reports where it landed, so on a touchscreen this one is left blank.</li>
         </ul>
-        <p>In the study, participants with mild cognitive impairment moved their hands more slowly, took longer, made more errors, and had longer scanpaths than healthy controls. Combining these behavioural measures with MRI biomarkers detected impairment with 94.4% accuracy.</p>
+        <p>The fourth needed the eye tracker built into the headset &mdash; <b>scanpath length</b>, how far the eyes travelled. Its absence here is the clearest answer to why the study used VR rather than a screen.</p>
+        <p>In the study, participants with mild cognitive impairment were slower, made more errors and had longer scanpaths than healthy controls. Combined with MRI biomarkers, this detected impairment with 94.4% accuracy.</p>
       </section>
 
       <footer><span>© 2026 Bogyeom Park</span><span><a href="/demos/">← All demos</a></span></footer>

@@ -92,6 +92,8 @@
   border: 1px dashed var(--line); border-radius: 10px;
   color: var(--muted); font-size: 0.83rem; line-height: 1.6;
 }
+/* The line that keeps a number from being read as a verdict. */
+.kiosk-caveat { margin-top: 10px; color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
 .kiosk-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 
 /* The handoff into the report. Without it people read their score and stop. */

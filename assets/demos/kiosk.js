@@ -9,9 +9,10 @@
  * completion, number of errors, hand movement speed (pointer standing in for
  * the controller). Scanpath length needs an eye tracker and is not reproduced.
  *
- * Prompts are spoken in Korean because the screens are Korean; an English
- * translation sits under the screen. If no Korean voice is installed the demo
- * stays silent rather than letting another language mangle it.
+ * The order is spoken once, from a shipped audio file, before the task starts —
+ * as in the study, where the instruction was given verbally beforehand and the
+ * kiosk itself said nothing. Each screen's own instruction is written under it,
+ * never spoken: narrating the steps would cue the memory being measured.
  *
  * Everything stays in the browser.
  */
@@ -20,7 +21,7 @@
   // cards instead of around them.
   const COL = [[3.5, 24.2], [27.6, 48.3], [51.8, 72.4], [75.9, 96.5]];
   const BACK = { x: 62, y: 2.2, w: 35, h: 5.5 };
-  const PIN = '1379';
+  const PIN = '6289';   // the study's own password, JMIR 2024;26:e54538
   const box = (col, top, bottom) => ({ x: COL[col][0], w: COL[col][1] - COL[col][0], y: top, h: bottom - top });
   const back = { label: '이전 화면', area: BACK, back: true };
 
@@ -32,7 +33,7 @@
     },
     {
       panel: 'panel02', ko: '식사하실 장소를 선택해 주세요.',
-      en: 'Where will you eat?',
+      en: 'Where will you eat?', target: 'Eat in',
       hits: [
         { label: 'Eat in', area: { x: 5, y: 47, w: 43, h: 31 } },
         { label: 'Take out', area: { x: 52, y: 47, w: 43, h: 31 } },
@@ -73,7 +74,7 @@
     },
     {
       panel: 'panel06', ko: '주문을 확인하시고 결제 방법을 선택해 주세요.',
-      en: 'Check your order, then choose a payment method.',
+      en: 'Check your order, then choose a payment method.', target: '카드 결제',
       hits: [
         back,
         { label: '카드 결제', area: { x: 3, y: 56, w: 44, h: 30 } },
@@ -103,34 +104,44 @@
 
   const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
 
-  /* --- speech: Korean screens, Korean voice, or silence ------------------ */
-  let voice = null;
-  const findVoice = () => {
-    const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-    const english = voices.filter(v => /^en/i.test(v.lang));
-    // A woman's voice, as the study's kiosk had. Named female voices first,
-    // then anything not explicitly male, then any English voice at all.
-    voice = english.find(v => /samantha|zira|aria|jenny|female|google us english|karen|moira|serena/i.test(v.name))
-      || english.find(v => !/male|david|mark|guy|daniel|alex|fred/i.test(v.name))
-      || english[0] || null;
-    const btn = el('#kiosk-say');
-    if (btn) {
-      btn.disabled = !voice;
-      btn.textContent = voice ? '🔊 Replay' : 'No English voice installed';
-    }
+  /* --- speech: pre-rendered clips ---------------------------------------- */
+  // Files, not SpeechSynthesis. Most machines have no English voice installed
+  // at all, and the ones that do each pick a different voice at a different
+  // rate — not a stimulus you can time people against. These are identical
+  // everywhere. Rendered with edge-tts, en-US-AriaNeural at -5%.
+  // order.mp3 is the study's own spoken instruction, verbatim: "The place to
+  // eat is a restaurant. Please use the kiosk to order a shrimp burger, cheese
+  // sticks, and a Coca-Cola. Use a credit card as the payment method, and the
+  // card payment password is 6 2 8 9." Change PIN above, or any target below, and
+  // the clip has to be rendered again — see tools/gen_kiosk_audio.py.
+
+  const player = new Audio();
+  player.preload = 'auto';
+  const sayBtn = el('#kiosk-say');
+  let orderSpent = false;              // the order is heard once per attempt
+
+  const spendOrder = () => {
+    orderSpent = true;
+    if (sayBtn) { sayBtn.disabled = true; sayBtn.textContent = 'Given once'; }
   };
-  if (window.speechSynthesis) {
-    findVoice();
-    speechSynthesis.addEventListener('voiceschanged', findVoice);
-  }
-  const TASK_EN = 'Order a shrimp burger, cheese sticks and a Coca-Cola. Your payment number is ' +
-    PIN.split('').join(' ') + '. Touch Start when you are ready.';
-  const say = (text) => {
-    if (!voice || el('#kiosk-mute').checked) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.voice = voice; u.lang = voice.lang; u.rate = 0.95;
-    speechSynthesis.speak(u);
+  const armOrder = () => {
+    orderSpent = false;
+    if (sayBtn) { sayBtn.disabled = false; sayBtn.textContent = '🔊 Play the order'; }
+  };
+
+  // The standing warning — played once, memorise it — sits beside the button,
+  // where it is read before anything is pressed. These two only track what to
+  // do now.
+  const READY_NOTE = 'Press play when you are ready.';
+  const HELD_NOTE = 'That was the only time it is played. Touch Start when you have it.';
+
+  const sayOrder = () => {
+    if (orderSpent) return;
+    player.src = '/assets/demos/kiosk/audio/order.mp3';
+    const played = player.play();
+    // Spend it only once it is really sounding: if the browser refuses to
+    // play, the button has to survive.
+    if (played) played.then(() => { spendOrder(); caption.textContent = HELD_NOTE; }, () => {});
   };
 
   /* --- pointer path ------------------------------------------------------ */
@@ -156,8 +167,11 @@
         '<img src="/assets/demos/kiosk/' + step.panel + '.webp" alt="Kiosk screen: ' + step.en + '">' +
         hits + extra +
       '</div>';
-    caption.textContent = '';
-    if (!silent) say(step.en);
+    // The screen's own instruction, in English. A Korean participant could read
+    // it off the panel, so a visitor who cannot read Korean should have it too —
+    // but written, not spoken. The study's only spoken instruction came before
+    // the test; narrating each step would cue the memory the task is measuring.
+    caption.textContent = silent ? '' : step.en;
   }
 
   function renderStep() {
@@ -208,6 +222,7 @@
   }
 
   function begin() {
+    spendOrder();                      // it is not repeated once you begin
     Object.assign(state, { step: 1, started: performance.now(), errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false });
     result.hidden = true;
     renderStep();
@@ -228,9 +243,15 @@
 
   function renderStart() {
     state.step = 0;
+    armOrder();
     paint(STEPS[0], '', true);
-    caption.textContent = TASK_EN + ' It will not be repeated once you begin.';
-    say(TASK_EN);
+    // The order is spoken, never written: reading it off the screen would
+    // remove the memory demand the task exists to measure.
+    caption.textContent = READY_NOTE;
+    // Not played automatically. Where autoplay is allowed the order would be
+    // spent before anyone was listening, and where it is blocked it would not
+    // sound at all — the button is the one behaviour every browser agrees on,
+    // and it also means the clip starts when the participant is ready.
     el('[data-i]').addEventListener('click', begin);
   }
 
@@ -245,7 +266,6 @@
     stage.innerHTML = '<div class="kiosk-panel"><img src="/assets/demos/kiosk/panel08.webp" alt="Kiosk screen: thank you">' +
       '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button></div>';
     el('#kiosk-again').addEventListener('click', renderStart);
-    say('Thank you.');
     report(seconds, speed);
   }
 
@@ -275,7 +295,7 @@
 
     // What was actually ordered, against what was asked for. The kiosk never
     // said anything at the time.
-    const asked = { panel03: '새우버거', panel04: '치즈스틱', panel05: '코카콜라' };
+    const asked = { panel02: 'Eat in', panel03: '새우버거', panel04: '치즈스틱', panel05: '코카콜라', panel06: '카드 결제' };
     const wrongItems = Object.keys(asked)
       .filter(k => state.chosen[k] && state.chosen[k] !== asked[k])
       .map(k => state.chosen[k] + ' (asked for ' + asked[k] + ')');
@@ -284,6 +304,34 @@
     const orderNote = slips.length
       ? '<p class="kiosk-best">You ordered ' + slips.join(', ') + '.</p>'
       : '<p class="kiosk-best">Everything you ordered matched the request.</p>';
+
+    // Table 3 of the study: healthy controls (n=22) against patients with mild
+    // cognitive impairment (n=32), mean (SD). Only the two performance measures
+    // are quoted — hand speed there was metres per second of a tracked hand,
+    // which a mouse in pixels cannot be held against.
+    const HC = { time: 39.5, errors: 1.7 };
+    const MCI = { time: 105.4, errors: 4.0 };
+    const nearHc = v => (a, b) => Math.abs(v - a) <= Math.abs(v - b);
+    const timeHc = nearHc(seconds)(HC.time, MCI.time);
+    const errHc = nearHc(errors)(HC.errors, MCI.errors);
+    const placing = timeHc && errHc
+      ? 'Both of your numbers sit nearer the healthy control averages.'
+      : (!timeHc && !errHc
+        ? 'Both of your numbers sit nearer the averages of the group with mild cognitive impairment.'
+        : 'Your ' + (timeHc ? 'time sits nearer the healthy control average, your errors nearer the other group'
+          : 'errors sit nearer the healthy control average, your time nearer the other group') + '.');
+    // Where the numbers land, not what they mean about the reader. This task
+    // has no eye tracker, a mouse instead of a tracked hand, and none of the
+    // clinical assessment the study's diagnoses actually rested on.
+    const against =
+      '<h3>Against the study</h3>' +
+      '<p>Healthy controls averaged <b>' + HC.time + ' s</b> and <b>' + HC.errors + ' errors</b>; ' +
+      'participants with mild cognitive impairment averaged <b>' + MCI.time + ' s</b> and <b>' +
+      MCI.errors + ' errors</b>. You took <b>' + seconds.toFixed(1) + ' s</b> and made <b>' + errors +
+      '</b>. ' + placing + '</p>' +
+      '<p class="kiosk-caveat">That is a comparison of numbers, not a result about you. The diagnoses in ' +
+      'the study came from a neuropsychological battery and an MRI scan, on participants in their ' +
+      'seventies, in a headset that tracked the hands and eyes. A browser cannot screen anyone for anything.</p>';
 
     const measures =
       '<ul class="kiosk-measures">' +
@@ -324,6 +372,7 @@
       '<h3>Your measurements</h3>' + measures + orderNote +
       '<p class="kiosk-best">' + (isBest ? 'That is your fastest run in this browser.'
         : 'Your fastest run in this browser is ' + best + ' s.') + '</p>' +
+      against +
       (mouse
         ? '<figure class="paper-figure">' + pathSvg() +
             '<figcaption class="kiosk-figcaption">Where your pointer went. The study recorded the same thing from a ' +
@@ -384,6 +433,6 @@
   }
 
   renderStart();
-  const sayBtn = el('#kiosk-say');
-  if (sayBtn) sayBtn.addEventListener('click', () => { say(state.step <= 0 ? TASK_EN : (STEPS[state.step] || {}).en || ''); });
+  // The button plays the order and nothing else: mid-task it would be a replay.
+  if (sayBtn) sayBtn.addEventListener('click', sayOrder);
 })();
