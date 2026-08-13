@@ -553,15 +553,14 @@ def build_sidebar(page):
         f'alt="Portrait of {NAME}">'
         f'<div class="identity"><h1><a href="/">{NAME}</a></h1>'
         f'<span class="korean-name" lang="ko">{NAME_KO}</span>'
+        # "Human-Centered Agentic AI" used to sit here, directly under the lab name,
+        # where it read as an expansion of HAI — which stands for Human-centered
+        # Artificial Intelligence. The research area is stated on Home instead.
         f'<p class="role">{ROLE}<br>'
-        f'<a href="{LAB_URL}" target="_blank" rel="noopener noreferrer">{LAB_SHORT}</a>'
-        '<br>Human-Centered Agentic AI</p></div></div>',
-        # The lab is already named above; only the formal university name is new here.
-        f'      <p class="sidebar-note">{UNIVERSITY}</p>',
+        f'<a href="{LAB_URL}" target="_blank" rel="noopener noreferrer">{LAB_SHORT}</a></p>'
+        f'<a class="sidebar-email" href="mailto:{EMAIL}">{EMAIL}</a>'
+        '</div></div>',
         '      <nav class="side-nav" aria-label="Main navigation">' + "".join(links) + "</nav>",
-        # The address itself, not the word "Email": it is the thing a reader copies,
-        # and moving it out leaves three profile links on one row instead of two.
-        f'      <a class="sidebar-email" href="mailto:{EMAIL}">{EMAIL}</a>',
         '      <div class="profile-links" aria-label="External profiles">'
         f'<a href="{esc(SCHOLAR_URL)}" target="_blank" rel="noopener noreferrer">Scholar</a>'
         f'<a href="{ORCID_URL}" target="_blank" rel="noopener noreferrer">ORCID</a>'

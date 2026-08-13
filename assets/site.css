@@ -120,7 +120,7 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
 
 .profile-photo {
   display: block;
-  width: 108px;
+  width: 136px;
   height: auto;
   max-width: 100%;
   object-fit: contain;
@@ -174,9 +174,9 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
 .side-nav a[aria-current="page"]::before { width: 10px; background: var(--accent); }
 
 /* The address sits above these, so three fit on one row at 250px. */
-.sidebar-email { display: block; margin-top: 22px; padding-top: 19px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.78rem; text-decoration: none; word-break: break-all; }
+.sidebar-email { display: block; margin-top: 9px; color: var(--muted); font-size: 0.8rem; text-decoration: none; word-break: break-all; }
 .sidebar-email:hover { color: var(--accent); }
-.profile-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.profile-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
 .profile-links a {
   display: inline-flex;
   align-items: center;
@@ -190,7 +190,6 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
   text-decoration: none;
 }
 .profile-links a:hover { border-color: var(--accent); background: var(--accent-pale); color: var(--accent-dark); }
-.sidebar-note { margin: 9px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.45; }
 
 main { min-width: 0; padding: 51px 0 66px 50px; }
 .page-header { padding-bottom: 40px; border-bottom: 1px solid var(--line); }
@@ -489,7 +488,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
   .site-shell { grid-template-columns: 185px minmax(0, 1fr); }
   .sidebar { padding-right: 18px; }
   main { padding-left: 28px; }
-  .profile-photo { width: 100px; }
+  .profile-photo { width: 118px; }
       .publication-card { grid-template-columns: 190px minmax(0, 1fr); }
   .news-entry { grid-template-columns: 1fr; gap: 16px; }
   .news-photo-link { width: min(100%, 520px); }
@@ -505,8 +504,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
   .side-nav a { padding-left: 0; }
   .side-nav a::before { display: none; }
   .profile-links { margin-top: 17px; }
-  .sidebar-note { display: none; }
-  main { padding: 36px 0 46px; }
+    main { padding: 36px 0 46px; }
   .page-header h2 { font-size: clamp(2.25rem, 12vw, 3.25rem); }
   .lead { font-size: 0.96rem; }
       .section-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
