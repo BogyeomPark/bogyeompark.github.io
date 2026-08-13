@@ -398,7 +398,7 @@
       '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
       '<tr><th>Number of errors</th><td>' + errors + '</td>' +
       '<td>' + HC.errors + '</td><td>' + MCI.errors + '</td></tr>' +
-      '<tr><th>Hand movement speed</th>' + na('needs a tracked hand') +
+      '<tr><th>Hand movement speed</th>' + na('needs a hand controller') +
       '<td>' + HC.speed + '</td><td>' + MCI.speed + '</td></tr>' +
       '<tr><th>Scanpath length</th>' + na('needs an eye tracker') +
       '<td>' + HC.scan + '</td><td>' + MCI.scan + '</td></tr>' +
