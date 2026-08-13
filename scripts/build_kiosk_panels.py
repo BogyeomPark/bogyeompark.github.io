@@ -153,14 +153,40 @@ def modal_colour(im, box_px):
     return counts.most_common(1)[0][0]
 
 
+def around_colour(im, box, pad=6):
+    """The colour surrounding a text box: the mode of a frame just outside it.
+
+    Sampling inside the box instead can return the ink. A short, bold name — 생수,
+    two glyphs — fills its own fitted box more than the card behind it does, and
+    the fill then paints the name's own black over the tile.
+    """
+    x0, y0, x1, y1 = box
+    ox0, oy0 = max(0, x0 - pad), max(0, y0 - pad)
+    ox1, oy1 = min(im.width, x1 + pad), min(im.height, y1 + pad)
+    strips = [(ox0, oy0, ox1, y0), (ox0, y1, ox1, oy1),
+              (ox0, y0, x0, y1), (x1, y0, ox1, y1)]
+    counts = Counter()
+    for s in strips:
+        if s[2] > s[0] and s[3] > s[1]:
+            counts.update(im.crop(s).getdata())
+    if not counts:
+        return modal_colour(im, box)
+    return counts.most_common(1)[0][0]
+
+
 def glyph_colour(im, box_px, bg):
-    """The colour the Korean is drawn in, so redrawn text matches it."""
+    """The colour the Korean is drawn in, so the English replacing it matches.
+
+    The mode of everything that is not the background: the glyphs' own body
+    outnumbers their antialiased edges. Taken this way rather than as the darkest
+    ink, which would read a white label on a navy band as the dark edge of its
+    own strokes. Returns None if the box holds no text.
+    """
     near = lambda p: sum(abs(a - b) for a, b in zip(p, bg)) <= 40
-    ink = [p for p in im.crop(box_px).getdata() if not near(p)]
+    ink = Counter(p for p in im.crop(box_px).getdata() if not near(p))
     if not ink:
-        return "#17252a"
-    ink.sort(key=lambda p: 0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2])
-    return "#%02x%02x%02x" % ink[len(ink) // 8]      # the glyph core, not its edge
+        return None
+    return "#%02x%02x%02x" % ink.most_common(1)[0][0]
 
 
 def fit(im, window, run):
@@ -330,38 +356,52 @@ def strip_runs(im, strip, ink=28, inset=0.05):
 def card_of(im, window):
     """A card, as photo (flush to its top and sides) over a white strip.
 
+    The card's top is found by walking up from the strip and comparing each row
+    inside the card against the panel just beside it, at that same row. Comparing
+    against one sampled background instead would walk straight up through a
+    collapsed header's navy and stop above the band.
+
     Returns the card box, the strip box, and the two text lines in the strip.
     """
     strip = white_blob(im, window)
     if not strip:
         return None
-    bg = ring_colour(im, window)
     pix = im.load()
-    xs = range(strip[0] + 2, strip[2] - 2, 2)
+    xs = list(range(strip[0] + 3, strip[2] - 3, 2))
+    left = max(0, strip[0] - 6)
+    right = min(im.width - 1, strip[2] + 5)
     top = strip[1]
     while top > 0:
+        y = top - 1
+        beside = pix[left, y] if strip[0] >= 6 else pix[right, y]
         off = sum(1 for x in xs
-                  if sum(abs(a - b) for a, b in zip(pix[x, top - 1], bg)) > 12)
-        if off < len(list(xs)) * 0.5:
+                  if sum(abs(a - b) for a, b in zip(pix[x, y], beside)) > 14)
+        if off < len(xs) * 0.5:
             break
         top -= 1
     runs = strip_runs(im, strip)
     if len(runs) < 2:
         return None
     return {"card": (strip[0], top, strip[2], strip[3]), "strip": strip,
-            "name": runs[-2], "price": runs[-1], "bg": bg}
+            "name": runs[-2], "price": runs[-1], "bg": ring_colour(im, window)}
 
 
-def corner_radius(im, card, bg):
-    """A rounded card's top row starts r pixels in from its left edge."""
+def corner_radius(im, card):
+    """The corner radius, measured at the card's bottom edge.
+
+    Measured there and not at the top because the bottom of a card is its white
+    strip against a navy, red or grey band: the widest contrast on the panel, so
+    the corner is unambiguous. A rounded corner reaches the card's full width r
+    rows in from the edge, so the first row that spans the whole card gives r.
+    """
     pix = im.load()
-    x0, y0, x1, _ = card
-    off = lambda x, y: sum(abs(a - b) for a, b in zip(pix[x, y], bg)) > 14
-    for x in range(x0, x1):
-        if off(x, y0 + 1):
-            r = x - x0
-            return max(2, min(r, round((x1 - x0) * 0.14)))
-    return round((x1 - x0) * 0.07)
+    x0, y0, x1, y1 = card
+    w = x1 - x0
+    for dy in range(1, min(round(w * 0.30), (y1 - y0) // 2)):
+        xs = [x for x in range(x0, x1) if min(pix[x, y1 - 1 - dy]) >= WHITE]
+        if xs and (xs[-1] - xs[0] + 1) >= w - 2:
+            return max(2, dy)
+    return round(w * 0.07)
 
 
 # ========================================================================
@@ -378,89 +418,118 @@ def label(im, box, text, align, aspect, span=None, radius=None):
     widest = max(len(s) for s in lines)
     per_char = 0.62 if text.replace("|", " ").isupper() else 0.52
     size = min(size, w / (per_char * widest) * 0.96)
-    bg = modal_colour(im, box)
+    bg = around_colour(im, box)
+    # The English inherits the colour the Korean was drawn in, so a navy label on
+    # a white card stays navy rather than going to the generic ink.
+    hex_bg = "#%02x%02x%02x" % bg
     out = {"x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "h": round(h, 2),
            "t": lines, "s": round(size, 2), "a": align,
-           "c": ink_for("#%02x%02x%02x" % bg)}
+           "c": glyph_colour(im, box, bg) or ink_for(hex_bg)}
     if radius:
         out["r"] = radius
     return out
 
 
 def build_panel(panel, im):
-    """Measure the panel, then erase what was measured. Returns the labels, the
-    item geometry and the slot geometry, with `im` edited in place."""
+    """Measure the panel, then erase what was measured.
+
+    Measuring comes first and finishes first: a card is found by the two lines of
+    text in it, so erasing a name before the last measurement would leave the
+    tile it belongs to unfindable.
+
+    Returns the labels, the item geometry and the slot geometry, with `im` edited
+    in place.
+    """
     aspect = im.height / im.width          # 1% of height is `aspect`% of width
-    draw = ImageDraw.Draw(im)
-    labels, erased = [], []
 
-    def cover(box, bg):
-        grown = grow_flat(im, box, bg)
-        draw.rectangle([grown[0], grown[1], grown[2] - 1, grown[3] - 1],
-                       fill=tuple(bg[:3]))
-        erased.append(grown)
-
-    # 1. the fixed text
+    # --- measure -----------------------------------------------------------
+    fixed = []
     for entry in LAYERS.get(panel, []):
         x, y, w, h, text, align, run = entry[:7]
         box = fit(im, (x, y, w, h), run)
         if box is None:
             print("  ! nothing found for %r" % text)
             continue
-        labels.append(label(im, box, text, align, aspect,
-                            span=entry[8] if len(entry) > 8 else None,
-                            radius=entry[7] if len(entry) > 7 else None))
-        cover(box, modal_colour(im, box))
+        fixed.append((box, label(im, box, text, align, aspect,
+                                 span=entry[8] if len(entry) > 8 else None,
+                                 radius=entry[7] if len(entry) > 7 else None)))
 
-    # 2. the menu tiles: English names, and where each item's photo lives
-    items, rows = {}, []
+    grid = []                              # one entry per row of tiles
     for ri, (row_y, row_h) in enumerate(NAME_ROWS.get(panel, [])):
-        row_labels = []
+        row = []
         for ci, (left, right) in enumerate(COLS):
             ko, en, price = ITEMS[panel][ri * 4 + ci]
-            # The tile is measured before its name is erased: a card is found by
-            # its two lines of text, and erasing one would leave it unfindable.
             tile = card_of(im, (left - 1.1, TILE_ROWS[panel][ri][0] - 1.5,
                                 right + 1.1, TILE_ROWS[panel][ri][1] + 0.8))
-            if tile:
-                card = tile["card"]
-                photo = (card[0], card[1], card[2], tile["strip"][1])
-                items[ko] = {"p": panel, "en": en, "price": price,
-                             "photo": [round(v, 2) for v in as_pct(im, photo)]}
-            else:
-                print("  ! no tile found for %s" % ko)
-            box = fit(im, (left, row_y, right - left, row_h), None)
-            if box is None:
-                print("  ! no name found for %s" % ko)
+            name = fit(im, (left, row_y, right - left, row_h), None)
+            if not tile or not name:
+                print("  ! %s: tile=%s name=%s" % (ko, bool(tile), bool(name)))
                 continue
-            row_labels.append(label(im, box, en, C, aspect,
-                                    span=(left + 0.4, right - left - 0.8)))
-            cover(box, modal_colour(im, box))
+            row.append({"ko": ko, "en": en, "price": price, "tile": tile,
+                        "name": name, "span": (left + 0.4, right - left - 0.8)})
+        grid.append(row)
+
+    slot_cards = []
+    for key, window in SLOTS.get(panel, []):
+        got = card_of(im, window)
+        if not got:
+            print("  ! no %s card found" % key)
+            continue
+        slot_cards.append((key, got))
+
+    # --- item photos -------------------------------------------------------
+    # One photo box per row, not per tile. A photo whose own background runs
+    # white at the bottom — the fries, the string cheese — merges into the card's
+    # white strip and reads as a shorter photo, which would crop it higher than
+    # its neighbours once the demo draws it into a card. The row's deepest photo
+    # is the real edge.
+    items = {}
+    for row in grid:
+        if not row:
+            continue
+        bottom = max(e["tile"]["strip"][1] for e in row)
+        for e in row:
+            card = e["tile"]["card"]
+            items[e["ko"]] = {"p": panel, "en": e["en"], "price": e["price"],
+                              "photo": list(as_pct(im, (card[0], card[1], card[2], bottom)))}
+
+    # --- erase -------------------------------------------------------------
+    draw = ImageDraw.Draw(im)
+    labels, erased = [], []
+
+    def cover(box):
+        bg = around_colour(im, box)
+        grown = grow_flat(im, box, bg)
+        draw.rectangle([grown[0], grown[1], grown[2] - 1, grown[3] - 1],
+                       fill=tuple(bg[:3]))
+        erased.append(grown)
+
+    for box, got in fixed:
+        labels.append(got)
+        cover(box)
+
+    for row in grid:
+        row_labels = []
+        for e in row:
+            row_labels.append(label(im, e["name"], e["en"], C, aspect, span=e["span"]))
+            cover(e["name"])
         # one size per row: neighbouring names set in different sizes read as a
         # mistake, and the row is only as roomy as its longest name
         if row_labels:
             size = min(i["s"] for i in row_labels)
             for i in row_labels:
                 i["s"] = size
-            rows.extend(row_labels)
-    labels.extend(rows)
+            labels.extend(row_labels)
 
-    # 3. the cards that carry a fixed order: blank them, and record the shape the
-    #    demo has to fill — photo, name and price as fractions of the card
+    # --- blank the cards that carry a fixed order --------------------------
     slots = []
-    for key, window in SLOTS.get(panel, []):
-        got = card_of(im, window)
-        if not got:
-            print("  ! no %s card found" % key)
-            continue
+    for key, got in slot_cards:
         card, strip = got["card"], got["strip"]
-        radius = corner_radius(im, card, got["bg"])
+        white = modal_colour(im, strip)         # the strip is white but for its text
+        radius = corner_radius(im, card)
         ch = card[3] - card[1]
         frac = lambda v: round((v - card[1]) / ch * 100, 1)
-        white = modal_colour(im, (strip[0] + 4, strip[1], strip[2] - 4, strip[1] + 3))
         line = lambda run: (strip[0] + 4, run[0], strip[2] - 4, run[1])
-        name_c = glyph_colour(im, line(got["name"]), white)
-        price_c = glyph_colour(im, line(got["price"]), white)
         name_h = as_pct(im, (card[0], got["name"][0], card[2], got["name"][1]))[3]
         price_h = as_pct(im, (card[0], got["price"][0], card[2], got["price"][1]))[3]
         box = as_pct(im, card)
@@ -472,10 +541,12 @@ def build_panel(panel, im):
                       "price": [frac(got["price"][0]), frac(got["price"][1])],
                       "ns": round(name_h * aspect * 0.62, 2),
                       "ps": round(price_h * aspect * 0.62, 2),
-                      "nc": name_c, "pc": price_c,
+                      "nc": glyph_colour(im, line(got["name"]), white),
+                      "pc": glyph_colour(im, line(got["price"]), white),
                       "bg": "#%02x%02x%02x" % white})
-        # blank it: a white rounded rectangle inside the card's own edge, so its
-        # shape and drop shadow survive and only the fixed order goes
+        print("     %-6s card=%s r=%d" % (key, box, radius))
+        # blank it: a rounded rectangle in the card's own white, inside its edge,
+        # so the card's shape and drop shadow survive and only the order goes
         draw.rounded_rectangle([card[0] + 1, card[1] + 1, card[2] - 2, card[3] - 2],
                                radius=radius, fill=tuple(white[:3]))
     return labels, items, slots, erased

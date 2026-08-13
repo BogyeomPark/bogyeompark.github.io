@@ -5,9 +5,11 @@
  * the original one: start, where to eat, then burger / side / drink as an
  * accordion, then the order with its payment choice, then the keypad.
  *
- * Measures three of the study's four VR-derived biomarkers — time to
- * completion, number of errors, hand movement speed (pointer standing in for
- * the controller). Scanpath length needs an eye tracker and is not reproduced.
+ * Measures two of the study's four VR-derived biomarkers — time to completion
+ * and number of errors. The other two stay with the study's hardware: hand
+ * movement speed was a tracked hand in metres per second, which a mouse in
+ * pixels cannot stand in for, and scanpath length needed the headset's eye
+ * tracker.
  *
  * The order is spoken once, from a shipped audio file, before the task starts —
  * as in the study, where the instruction was given verbally beforehand and the
@@ -121,7 +123,7 @@
   const caption = el('#kiosk-caption');
   if (!stage) return;
 
-  const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
+  const state = { step: -1, started: 0, errors: 0, code: '', chosen: {}, typed: false };
 
   // scrollIntoView with an explicit behavior ignores the CSS reduced-motion
   // override, so the OS setting has to be read here too.
@@ -229,18 +231,6 @@
       () => { liftVeil(); });
   };
 
-  /* --- pointer path ------------------------------------------------------ */
-  stage.addEventListener('pointerdown', (e) => { if (e.pointerType) state.pointer = e.pointerType; });
-  stage.addEventListener('pointermove', (e) => {
-    if (e.pointerType) state.pointer = e.pointerType;
-    if (state.step < 0) return;
-    const r = stage.getBoundingClientRect();
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    if (state.last) state.distance += Math.hypot(x - state.last.x, y - state.last.y);
-    state.last = { x, y };
-    if (state.points.length < 4000) state.points.push([Math.round(x), Math.round(y)]);
-  });
-
   /* --- rendering --------------------------------------------------------- */
   function paint(step, extra = '', silent = false) {
     // Each control's own corner radius, so the hover outline follows its shape
@@ -309,7 +299,7 @@
 
   function begin() {
     spendOrder();                      // it is not repeated once you begin
-    Object.assign(state, { step: 1, started: performance.now(), errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false });
+    Object.assign(state, { step: 1, started: performance.now(), errors: 0, code: '', chosen: {}, typed: false });
     result.hidden = true;
     tally('kiosk-run-started', 'Kiosk run started');
     renderStep();
@@ -351,26 +341,21 @@
 
   function finish() {
     const seconds = (performance.now() - state.started) / 1000;
-    const speed = state.distance / seconds;
     tally('kiosk-run-finished', 'Kiosk run finished');
     state.step = -1;
     caption.textContent = '';
     showPanel('panel08');
     overlay.innerHTML = '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button>';
     el('#kiosk-again').addEventListener('click', renderStart);
-    report(seconds, speed);
+    report(seconds);
   }
 
-  function report(seconds, speed) {
+  function report(seconds) {
     const errors = state.errors;
     const taken = Math.max(1, Math.round(seconds));
     const perStep = seconds / 6;
     const saved = Math.round(errors * perStep);
     const target = Math.max(1, taken - saved);
-    // A mouse is dragged between targets, so the pointer traces a path the way
-    // a hand controller did. A finger only reports where it lands: the straight
-    // lines between taps are not a hand path, so the speed is not measured.
-    const mouse = state.pointer !== 'touch' && state.points.length > 12;
     const best = Number(localStorage.getItem(KEY) || 0);
     const isBest = !best || seconds < best;
     if (isBest) localStorage.setItem(KEY, String(Math.round(seconds * 10) / 10));
@@ -415,9 +400,7 @@
       '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
       '<tr><th>Number of errors</th><td>' + errors + '</td>' +
       '<td>' + HC.errors.toFixed(1) + '</td><td>' + MCI.errors.toFixed(1) + '</td></tr>' +
-      '<tr><th>Hand movement speed</th>' +
-      (mouse ? '<td>' + Math.round(speed) + ' px/s</td>' : na('needs a mouse')) +
-      na('&mdash;') + na('&mdash;') + '</tr>' +
+      '<tr><th>Hand movement speed</th>' + na('needs a tracked hand') + na('&mdash;') + na('&mdash;') + '</tr>' +
       '<tr><th>Scanpath length</th>' + na('needs an eye tracker') + na('&mdash;') + na('&mdash;') + '</tr>' +
       '</tbody></table>' +
       // Where the numbers land, not what they mean about the reader — the one

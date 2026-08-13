@@ -111,8 +111,8 @@ PAGES = [
         "title": f"Virtual Kiosk Test | {NAME}",
         "og_title": "Ordering a meal, as a cognitive test",
         "description": (
-            "The six-step virtual kiosk task from our JMIR study, in a browser. Measures time, "
-            "errors and hand movement speed, then writes the result up two ways."
+            "The six-step virtual kiosk task from our JMIR study, in a browser. Measures your time "
+            "and errors beside the study's two groups, then writes the result up two ways."
         ),
     },
     {
