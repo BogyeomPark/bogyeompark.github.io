@@ -468,15 +468,18 @@
     // repeating two of them against the study.
     const na = s => '<td class="na">' + s + '</td>';
     const vs =
-      '<table class="kiosk-vs"><thead><tr><th></th><th>You</th>' +
-      '<th>Healthy controls (n=22)</th><th>With MCI (n=32)</th></tr></thead><tbody>' +
-      '<tr><th>Time to completion</th><td>' + seconds.toFixed(1) + ' s</td>' +
+      // Every header says what it heads. Without a scope a screen reader reads the
+      // four numbers in a row without saying which measure or which group they
+      // belong to, which is the whole of what this table is for.
+      '<table class="kiosk-vs"><thead><tr><td></td><th scope="col">You</th>' +
+      '<th scope="col">Healthy controls (n=22)</th><th scope="col">With MCI (n=32)</th></tr></thead><tbody>' +
+      '<tr><th scope="row">Time to completion</th><td>' + seconds.toFixed(1) + ' s</td>' +
       '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
-      '<tr><th>Number of errors</th><td>' + errors + '</td>' +
+      '<tr><th scope="row">Number of errors</th><td>' + errors + '</td>' +
       '<td>' + HC.errors + '</td><td>' + MCI.errors + '</td></tr>' +
-      '<tr><th>Hand movement speed</th>' + na('needs a hand controller') +
+      '<tr><th scope="row">Hand movement speed</th>' + na('needs a hand controller') +
       '<td>' + HC.speed + '</td><td>' + MCI.speed + '</td></tr>' +
-      '<tr><th>Scanpath length</th>' + na('needs an eye tracker') +
+      '<tr><th scope="row">Scanpath length</th>' + na('needs an eye tracker') +
       '<td>' + HC.scan + '</td><td>' + MCI.scan + '</td></tr>' +
       '</tbody></table>' +
       // Where this run's numbers land, and nothing else. The line about a browser
@@ -643,9 +646,8 @@
           '<div class="kiosk-actions" id="kiosk-next">' +
             '<button class="button" type="button" data-act="other">See the other version</button>' +
           '</div>'
-        : '<p class="kiosk-report-line">Your run had no error to explain, so a report of it cannot be ' +
-          'written either way &mdash; which is also what the study&rsquo;s two reports needed a result ' +
-          'for.</p>' +
+        : '<p class="kiosk-report-line">There is no error-based outcome to reframe. Open an example to ' +
+          'see how the two report styles differ.</p>' +
           '<div class="kiosk-actions" id="kiosk-next">' +
             '<button class="button" type="button" data-act="example">Show me an example anyway</button>' +
           '</div>') +
@@ -679,6 +681,7 @@
       const act = b.dataset.act;
       if (act === 'look') {
         b.disabled = true;
+        b.textContent = 'Steps shown ✓';
         el('#kiosk-steps-out').innerHTML = stepList();
         return;
       }
@@ -689,7 +692,8 @@
       }
       // The other version, or the worked one for a run that has none. Either way
       // the ways on appear underneath it, now that there is nothing left to spoil.
-      el('#kiosk-next').hidden = true;
+      b.disabled = true;
+      b.textContent = act === 'example' ? 'Example shown ✓' : 'Other version shown ✓';
       el('#kiosk-reveal').innerHTML = reveal();
       el('#kiosk-ways').hidden = false;
       el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });

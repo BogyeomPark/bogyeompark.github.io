@@ -170,6 +170,13 @@
 /* The line that keeps a number from being read as a verdict. */
 .kiosk-caveat { margin-top: 10px; color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
 .kiosk-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+/* display beats the hidden attribute, so a row of actions marked hidden was
+   still on the page: the ways on were visible before the explanation they are
+   supposed to follow. */
+.kiosk-actions[hidden] { display: none; }
+/* A pressed button reports itself rather than inviting a second press, and
+   stays in place so that nothing under it jumps. */
+.kiosk-actions .button:disabled { opacity: 0.55; cursor: default; }
 
 /* The handoff into the report. Without it people read their score and stop. */
 .kiosk-handoff {
