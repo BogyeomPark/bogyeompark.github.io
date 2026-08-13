@@ -216,8 +216,8 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 /* Two classes deep on purpose: the generic .metric-grid rule is defined later in
    the file, so a single-class override here would lose to it. */
 .metric-grid.hero-metrics { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 22px; margin-top: 34px; }
-.hero-metrics .metric { padding: 2px 0 2px 16px; border: 0; border-left: 2px solid var(--accent-pale); border-radius: 0; background: none; }
-.hero-metrics .metric strong { font-size: 1.95rem; letter-spacing: -0.02em; }
+.hero-metrics .metric { padding: 1px 0 2px 17px; border: 0; border-left: 2px solid var(--accent); border-radius: 0; background: none; }
+.hero-metrics .metric strong { font-size: 2.05rem; letter-spacing: -0.022em; line-height: 1.1; }
 .hero-metrics .metric span { margin-top: 5px; font-size: 0.78rem; line-height: 1.55; }
 
 /* Selected work: proof and a path in one block. Thumbnails give the home page
