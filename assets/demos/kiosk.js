@@ -387,7 +387,6 @@
   }
 
   /* --- results ----------------------------------------------------------- */
-  const KEY = 'kiosk-best-seconds';
 
   function finish() {
     const seconds = (performance.now() - state.started) / 1000;
@@ -406,9 +405,6 @@
     const perStep = seconds / 6;
     const saved = Math.round(errors * perStep);
     const target = Math.max(1, taken - saved);
-    const best = Number(localStorage.getItem(KEY) || 0);
-    const isBest = !best || seconds < best;
-    if (isBest) localStorage.setItem(KEY, String(Math.round(seconds * 10) / 10));
 
     // What was actually ordered, against what was asked for. The kiosk never
     // said anything at the time.
@@ -456,57 +452,128 @@
       '<tr><th>Scanpath length</th>' + na('needs an eye tracker') +
       '<td>' + HC.scan + '</td><td>' + MCI.scan + '</td></tr>' +
       '</tbody></table>' +
-      // Where the numbers land, not what they mean about the reader — the one
-      // line that stops the table from being read as a verdict.
-      '<p class="kiosk-vs-note">' + placing + ' A browser cannot screen anyone for anything.</p>';
+      // Where this run's numbers land, and nothing else. The line about a browser
+      // not being able to screen anyone used to be repeated here; it is already
+      // the disclaimer above the task, which is the place someone worried about
+      // their memory reads it — before they hold a score, not after.
+      '<p class="kiosk-vs-note">' + placing + '</p>';
 
     // Both reports describe the same run, and the only thing that differs between
-    // them is the direction of the conditional — Had you / would have against If
-    // you / will. That is the whole of what the narrative study varied, so it has
-    // to be the whole of what varies here: same verb, same clause, same numbers on
-    // both sides. An earlier pair failed that. Only the counterfactual carried
-    // "not 87 seconds", so it also restated the failure, and the two used
-    // different words for the same thing (chosen correctly against avoid those
-    // wrong turns) — which left any difference in effect unattributable to tense.
+    // them is where the conditional points: If you had / would have against If you /
+    // will. Those are the study's own two forms — it wrote "If you did something, you
+    // would do something" against "If you do something, you will do something" — and
+    // they are the whole of what it varied, so they are the whole of what varies here:
+    // same opening, same verb, same clause, same numbers on both sides.
     const secs = n => n + (n === 1 ? ' second' : ' seconds');
     const steps = n => (n === 1 ? 'one step' : n + ' steps');
+    // A step is a step and what came out of it is an item; an earlier sentence
+    // counted the first and named the second. Only the items are counted here —
+    // the payment number is wrong in its own way, and is its own clause.
+    const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+    const misordered = wrongItems.length;
+    const instead = misordered === 1
+      ? 'not the one item you picked instead'
+      : 'not the ' + (WORDS[misordered] || misordered) + ' items you picked instead';
+    // Under five seconds nobody read a menu, and a saving that rounds to nothing
+    // has no second number to offer. Both would put a figure in the sentence that
+    // says nothing, so those runs are worded on the steps instead of the clock.
+    const timed = taken >= 5;
     const pair = !errors
-      // Nothing went wrong, so the conditional has to run the other way: what a
-      // wrong step would have cost, against what one will cost.
-      ? ['Had you taken a wrong step, this order <b>would have taken</b> longer than ' + secs(taken) + '.',
-         'If you take a wrong step next time, this order <b>will take</b> longer than ' + secs(taken) + '.']
-      : saved >= 1
-        ? ['Had you chosen correctly at each step, this order <b>would have taken</b> about ' + secs(target) + ', not ' + taken + '.',
+      ? (timed
+        ? ['If you had taken a wrong step, this order <b>would have taken</b> longer than ' + secs(taken) + '.',
+           'If you take a wrong step next time, this order <b>will take</b> longer than ' + secs(taken) + '.']
+        : ['If you had taken a wrong step, you <b>would have ordered</b> something nobody asked for.',
+           'If you take a wrong step next time, you <b>will order</b> something nobody asked for.'])
+      : (timed
+        ? ['If you had chosen correctly at each step, this order <b>would have taken</b> about ' + secs(target) + ', not ' + taken + '.',
            'If you choose correctly at each step next time, this order <b>will take</b> about ' + secs(target) + ', not ' + taken + '.']
-        // The wrong steps happened but cost less than a second, so there is no
-        // second number to give. Both sides say so, in the same words.
-        : ['Had you chosen correctly at each step, this order <b>would have taken</b> about the same ' + secs(taken) +
-           ' &mdash; ' + steps(errors) + ' went astray without costing you time.',
-           'If you choose correctly at each step next time, this order <b>will take</b> about the same ' + secs(taken) +
-           ' &mdash; ' + steps(errors) + ' went astray without costing you time.'];
-    const hadYou = '<p>' + pair[0] + '</p>';
-    const ifYou = '<p>' + pair[1] + '</p>';
+        : misordered
+            ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
+               'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
+            // Every item was right and only the payment number was not, so that is
+            // what both sentences are about.
+            : ['If you had entered the number you were given, this order <b>would have gone</b> through as asked.',
+               'If you enter the number you were given next time, this order <b>will go</b> through as asked.']);
 
+    // One of the two, at random, and never both at once: side by side the reader
+    // sees the manipulation and it stops working on them, which is also why
+    // neither is labelled. The study gave one report to one person. The order of
+    // the two ways on is drawn separately, because a wording randomised into a
+    // fixed first position is still a fixed first position.
+    const shown = Math.random() < 0.5 ? 0 : 1;
+    const lookFirst = Math.random() < 0.5;
+    const KIND = ['counterfactual', 'prefactual'];
+    const LOOK = 'See this run step by step', AGAIN = 'Run it again';
+
+    // The run, step by step, in the order the steps came. What was asked for at each
+    // one comes from `asked` above, not from a second copy of the same five names:
+    // the copy had a typo in it, and a name that does not match marks a step wrong
+    // when it was right.
+    const ORDER = [['panel02', 'Where to eat'], ['panel03', 'Burger'], ['panel04', 'Side'],
+                   ['panel05', 'Drink'], ['panel06', 'Payment']];
+    const stepList = () => '<ol class="kiosk-steps">' +
+      ORDER.map(([panel, name]) => {
+        const ask = asked[panel];
+        const got = state.chosen[panel];
+        const right = got === ask;
+        return '<li' + (right ? '' : ' class="wrong"') + '><b>' + name + '</b><span>' +
+          (got ? en(got) : '&mdash;') +
+          (right ? '' : ' <i>asked for ' + en(ask) + '</i>') + '</span></li>';
+      }).join('') +
+      '<li' + (state.code === PIN ? '' : ' class="wrong"') + '><b>Payment number</b><span>' +
+      (state.code || 'blank') + (state.code === PIN ? '' : ' <i>asked for ' + PIN + '</i>') +
+      '</span></li></ol>';
+
+    // What the wording was, once it can no longer act on the reader. The caveat
+    // comes before the reader's own behaviour is named: after it, the sentence is
+    // read as a verdict on the click that has already been made.
+    const TITLE = ['The impact of past inputs on present outcomes',
+                   'The impact of present inputs on future outcomes'];
+    const reveal = (again) =>
+      '<div class="research-note">' +
+      '<p>You read the <b>' + KIND[shown] + '</b> version of your result &mdash; the study titled that one ' +
+      '&ldquo;' + TITLE[shown] + '&rdquo;. Half of the people who get here read the ' + KIND[1 - shown] +
+      ' one instead, &ldquo;' + TITLE[1 - shown] + '&rdquo;:</p>' +
+      '<p class="kiosk-other">' + pair[1 - shown] + '</p>' +
+      '<p>Twenty people were each given one of the two, about an MRI report rather than a lunch order. They ' +
+      'rated them <b>equally clear</b>; what differed was where their attention went. Asked about it ' +
+      'afterwards, the <b>counterfactual</b> readers dwelt on what had already happened and the ' +
+      '<b>prefactual</b> readers on what to do next &mdash; self-reflection against self-improvement. Same ' +
+      'facts, and the wording decided which way they faced.</p>' +
+      '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report made ' +
+      'them think about. Nothing here was measured on you either: your time and errors never left this ' +
+      'browser, and the only things that leave are two anonymous counts &mdash; a run started, a run ' +
+      'finished.</p>' +
+      '</div>';
+
+    // Only what this run produced: the four measures, where they landed, and what
+    // was ordered against what was asked for. A personal best from an earlier run
+    // sat here too, and every extra line pushed the one thing worth pressing —
+    // the report — further off the screen.
+    const ways = [
+      '<button class="button" type="button" data-act="look">' + LOOK + '</button>',
+      '<button class="button" type="button" data-act="again">' + AGAIN + '</button>',
+    ];
     result.innerHTML =
       '<h3>Your measurements, against the study</h3>' + vs + orderNote +
-      '<p class="kiosk-best">' + (isBest ? 'That is your fastest run in this browser.'
-        : 'Your fastest run in this browser is ' + best + ' s.') + '</p>' +
 
       '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers</b> &mdash; and how a report words ' +
       'them changes what its reader does next. A second study wrote the same result two ways.</p>' +
       '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
 
       '<div id="kiosk-report-body" hidden>' +
-      '<h3 id="kiosk-report">Your result, written two ways</h3>' +
-      '<p>Same run, two directions. Pick the one that would actually change what you do.</p>' +
-      '<div class="card-grid" id="kiosk-choice">' +
-        '<article class="card" data-kind="counterfactual"><span class="card-index">COUNTERFACTUAL</span>' +
-          '<h3>What would have happened</h3>' + hadYou +
-          '<button class="button secondary" type="button" data-pick="counterfactual">This one moves me</button></article>' +
-        '<article class="card" data-kind="prefactual"><span class="card-index">PREFACTUAL</span>' +
-          '<h3>What could happen next</h3>' + ifYou +
-          '<button class="button secondary" type="button" data-pick="prefactual">This one moves me</button></article>' +
+      '<h3 id="kiosk-report">Your result</h3>' +
+      '<p class="kiosk-report-line">' + pair[shown] + '</p>' +
+      // Two ways on, weighted the same and worded so that neither hints at what it
+      // stands for. Reading the run back costs a click and re-running costs a
+      // minute, so these two are not a choice between equals and nothing is drawn
+      // from which one is pressed; the run itself is the behaviour that counts.
+      '<div class="kiosk-actions" id="kiosk-next">' +
+        (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
       '</div>' +
+      '<div id="kiosk-steps-out"></div>' +
+      '<p class="kiosk-aside"><button class="kiosk-plain" type="button" data-act="tell">' +
+      'What did I just read?</button></p>' +
       '<div id="kiosk-reveal"></div></div>' +
       // The two studies leave in the same form, side by side — one used to be
       // a button and the other an inline link, which read as different kinds
@@ -516,35 +583,45 @@
       '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
 
     result.hidden = false;
-    result.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => reveal(b.dataset.pick)));
+    // Reading the run back explains nothing and takes nothing away: it opens in
+    // place, both ways on stay, and the reader can still go again afterwards. The
+    // explanation waits for that, or for the reader to ask for it outright — put on
+    // the first click, it would have contaminated every re-run that followed it.
+    const explain = (again) => {
+      el('#kiosk-next').hidden = true;
+      el('.kiosk-aside').hidden = true;
+      // Run it again resets the task where it stands rather than handing over a
+      // second button called something else for the same thing. The explanation
+      // then sits under it to be read, or not, on the way back up.
+      if (again) renderStart();
+      el('#kiosk-reveal').innerHTML = reveal(again) + (again
+        ? '<p class="kiosk-aside"><button class="kiosk-plain" type="button" id="kiosk-to-task">' +
+          'Back to the task &uarr;</button></p>'
+        : '');
+      const up = el('#kiosk-to-task');
+      if (up) up.addEventListener('click', () =>
+        stage.scrollIntoView({ behavior: SCROLL, block: 'center' }));
+      el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
+    };
+
+    result.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+      const act = b.dataset.act;
+      // Reading the run back opens in place and explains nothing: the explanation
+      // would contaminate any re-run that came after it, and the re-run is the
+      // behaviour worth having.
+      if (act === 'look') {
+        b.disabled = true;
+        el('#kiosk-steps-out').innerHTML = stepList();
+        return;
+      }
+      explain(act === 'again');
+    }));
     el('#kiosk-open-report').addEventListener('click', (e) => {
       el('#kiosk-report-body').hidden = false;
       e.currentTarget.parentNode.hidden = true;
       el('#kiosk-report').scrollIntoView({ behavior: SCROLL, block: 'start' });
     });
     result.scrollIntoView({ behavior: SCROLL, block: 'start' });
-  }
-
-  // After the pick, both terms get their answer — the reader who chose one
-  // still wondered what the other word meant — and the pick stays visible on
-  // the cards instead of the section simply going dead.
-  function reveal(pick) {
-    localStorage.setItem('kiosk-narrative-pick', pick);
-    const choice = el('#kiosk-choice');
-    choice.querySelectorAll('.card').forEach(c =>
-      c.classList.add(c.dataset.kind === pick ? 'picked' : 'dimmed'));
-    choice.querySelectorAll('button').forEach(b => {
-      b.disabled = true;
-      if (b.dataset.pick === pick) b.textContent = 'Your pick ✓';
-    });
-    el('#kiosk-reveal').innerHTML =
-      '<div class="research-note">' +
-      '<p>In one study, readers rated the two reports <b>equally clear</b>. The difference showed up in what ' +
-      'they did next. <b>Counterfactual</b> readers looked back over the run they&rsquo;d just finished: ' +
-      'self-reflection. <b>Prefactual</b> readers started planning the next one: self-improvement. ' +
-      'The wording may shape what readers do next.</p>' +
-      '</div>';
-    el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
   }
 
   renderStart();

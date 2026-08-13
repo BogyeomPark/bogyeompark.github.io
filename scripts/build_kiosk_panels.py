@@ -118,8 +118,119 @@ SLOTS = {
                 ("drink", (67, 26, 99.9, 47))],
 }
 SLOT_SOURCE = {"burger": "panel03", "side": "panel04", "drink": "panel05"}
+# Labels that sit on the same row of the same control, and so must share a line
+# and a size: fitted one at a time they land a few tenths of a percent apart,
+# which reads as one of the pair sitting lower than the other.
+LABEL_ROWS = {
+    "panel02": [("Eat in", "Take out")],
+    "panel06": [("Card", "Mobile voucher")],
+    "panel07": [("DELETE", "OK")],
+}
+# The Back pill drifts between screens — 60.99% across on the confirmation and
+# keypad screens, 63.49% on the collapsed headers, and three other values in
+# between — while its size and its height never change. One hit box cannot follow
+# five positions, so the pill is moved to the middle one of them and every screen
+# gets it in the same place. BACK_BOX is that position, and kiosk.js uses it as
+# its own Back target.
+BACK_WINDOW = (50, 0.4, 49.5, 8.6)      # x, y, w, h — like every other window here
+BACK_BOX = (62.89, 2.71, 33.2, 4.16)
+# Two controls drawn side by side but not level with each other: on the payment
+# screen the voucher card sits nine pixels above the card card. Same reasoning as
+# the pill — the second one is moved onto the first one's line so that one
+# measurement describes both.
+ALIGN_PAIRS = {"panel06": [((1, 54, 48, 36), (50, 54, 49, 36))]}
 WHITE = 249          # a card pixel; every panel grey sits below this
 GROW_CAP = 0.03      # how far an erase may grow past the text, as a fraction
+
+
+def find_pill(im, window=BACK_WINDOW):
+    """The Back pill: the one dark shape in the top right of a screen."""
+    x0, y0, x1, y1 = px(im, window)
+    pix = im.load()
+    bg = around_colour(im, (x0, y0, x1, y1), pad=2)
+    dark = lambda p: sum(abs(a - b) for a, b in zip(p, bg)) > 60
+    xs = [x for x in range(x0, x1) if sum(1 for y in range(y0, y1, 2) if dark(pix[x, y])) > 3]
+    ys = [y for y in range(y0, y1) if sum(1 for x in range(x0, x1, 2) if dark(pix[x, y])) > 3]
+    if not xs or not ys:
+        return None
+    return (xs[0], ys[0], xs[-1] + 1, ys[-1] + 1)
+
+
+def find_control(im, window):
+    """The bounding box of the one control inside `window`."""
+    x0, y0, x1, y1 = px(im, window)
+    pix = im.load()
+    bg = around_colour(im, (x0, y0, x1, y1), pad=2)
+    off = lambda p: sum(abs(a - b) for a, b in zip(p, bg)) > 26
+    xs = [x for x in range(x0, x1) if sum(1 for y in range(y0, y1, 3) if off(pix[x, y])) > 2]
+    ys = [y for y in range(y0, y1) if sum(1 for x in range(x0, x1, 3) if off(pix[x, y])) > 2]
+    if not xs or not ys:
+        return None
+    return (xs[0], ys[0], xs[-1] + 1, ys[-1] + 1)
+
+
+def shift_control(im, found, dx, dy, pad=10, wipe=22):
+    """Move a control, taking its shadow with it and leaving the panel behind.
+
+    Two margins, not one. `pad` is how much is carried along, enough to bring the
+    control's soft shadow with it. `wipe` is how much is cleared, and has to be
+    larger: the shadow fades out well past the box the control is found in, so a
+    wipe the size of the cut left the outermost ring of the old shadow behind and
+    the control read as double-outlined at its new position.
+    """
+    W, H = im.size
+    cut = (max(0, found[0] - pad), max(0, found[1] - pad),
+           min(W, found[2] + pad), min(H, found[3] + pad))
+    piece = im.crop(cut)
+    bg = around_colour(im, found, pad=wipe + 6)
+    clear = (max(0, found[0] - wipe), max(0, found[1] - wipe),
+             min(W, found[2] + wipe), min(H, found[3] + wipe))
+    ImageDraw.Draw(im).rectangle([clear[0], clear[1], clear[2] - 1, clear[3] - 1],
+                                 fill=tuple(bg[:3]))
+    im.paste(piece, (cut[0] + dx, cut[1] + dy))
+
+
+def align_pairs(im, panel):
+    """Bring the second of a pair onto the first one's line."""
+    for ref_win, move_win in ALIGN_PAIRS.get(panel, []):
+        ref, mover = find_control(im, ref_win), find_control(im, move_win)
+        if not ref or not mover or abs(ref[1] - mover[1]) < 2:
+            continue
+        shift_control(im, mover, 0, ref[1] - mover[1])
+        print("     paired control moved %+d px to match its neighbour" % (ref[1] - mover[1]))
+
+
+def unify_back(im, panel):
+    """Move the Back pill to the one position every screen will share."""
+    found = find_pill(im)
+    if not found:
+        return None
+    target = px(im, BACK_BOX)
+    dx, dy = target[0] - found[0], target[1] - found[1]
+    if abs(dx) < 2 and abs(dy) < 2:
+        return found
+    shift_control(im, found, dx, dy)
+    print("     back pill moved %+d px" % dx)
+    return (found[0] + dx, found[1] + dy, found[2] + dx, found[3] + dy)
+
+
+def trim_frame(im):
+    """Drop the black strip down the left of some panels.
+
+    panel03, 04 and 05 were exported three or four pixels wider than the rest,
+    and the extra is a black edge left over from whatever captured them. The
+    encoder used for the previous panels happened to smear it to white, so nobody
+    saw it; encoded faithfully it is a black line down the side of the screen.
+    Cutting it also makes all eight the same 1238 wide, which is the ratio the
+    stylesheet holds the frame at.
+    """
+    px = im.load()
+    ys = range(0, im.height, 7)
+    black = lambda x: sum(1 for y in ys if sum(px[x, y]) < 40) > len(ys) * 0.9
+    cut = 0
+    while cut < 8 and black(cut):
+        cut += 1
+    return im.crop((cut, 0, im.width, im.height)) if cut else im
 
 
 # ========================================================================
@@ -328,10 +439,16 @@ def ring_colour(im, window):
     return Counter(ring).most_common(1)[0][0]
 
 
-def strip_runs(im, strip, ink=28, inset=0.05):
-    """The lines of text inside a card's white strip."""
+def strip_runs(im, strip, ink=28, inset=None):
+    """The lines of text inside a card's white strip.
+
+    `inset` is the card's corner radius: the strip's own bottom rows are only
+    white in the middle, because the corners have curved away into the band
+    behind. Without that inset a collapsed header's price line ran into the red
+    underneath it and read as one line half again as tall.
+    """
     x0, y0, x1, y1 = strip
-    pad = max(2, round((x1 - x0) * inset))
+    pad = inset if inset is not None else max(2, round((x1 - x0) * 0.05))
     crop = im.crop((x0 + pad, y0, x1 - pad, y1))
     pix = crop.load()
     cw, ch = crop.size
@@ -347,10 +464,18 @@ def strip_runs(im, strip, ink=28, inset=0.05):
             if y - start >= 3:
                 out.append((y0 + start, y0 + y))
             start = None
-    # The card's own bottom edge and drop shadow are ink too — but only ever a
-    # few rows of it, so height tells them apart from the price line, which on
-    # the collapsed headers sits right down against that edge.
-    return [r for r in out if not (r[1] >= y1 - 2 and r[1] - r[0] <= 6)]
+
+    # The card's own bottom edge and drop shadow are ink too. They are told apart
+    # from the price line by width, not by height: an edge runs the full width of
+    # the card, and no line of text does. Height alone mistook the thicker
+    # shadow under a collapsed header's card for the price.
+    def full_width(run):
+        band = crop.crop((0, run[0] - y0, cw, run[1] - y0))
+        cols = [any(255 - min(band.getpixel((x, y))) > ink for y in range(band.height))
+                for x in range(cw)]
+        return sum(cols) >= cw * 0.95
+
+    return [r for r in out if not full_width(r)]
 
 
 def card_of(im, window):
@@ -379,11 +504,19 @@ def card_of(im, window):
         if off < len(xs) * 0.5:
             break
         top -= 1
-    runs = strip_runs(im, strip)
+    card = (strip[0], top, strip[2], strip[3])
+    radius = corner_radius(im, card)
+    runs = strip_runs(im, strip, inset=radius + 2)
     if len(runs) < 2:
         return None
-    return {"card": (strip[0], top, strip[2], strip[3]), "strip": strip,
-            "name": runs[-2], "price": runs[-1], "bg": ring_colour(im, window)}
+    # The name and the price are the two tallest runs in the strip: a line of
+    # text stands two to four times as tall as the card's bottom edge, which is
+    # the only other ink down here. Taking the last two runs instead read that
+    # edge as the price and the price as the name, and no threshold on the edge's
+    # own thickness held across both the wide cards and the collapsed headers.
+    name, price = sorted(sorted(runs, key=lambda r: r[0] - r[1])[:2])
+    return {"card": card, "strip": strip, "r": radius,
+            "name": name, "price": price, "bg": ring_colour(im, window)}
 
 
 def corner_radius(im, card):
@@ -408,6 +541,20 @@ def corner_radius(im, card):
 # building
 # ========================================================================
 
+def erase_card(im, card, bg):
+    """Take a card out of the panel, leaving the band it sat on.
+
+    Earlier this kept the card and only emptied it, which meant the demo had to
+    draw its content into a shape it could not see: the photo's square corners
+    then hung over the card's rounded ones. Removing the card outright lets the
+    demo draw the whole thing — white, radius, shadow and photo, one clipped box —
+    so nothing can be a pixel out. It also leaves these screens honest when
+    nothing has been chosen yet.
+    """
+    x0, y0, x1, y1 = grow_flat(im, card, bg, cap=0.06)
+    ImageDraw.Draw(im).rectangle([x0, y0, x1 - 1, y1 - 1], fill=tuple(bg[:3]))
+
+
 def label(im, box, text, align, aspect, span=None, radius=None):
     """An English label: where it goes, how big, and in what colour."""
     x, y, w, h = as_pct(im, box)
@@ -430,7 +577,7 @@ def label(im, box, text, align, aspect, span=None, radius=None):
     return out
 
 
-def build_panel(panel, im):
+def build_panel(panel, im, tile_type):
     """Measure the panel, then erase what was measured.
 
     Measuring comes first and finishes first: a card is found by the two lines of
@@ -441,6 +588,8 @@ def build_panel(panel, im):
     in place.
     """
     aspect = im.height / im.width          # 1% of height is `aspect`% of width
+    unify_back(im, panel)
+    align_pairs(im, panel)
 
     # --- measure -----------------------------------------------------------
     fixed = []
@@ -454,6 +603,16 @@ def build_panel(panel, im):
                                  span=entry[8] if len(entry) > 8 else None,
                                  radius=entry[7] if len(entry) > 7 else None)))
 
+    for group in LABEL_ROWS.get(panel, []):
+        row = [g for _, g in fixed if "|".join(g["t"]) in group]
+        if len(row) < 2:
+            continue
+        y = sorted(i["y"] for i in row)[len(row) // 2]
+        h = sorted(i["h"] for i in row)[len(row) // 2]
+        size = min(i["s"] for i in row)
+        for i in row:
+            i["y"], i["h"], i["s"] = y, h, size
+
     grid = []                              # one entry per row of tiles
     for ri, (row_y, row_h) in enumerate(NAME_ROWS.get(panel, [])):
         row = []
@@ -466,7 +625,8 @@ def build_panel(panel, im):
                 print("  ! %s: tile=%s name=%s" % (ko, bool(tile), bool(name)))
                 continue
             row.append({"ko": ko, "en": en, "price": price, "tile": tile,
-                        "name": name, "span": (left + 0.4, right - left - 0.8)})
+                        "name": name, "col": ci,
+                        "span": (left + 0.4, right - left - 0.8)})
         grid.append(row)
 
     slot_cards = []
@@ -478,31 +638,73 @@ def build_panel(panel, im):
         slot_cards.append((key, got))
 
     # --- item photos -------------------------------------------------------
-    # One photo box per row, not per tile. A photo whose own background runs
-    # white at the bottom — the fries, the string cheese — merges into the card's
-    # white strip and reads as a shorter photo, which would crop it higher than
-    # its neighbours once the demo draws it into a card. The row's deepest photo
-    # is the real edge.
+    # The grid is uniform by design, so each photo box is taken from what the
+    # tiles agree on rather than from its own tile alone. Tile by tile the
+    # detection is not reliable enough for it: a photo whose own background is
+    # white at the bottom (the fries, the milk) merges into the card's white
+    # strip, and one that is white at the top (again the fries) leaves the card's
+    # top edge invisible against the panel — which measured some photos short and
+    # a few of them as nothing at all. Per row the true edges are the outermost
+    # ones; per column, what the two rows agree on.
     items = {}
-    for row in grid:
-        if not row:
-            continue
-        bottom = max(e["tile"]["strip"][1] for e in row)
-        for e in row:
-            card = e["tile"]["card"]
-            items[e["ko"]] = {"p": panel, "en": e["en"], "price": e["price"],
-                              "photo": list(as_pct(im, (card[0], card[1], card[2], bottom)))}
+    if grid and any(grid):
+        cols = {}
+        for row in grid:
+            for e in row:
+                cols.setdefault(e["col"], []).append(e["tile"]["card"])
+        span = {ci: (sorted(c[0] for c in boxes)[len(boxes) // 2],
+                     sorted(c[2] for c in boxes)[len(boxes) // 2])
+                for ci, boxes in cols.items()}
+        for row in grid:
+            if not row:
+                continue
+            top = min(e["tile"]["card"][1] for e in row)
+            bottom = max(e["tile"]["strip"][1] for e in row)
+            for e in row:
+                x0, x1 = span[e["col"]]
+                items[e["ko"]] = {"p": panel, "en": e["en"], "price": e["price"],
+                                  "photo": list(as_pct(im, (x0, top, x1, bottom)))}
 
     # --- erase -------------------------------------------------------------
     draw = ImageDraw.Draw(im)
     labels, erased = [], []
 
+    pix = im.load()
+
     def cover(box):
+        """Erase a text box, one row at a time.
+
+        Row by row rather than in one flat fill: the START button's face is a
+        faint vertical gradient, and a single colour across it left a rectangle
+        you could see. Each row takes the colour of the panel just outside the
+        box at that same height, which is exact for a gradient and identical to a
+        flat fill everywhere else.
+        """
         bg = around_colour(im, box)
-        grown = grow_flat(im, box, bg)
-        draw.rectangle([grown[0], grown[1], grown[2] - 1, grown[3] - 1],
-                       fill=tuple(bg[:3]))
-        erased.append(grown)
+        x0, y0, x1, y1 = grow_flat(im, box, bg)
+        # A grown box is a rectangle, and on a control the text nearly fills — the
+        # delete key, the OK key — its corners end up outside the control's rounded
+        # ones. Filling them then pushed square navy ears out past the key's curve.
+        # So the box gives ground until all four of its corners are the colour it
+        # is about to paint.
+        off = lambda p: sum(abs(a - b) for a, b in zip(p, bg))
+        for _ in range(14):
+            corners = [pix[x, y] for x in (x0, x1 - 1) for y in (y0, y1 - 1)]
+            if max(off(p) for p in corners) <= 30 or x1 - x0 < 8 or y1 - y0 < 8:
+                break
+            x0, y0, x1, y1 = x0 + 1, y0 + 1, x1 - 1, y1 - 1
+        off = lambda p: sum(abs(a - b) for a, b in zip(p, bg))
+        for y in range(y0, y1):
+            # Only a sample that is plausibly the background may be used. On the
+            # voucher card the box reaches down to where the card's own border
+            # curves in, and both samples land on it: taking them anyway drew the
+            # border's red straight across the card.
+            sides = [p for p in (pix[max(0, x0 - 2), y], pix[min(im.width - 1, x1 + 1), y])
+                     if off(p) <= 24]
+            fill = (tuple(sum(c) // len(sides) for c in zip(*sides)) if sides
+                    else tuple(bg[:3]))
+            draw.line([(x0, y), (x1 - 1, y)], fill=fill)
+        erased.append((x0, y0, x1, y1))
 
     for box, got in fixed:
         labels.append(got)
@@ -520,36 +722,80 @@ def build_panel(panel, im):
             for i in row_labels:
                 i["s"] = size
             labels.extend(row_labels)
+            # The card slots set their text from this, so it has to be kept: an
+            # item's name on a card is the same design element as its name on the
+            # tile, only in a card of a different width.
+            tile_type.setdefault(panel, {"s": size,
+                                         "w": as_pct(im, row[0]["tile"]["card"])[2]})
 
     # --- blank the cards that carry a fixed order --------------------------
     slots = []
     for key, got in slot_cards:
         card, strip = got["card"], got["strip"]
-        white = modal_colour(im, strip)         # the strip is white but for its text
-        radius = corner_radius(im, card)
+        radius = got["r"]
+        # The card's own white, sampled from the clear band between the photo and
+        # the name — the one part of the card with neither text nor photo in it.
+        white = modal_colour(im, (strip[0] + radius, strip[1] + 2,
+                                  strip[2] - radius, max(strip[1] + 4, got["name"][0] - 2)))
         ch = card[3] - card[1]
         frac = lambda v: round((v - card[1]) / ch * 100, 1)
         line = lambda run: (strip[0] + 4, run[0], strip[2] - 4, run[1])
-        name_h = as_pct(im, (card[0], got["name"][0], card[2], got["name"][1]))[3]
-        price_h = as_pct(im, (card[0], got["price"][0], card[2], got["price"][1]))[3]
         box = as_pct(im, card)
+        # Type size comes from the menu tile, not from the height of the ink on
+        # the card. Measured ink is the glyph body, and turning that back into a
+        # font size needs a factor per typeface; the tiles already carry a size
+        # that was fitted and checked, and a card is the same element in a
+        # different width. The price keeps its own ratio to the name, which is a
+        # property of the card as drawn.
+        ref = tile_type.get(SLOT_SOURCE[key], {"s": 2.0, "w": box[2]})
+        ns = ref["s"] * box[2] / ref["w"]
+        name_h = got["name"][1] - got["name"][0]
+        price_h = got["price"][1] - got["price"][0]
         slots.append({"k": key, "src": SLOT_SOURCE[key],
                       "x": box[0], "y": box[1], "w": box[2], "h": box[3],
                       "r": round(radius / im.width * 100, 2),
                       "photo": frac(strip[1]),
                       "name": [frac(got["name"][0]), frac(got["name"][1])],
                       "price": [frac(got["price"][0]), frac(got["price"][1])],
-                      "ns": round(name_h * aspect * 0.62, 2),
-                      "ps": round(price_h * aspect * 0.62, 2),
+                      "ns": round(ns, 2),
+                      "ps": round(ns * price_h / name_h, 2),
                       "nc": glyph_colour(im, line(got["name"]), white),
                       "pc": glyph_colour(im, line(got["price"]), white),
-                      "bg": "#%02x%02x%02x" % white})
+                      "cw": "#%02x%02x%02x" % white})
         print("     %-6s card=%s r=%d" % (key, box, radius))
-        # blank it: a rounded rectangle in the card's own white, inside its edge,
-        # so the card's shape and drop shadow survive and only the order goes
-        draw.rounded_rectangle([card[0] + 1, card[1] + 1, card[2] - 2, card[3] - 2],
-                               radius=radius, fill=tuple(white[:3]))
+        erase_card(im, card, around_colour(im, card, pad=6))
     return labels, items, slots, erased
+
+
+def harmonise_slots(slots):
+    """Give cards of the same shape the same insides.
+
+    The three cards on the confirmation screen are one row of one component, and
+    the collapsed headers are another, but each is measured on its own: a photo
+    whose lower half is white (the hotcake, the milk) merges into the card's white
+    strip and reads as a taller photo, which then pushed that card's name and
+    price a percent below its neighbours'. Grouped by shape, the photo takes the
+    deepest edge any of them showed and the text takes the middle one.
+    """
+    groups = {}
+    for panel, row in slots.items():
+        for s in row:
+            groups.setdefault(round(s["w"]), []).append(s)
+    for shape in groups.values():
+        mid = lambda key, i: sorted(s[key][i] for s in shape)[len(shape) // 2]
+        photo = max(s["photo"] for s in shape)
+        name = [mid("name", 0), mid("name", 1)]
+        price = [mid("price", 0), mid("price", 1)]
+        # Radius and white are shared for the same reason: measured card by card
+        # they come out a pixel or two apart, and the drink card's white picks up
+        # a warm tint from the photograph that used to sit on it.
+        radius = sorted(s["r"] for s in shape)[len(shape) // 2]
+        white = max((s["cw"] for s in shape), key=lambda c: int(c[1:], 16))
+        for s in shape:
+            s["photo"], s["name"], s["price"] = photo, name, price
+            s["r"], s["cw"] = radius, white
+            s["ps"] = round(s["ns"] * (price[1] - price[0]) / (name[1] - name[0]), 2)
+    return slots
 
 
 def main():
@@ -560,13 +806,13 @@ def main():
         os.makedirs(out_dir, exist_ok=True)
         out_js = os.path.join(out_dir, "kiosk-en.js")
 
-    layers, items, slots = {}, {}, {}
+    layers, items, slots, tile_type = {}, {}, {}, {}
     for n in range(1, 9):
         panel = "panel%02d" % n
         with Image.open(os.path.join(PANELS, panel + ".png")) as opened:
-            im = opened.convert("RGB")
-        print(panel)
-        got_labels, got_items, got_slots, erased = build_panel(panel, im)
+            im = trim_frame(opened.convert("RGB"))
+        print("%s  %dx%d" % (panel, im.width, im.height))
+        got_labels, got_items, got_slots, erased = build_panel(panel, im, tile_type)
         layers[panel] = got_labels
         items.update(got_items)
         if got_slots:
@@ -575,9 +821,14 @@ def main():
               % (len(got_labels), len(got_items), len(got_slots), len(erased)))
         if "--check" not in sys.argv:
             path = os.path.join(out_dir, panel + "-en.webp")
+            # The site's usual quality. These panels carry less than the originals
+            # did — no Korean, three fewer photographs — so they come out about a
+            # third lighter even though nothing else changed.
             im.save(path, "WEBP", quality=86, method=6)
             print("  wrote %s  (%d KB)" % (os.path.basename(path),
                                            round(os.path.getsize(path) / 1024)))
+
+    harmonise_slots(slots)
 
     nl = chr(10)
     header = ("/* Generated by scripts/build_kiosk_panels.py - do not edit by hand.",

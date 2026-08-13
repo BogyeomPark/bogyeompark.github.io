@@ -13,11 +13,12 @@
   container-type: inline-size;   /* label sizes are cqw, so text scales with the screen */
 }
 
-/* English laid over the Korean baked into the panel images. Fades with the
-   screen it belongs to, so it never appears over the wrong one. */
+/* The English on each screen. Shown and hidden with the screen it belongs to, and
+   with no transition of its own: the screens swap instantly, so a fade here meant
+   the new screen arrived before its labels did. */
 .kiosk-en-layer {
   position: absolute; inset: 0;
-  opacity: 0; transition: opacity 140ms linear;
+  opacity: 0;
   pointer-events: none;
 }
 .kiosk-en-layer.on { opacity: 1; }
@@ -31,6 +32,26 @@
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
+/* The item that was actually chosen. The panels no longer carry these cards at
+   all — see scripts/build_kiosk_panels.py — so the whole card is drawn here: its
+   white, its corner radius and its shadow, with the photo clipped to that radius.
+   Drawn into a card kept on the panel instead, the photo's square corners hung
+   over the card's round ones. */
+.kiosk-card {
+  position: absolute; pointer-events: none;
+  overflow: hidden;
+  box-shadow: 0 0.25cqw 0.8cqw rgba(23, 37, 42, 0.10);
+}
+.kiosk-card > * {
+  position: absolute; left: 0; right: 0;
+  display: grid; place-content: center;
+  font-family: var(--sans); font-style: normal;
+  line-height: 1; letter-spacing: -0.01em; white-space: nowrap;
+}
+.kiosk-card-photo { top: 0; background-repeat: no-repeat; }
+.kiosk-card b { font-weight: 700; }
+.kiosk-card i { font-weight: 500; }
+
 .kiosk-screen {
   position: absolute;
   inset: 0;
@@ -159,13 +180,38 @@
 .kiosk-handoff .button { margin: 0; }
 
 #kiosk-report-body[hidden] { display: none; }
-#kiosk-report-body #kiosk-choice { margin-top: 22px; }
-/* The pick stays visible on the cards: yours holds its colour, the other steps
-   back, and neither goes dead-grey the way plain disabled buttons read. */
-#kiosk-choice .card.picked { border-color: var(--accent); box-shadow: var(--shadow); }
-#kiosk-choice .card.dimmed { opacity: 0.55; }
-#kiosk-choice .card.picked .button:disabled { opacity: 1; color: var(--accent-dark); border-color: var(--accent); }
-#kiosk-report-body .card p { font-size: 0.93rem; line-height: 1.68; }
-#kiosk-report-body .card p:last-of-type { margin-bottom: 20px; }
-#kiosk-report-body .card b { color: var(--ink); font-weight: 600; }
-#kiosk-report-body .card .button { width: 100%; text-align: center; }
+/* One report, set larger than body copy: it is the thing being read, not a
+   caption on something else. */
+.kiosk-report-line {
+  margin: 14px 0 20px; padding: 16px 18px;
+  border-left: 3px solid var(--accent); border-radius: 4px;
+  background: var(--soft); font-size: 1.02rem; line-height: 1.7;
+}
+.kiosk-report-line b { color: var(--ink); font-weight: 600; }
+#kiosk-next { margin-bottom: 6px; }
+#kiosk-next .button:disabled { opacity: 0.5; cursor: default; }
+/* The quiet way out, for a reader who would rather be told than press: plain
+   text, so that it cannot compete with the two buttons above it. */
+.kiosk-aside { margin: 14px 0 18px; }
+.kiosk-plain {
+  border: 0; background: none; padding: 0;
+  color: var(--muted); font: inherit; font-size: 0.88rem;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.kiosk-plain:hover { color: var(--accent); }
+/* The version the reader did not get, shown afterwards and set back a step. */
+.kiosk-other {
+  margin: 10px 0 16px; padding: 12px 16px;
+  border-left: 3px solid var(--line); border-radius: 4px;
+  color: var(--muted); line-height: 1.7;
+}
+/* The run itself, step by step: what a reader who looks back is looking at. */
+.kiosk-steps { margin: 18px 0 0; padding: 0; list-style: none; }
+.kiosk-steps li {
+  display: flex; gap: 12px; justify-content: space-between; align-items: baseline;
+  padding: 9px 0; border-top: 1px solid var(--line); font-size: 0.93rem;
+}
+.kiosk-steps li b { font-weight: 600; color: var(--muted); }
+.kiosk-steps li span { text-align: right; }
+.kiosk-steps li i { color: var(--muted); font-style: normal; font-size: 0.85rem; }
+.kiosk-steps li.wrong span { color: var(--accent); font-weight: 600; }
