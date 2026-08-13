@@ -8,6 +8,22 @@ Emphasis inside strings uses <b>…</b>; both renderers understand that tag
 (reportlab natively, HTML by passing it through).
 """
 
+# Section headings, shared by both renderers so the PDF and the page cannot
+# disagree (they already had, once: "Extended Abstracts" vs the wider list).
+SECTION_TITLES = {
+    "interest": "Research Interest",
+    "education": "Education",
+    "awards": "Honors & Awards",
+    "journal": "Refereed Journal Article",
+    "international": "International Conference Publications",
+    "domestic": "Domestic Conference Papers & Presentations",
+    "experience": "Research Experience",
+    "teaching": "Teaching & Mentoring",
+    "skills": "Skills",
+    "patent": "Patent",
+    "service": "Academic Service",
+}
+
 CONTACT = {
     "phone": "+82 10-3816-8811",
     "email": "bogyeom@seoultech.ac.kr",
@@ -69,7 +85,7 @@ JOURNAL_ARTICLES = [
         ),
         "venue": (
             "Journal of Medical Internet Research, 26, e54538 (2024) - "
-            "JCR Q1; 96th percentile; JIF 8.2 (2025 JCR)"
+            "JCR Q1; Top 3%; JIF 8.2 (2025 JCR)"
         ),
         "url": "/publications/multimodal-biomarkers-jmir/",
     },

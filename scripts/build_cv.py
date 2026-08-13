@@ -256,11 +256,11 @@ def build():
     )
     story = [header, Spacer(1, 5)]
 
-    story += section("Research Interest")
+    story += section(cv_data.SECTION_TITLES["interest"])
     story.append(Paragraph(cv_data.RESEARCH_INTEREST["summary"], styles["Body"]))
     story += [bullet(text) for text in cv_data.RESEARCH_INTEREST["bullets"]]
 
-    story += section("Education")
+    story += section(cv_data.SECTION_TITLES["education"])
     for index, school in enumerate(cv_data.EDUCATION):
         if index:
             story.append(Spacer(1, 6))
@@ -268,26 +268,26 @@ def build():
         story.append(two_col(school["degree"], school["dates"], "CVItalic", "CVItalicRight"))
         story += [bullet(text) for text in school["bullets"]]
 
-    story += section("Honors & Awards")
+    story += section(cv_data.SECTION_TITLES["awards"])
     story += [bullet(text) for text in cv_data.AWARDS]
 
-    story += section("Refereed Journal Article")
+    story += section(cv_data.SECTION_TITLES["journal"])
     story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.JOURNAL_ARTICLES]
 
-    story += section("International Conference Publications")
+    story += section(cv_data.SECTION_TITLES["international"])
     story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.EXTENDED_ABSTRACTS]
 
-    story += section("Domestic Conference Papers & Presentations")
+    story += section(cv_data.SECTION_TITLES["domestic"])
     story += [publication(p["title"], p["authors"], p["venue"]) for p in cv_data.DOMESTIC]
 
-    story += section("Research Experience")
+    story += section(cv_data.SECTION_TITLES["experience"])
     for affiliation in cv_data.RESEARCH_EXPERIENCE:
         story.append(two_col(affiliation["org"], affiliation["place"]))
         story.append(two_col(affiliation["role"], affiliation["dates"]))
         for proj in affiliation["projects"]:
             story += project(proj["title"], proj["role"], proj["dates"], proj["bullets"])
 
-    story += section("Teaching & Mentoring")
+    story += section(cv_data.SECTION_TITLES["teaching"])
     for index, course in enumerate(cv_data.TEACHING):
         if index:
             story.append(Spacer(1, 6))
@@ -295,13 +295,13 @@ def build():
         story.append(Paragraph(course["role"], styles["Meta"]))
         story += [bullet(text) for text in course["bullets"]]
 
-    story += section("Skills")
+    story += section(cv_data.SECTION_TITLES["skills"])
     story += [bullet(text) for text in cv_data.SKILLS]
 
-    story += section("Patent")
+    story += section(cv_data.SECTION_TITLES["patent"])
     story.append(Paragraph(cv_data.PATENT, styles["Body"]))
 
-    story += section("Academic Service")
+    story += section(cv_data.SECTION_TITLES["service"])
     story += [bullet(text) for text in cv_data.SERVICE]
 
     doc.build(story)

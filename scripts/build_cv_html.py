@@ -75,14 +75,14 @@ def render():
         '        <p class="cv-summary">%s</p>\n' % esc(ri["summary"]) + bullets(ri["bullets"]),
     ))
 
-    parts.append(section("Education", "".join(
+    parts.append(section(cv_data.SECTION_TITLES["education"], "".join(
         entry(s["org"], s["dates"], sub=s["degree"], items=s["bullets"]) for s in cv_data.EDUCATION
     )))
 
-    parts.append(section("Honors & Awards", bullets(cv_data.AWARDS)))
-    parts.append(section("Refereed Journal Article", publications(cv_data.JOURNAL_ARTICLES)))
-    parts.append(section("International Conference Publications", publications(cv_data.EXTENDED_ABSTRACTS)))
-    parts.append(section("Domestic Conference Papers & Presentations", publications(cv_data.DOMESTIC)))
+    parts.append(section(cv_data.SECTION_TITLES["awards"], bullets(cv_data.AWARDS)))
+    parts.append(section(cv_data.SECTION_TITLES["journal"], publications(cv_data.JOURNAL_ARTICLES)))
+    parts.append(section(cv_data.SECTION_TITLES["international"], publications(cv_data.EXTENDED_ABSTRACTS)))
+    parts.append(section(cv_data.SECTION_TITLES["domestic"], publications(cv_data.DOMESTIC)))
 
     experience = ""
     for aff in cv_data.RESEARCH_EXPERIENCE:
@@ -93,15 +93,15 @@ def render():
         experience += "        </div>\n"
         for proj in aff["projects"]:
             experience += entry(proj["title"], proj["dates"], sub=proj["role"], items=proj["bullets"])
-    parts.append(section("Research Experience", experience))
+    parts.append(section(cv_data.SECTION_TITLES["experience"], experience))
 
-    parts.append(section("Teaching & Mentoring", "".join(
+    parts.append(section(cv_data.SECTION_TITLES["teaching"], "".join(
         entry(c["title"], c["dates"], sub=c["role"], items=c["bullets"]) for c in cv_data.TEACHING
     )))
 
-    parts.append(section("Skills", bullets(cv_data.SKILLS)))
-    parts.append(section("Patent", '        <p class="cv-summary">%s</p>\n' % esc(cv_data.PATENT)))
-    parts.append(section("Academic Service", bullets(cv_data.SERVICE)))
+    parts.append(section(cv_data.SECTION_TITLES["skills"], bullets(cv_data.SKILLS)))
+    parts.append(section(cv_data.SECTION_TITLES["patent"], '        <p class="cv-summary">%s</p>\n' % esc(cv_data.PATENT)))
+    parts.append(section(cv_data.SECTION_TITLES["service"], bullets(cv_data.SERVICE)))
 
     return "".join(parts)
 
