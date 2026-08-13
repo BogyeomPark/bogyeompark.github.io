@@ -372,13 +372,12 @@
       ? '<p class="kiosk-best">You ordered ' + slips.join(', ') + '.</p>'
       : '<p class="kiosk-best">Everything you ordered matched the request.</p>';
 
-    // Table 3 of the study: healthy controls (n=22) against patients with mild
-    // cognitive impairment (n=32), mean (SD). Only the two performance measures
-    // are quoted — hand speed there was metres per second of a tracked hand,
-    // which a mouse in pixels cannot be held against. A table, not a paragraph:
-    // the gap is the finding, and three rows show it faster than prose can.
-    const HC = { time: 39.5, errors: 1.7 };
-    const MCI = { time: 105.4, errors: 4.0 };
+    // Table 3 of the study, means as printed: healthy controls (n=22) against
+    // patients with mild cognitive impairment (n=32). All four biomarkers are
+    // quoted; the two this page cannot take show the study's own figures with
+    // an empty You cell, which says the same thing a footnote would.
+    const HC = { time: 39.48, errors: 1.73, speed: '0.23 m/s', scan: '23.66 m' };
+    const MCI = { time: 105.39, errors: 4, speed: '0.17 m/s', scan: '60.36 m' };
     const nearHc = v => (a, b) => Math.abs(v - a) <= Math.abs(v - b);
     const timeHc = nearHc(seconds)(HC.time, MCI.time);
     const errHc = nearHc(errors)(HC.errors, MCI.errors);
@@ -390,8 +389,7 @@
         : 'One of your numbers sits on each side of the gap.');
     // One table for everything: the four measures as rows, you beside the two
     // groups. It used to be a list of your numbers followed by a second table
-    // repeating two of them against the study. Dashes mean the study's own
-    // figure is not quoted here, not that it did not measure one.
+    // repeating two of them against the study.
     const na = s => '<td class="na">' + s + '</td>';
     const vs =
       '<table class="kiosk-vs"><thead><tr><th></th><th>You</th>' +
@@ -399,9 +397,11 @@
       '<tr><th>Time to completion</th><td>' + seconds.toFixed(1) + ' s</td>' +
       '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
       '<tr><th>Number of errors</th><td>' + errors + '</td>' +
-      '<td>' + HC.errors.toFixed(1) + '</td><td>' + MCI.errors.toFixed(1) + '</td></tr>' +
-      '<tr><th>Hand movement speed</th>' + na('needs a tracked hand') + na('&mdash;') + na('&mdash;') + '</tr>' +
-      '<tr><th>Scanpath length</th>' + na('needs an eye tracker') + na('&mdash;') + na('&mdash;') + '</tr>' +
+      '<td>' + HC.errors + '</td><td>' + MCI.errors + '</td></tr>' +
+      '<tr><th>Hand movement speed</th>' + na('needs a tracked hand') +
+      '<td>' + HC.speed + '</td><td>' + MCI.speed + '</td></tr>' +
+      '<tr><th>Scanpath length</th>' + na('needs an eye tracker') +
+      '<td>' + HC.scan + '</td><td>' + MCI.scan + '</td></tr>' +
       '</tbody></table>' +
       // Where the numbers land, not what they mean about the reader — the one
       // line that stops the table from being read as a verdict.
