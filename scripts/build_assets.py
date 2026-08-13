@@ -23,11 +23,11 @@ ASSETS = os.path.join(ROOT, "assets")
 
 # Palette lifted from assets/site.css so generated art matches the site.
 INK = "#17252a"
-FEATURE_BG = "#12343c"
-ACCENT = "#0f6b78"
-ACCENT_PALE = "#9bd1d5"
-PAPER_TINT = "#d9e8ea"
-MUTED_TINT = "#7fb3ba"
+FEATURE_BG = "#16294a"
+ACCENT = "#1f4275"
+ACCENT_PALE = "#a9c3e6"
+PAPER_TINT = "#dde5f0"
+MUTED_TINT = "#8ba3c4"
 
 FONTS = {
     "georgia": r"C:\Windows\Fonts\georgia.ttf",
@@ -43,6 +43,11 @@ HIGH_QUALITY_STEMS = {"hci-korea-best-paper-2025"}
 THUMB_WIDTH = 720
 # Paper figures carry text, so they keep more width than a photo thumbnail.
 FIGURE_WIDTH = 1400
+
+
+def rgb(hex_colour):
+    h = hex_colour.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
 def font(name, size):
@@ -109,7 +114,7 @@ def build_portrait():
 
 
 def monogram(size, radius_ratio=0.19, letter="B"):
-    """Render the monogram at `size` px on a rounded teal tile."""
+    """Render the monogram at `size` px on a rounded accent-coloured tile."""
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     radius = round(size * radius_ratio)
@@ -168,7 +173,7 @@ def build_og_card():
     card.paste(photo, box, mask)
     draw.ellipse(
         [box[0] - 3, box[1] - 3, box[0] + diameter + 2, box[1] + diameter + 2],
-        outline=(155, 209, 213), width=3,
+        outline=rgb(ACCENT_PALE), width=3,
     )
 
     x = 80

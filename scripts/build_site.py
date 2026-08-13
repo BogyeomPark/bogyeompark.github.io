@@ -484,7 +484,7 @@ def build_head(page, css_v, js_v):
         f"  <title>{esc(page['title'])}</title>",
         f'  <meta name="description" content="{esc(page["description"])}">',
         f'  <meta name="author" content="{NAME}">',
-        '  <meta name="theme-color" content="#0f4c5c">',
+        '  <meta name="theme-color" content="#1b3a66">',
     ]
     if page.get("noindex"):
         out.append('  <meta name="robots" content="noindex">')

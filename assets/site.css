@@ -43,9 +43,9 @@
   --line: #dfe7e9;
   --paper: #ffffff;
   --soft: #f5f9f9;
-  --accent: #0f6b78;
-  --accent-dark: #0a4a55;
-  --accent-pale: #dff1f2;
+  --accent: #1f4275;
+  --accent-dark: #1b3a66;
+  --accent-pale: #e4eaf4;
   --warm: #b55d3e;
   --sidebar: 250px;
   --radius: 14px;
@@ -56,10 +56,6 @@
   --on-accent: #ffffff;
   /* Figure plates: white in both themes, because the figures themselves are. */
   --plate: #ffffff;
-  --feature-bg: #12343c;
-  --feature-ink: #f2f9fa;
-  --feature-body: #d9e8ea;
-  --feature-label: #9bd1d5;
 }
 
 * { box-sizing: border-box; }
@@ -77,7 +73,7 @@ body {
 
 a {
   color: var(--accent-dark);
-  text-decoration-color: rgba(15, 107, 120, 0.3);
+  text-decoration-color: rgba(31, 66, 117, 0.3);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
@@ -85,7 +81,7 @@ a {
 /* Body links keep their affordance but stop competing with headings: the
    underline only reaches full strength on hover. */
 a:hover { color: var(--warm); text-decoration-color: currentColor; }
-a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4px; border-radius: 4px; }
+a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4px; border-radius: 4px; }
 
 .skip-link {
   position: fixed;
@@ -532,19 +528,15 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
     --line: #263437;
     --paper: #0f1719;
     --soft: #162124;
-    --accent: #5cc2cf;
-    --accent-dark: #83d5df;
-    --accent-pale: #1a373d;
+    --accent: #7ea8dc;
+    --accent-dark: #9dc0ea;
+    --accent-pale: #1e2c44;
     --warm: #e9a184;
-    --on-accent: #08181b;
+    --on-accent: #0c1626;
     --shadow: 0 1px 2px rgba(0, 0, 0, .5), 0 10px 30px rgba(0, 0, 0, .55);
-    --feature-bg: #1a2f34;
-    --feature-ink: #f2f9fa;
-    --feature-body: #cfe1e4;
-    --feature-label: #8ecdd5;
-  }
+          }
 
-  a { text-decoration-color: rgba(131, 213, 223, 0.36); }
+  a { text-decoration-color: rgba(157, 192, 234, 0.36); }
   .profile-photo { box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45); }
   /* Keep the portrait and figures from glowing against the dark page. */
   .profile-photo, .publication-thumb, .work img, .paper-figure img,
