@@ -98,6 +98,23 @@
   const CODE_BOX = [[7.7, 23.4], [30.9, 46.7], [54.1, 69.9], [77.3, 93.1]];
   const CODE_Y = 80.3, CODE_H = 8.2;
 
+  // Hit labels stay the panels' own Korean — they are what the screens say —
+  // but everything the visitor reads (aria, the wrong-item list) speaks the
+  // same English as the chips laid over those screens.
+  const EN = {
+    '이전 화면': 'Back', '카드 결제': 'Card', '모바일 상품권': 'Mobile voucher',
+    '소고기버거': 'Beef Burger', '치즈버거': 'Cheese Burger', '치킨버거': 'Chicken Burger',
+    '마늘버거': 'Garlic Burger', '불고기버거': 'Bulgogi Burger', '양파버거': 'Onion Burger',
+    '새우버거': 'Shrimp Burger', '토마토버거': 'Tomato Burger',
+    '감자튀김': 'Fries', '치즈스틱': 'Cheese Sticks', '스트링 치즈': 'String Cheese',
+    '해시브라운': 'Hash Brown', '치킨 랩': 'Chicken Wrap', '사과 파이': 'Apple Pie',
+    '핫케이크': 'Hotcake', '치킨 너겟': 'Chicken Nuggets',
+    '코카콜라': 'Coca-Cola', '사이다': 'Cider', '환타 오렌지': 'Fanta Orange', '생수': 'Water',
+    '바닐라 쉐이크': 'Vanilla Shake', '초코 쉐이크': 'Choco Shake', '딸기 쉐이크': 'Berry Shake',
+    '우유': 'Milk',
+  };
+  const en = (k) => EN[k] || k;
+
   const el = (s, r = document) => r.querySelector(s);
   const stage = el('#kiosk-stage');
   const result = el('#kiosk-result');
@@ -138,8 +155,18 @@
         'src="/assets/demos/kiosk/' + p + '.webp">').join('') +
       PANELS.map(p => '<div class="kiosk-en-layer" data-panel="' + p + '">' + enLayer(p) + '</div>').join('') +
       '<div class="kiosk-overlay"></div>' +
+      // The whole screen sits behind this veil until the order has been heard:
+      // greyed, blurred, and itself the play button. It lifts when the clip
+      // ends, which is also what makes the locked state legible — not one grey
+      // circle to decode, but a kiosk that is visibly not on yet.
+      '<button class="kiosk-veil" type="button" id="kiosk-veil" hidden>' +
+        '<b>🔊 Listen first</b><span>The order is spoken once &mdash; press to play it.</span>' +
+      '</button>' +
     '</div>';
   const overlay = el('.kiosk-overlay');
+  const veil = el('#kiosk-veil');
+  const veilTitle = veil.querySelector('b');
+  const veilNote = veil.querySelector('span');
   const screens = {};
   stage.querySelectorAll('.kiosk-screen').forEach(im => { screens[im.dataset.panel] = im; });
   const enLayers = {};
@@ -163,26 +190,15 @@
   // card payment password is 6 2 8 9." Change PIN above, or any target below, and
   // the clip has to be rendered again — see tools/gen_kiosk_audio.py.
 
+  // The veil is the only play control, and it carries all the wording too —
+  // listen first, hold it in memory, not repeated. The caption underneath only
+  // speaks during the task, one screen instruction at a time.
   const player = new Audio();
   player.preload = 'auto';
-  const sayBtn = el('#kiosk-say');
   let orderSpent = false;              // the order is heard once per attempt
 
-  const spendOrder = () => {
-    orderSpent = true;
-    if (sayBtn) { sayBtn.disabled = true; sayBtn.textContent = 'Given once'; }
-  };
-  const armOrder = () => {
-    orderSpent = false;
-    if (sayBtn) { sayBtn.disabled = false; sayBtn.textContent = '🔊 Play the order'; }
-  };
-
-  // The standing warning — played once, memorise it — sits beside the button,
-  // where it is read before anything is pressed. These three only track what
-  // to do now.
-  const READY_NOTE = 'Play the order first — Start unlocks when it ends.';
-  const PLAYING_NOTE = 'Hold it in memory.';
-  const HELD_NOTE = 'That was the only time it is played. Touch Start when you have it.';
+  const spendOrder = () => { orderSpent = true; };
+  const armOrder = () => { orderSpent = false; };
 
   // The Start button on screen: held until the order has been heard, because a
   // run started cold has nothing to remember — unusable numbers and a worse
@@ -194,16 +210,23 @@
     startHit.classList.add('ready');   // the wash lifts and the ring pulses
   };
 
+  const liftVeil = () => { veil.classList.add('off'); releaseStart(); };
+
   const sayOrder = () => {
     if (orderSpent) return;
     player.src = '/assets/demos/kiosk/audio/order.mp3';
-    player.onended = () => { caption.textContent = HELD_NOTE; releaseStart(); };
+    player.onended = liftVeil;
     const played = player.play();
     // Spend it only once it is really sounding — and if the browser refuses to
-    // play, unlock Start anyway rather than locking the demo shut.
+    // play, lift the veil anyway rather than locking the demo shut.
     if (played) played.then(
-      () => { spendOrder(); caption.textContent = PLAYING_NOTE; },
-      () => { releaseStart(); });
+      () => {
+        spendOrder();
+        veil.classList.add('playing');
+        veilTitle.textContent = 'Hold it in memory';
+        veilNote.textContent = 'It is not repeated.';
+      },
+      () => { liftVeil(); });
   };
 
   /* --- pointer path ------------------------------------------------------ */
@@ -224,7 +247,7 @@
     // instead of cutting a 10px corner across a much rounder card or key.
     const hits = (step.hits || []).map((h, i) =>
       '<button class="kiosk-hit' + (h.round ? ' round' : '') + '" type="button" data-i="' + i + '"' +
-      ' aria-label="' + h.label + '" style="left:' + h.area.x + '%;top:' + h.area.y + '%;' +
+      ' aria-label="' + en(h.label) + '" style="left:' + h.area.x + '%;top:' + h.area.y + '%;' +
       'width:' + h.area.w + '%;height:' + h.area.h + '%' +
       (h.r ? ';border-radius:' + h.r + 'cqw' : '') + '"></button>').join('');
     showPanel(step.panel);
@@ -310,15 +333,17 @@
     armOrder();
     paint(STEPS[0], '', true);
     // The order is spoken, never written: reading it off the screen would
-    // remove the memory demand the task exists to measure.
-    caption.textContent = READY_NOTE;
-    // Not played automatically. Where autoplay is allowed the order would be
-    // spent before anyone was listening, and where it is blocked it would not
-    // sound at all — the button is the one behaviour every browser agrees on,
-    // and it also means the clip starts when the participant is ready.
+    // remove the memory demand the task exists to measure. It is also never
+    // played automatically — where autoplay is allowed the clip would be spent
+    // before anyone was listening, and where it is blocked it would not sound
+    // at all. Pressing the veil is the one behaviour every browser agrees on.
     startHit = el('[data-i]');
     startHit.disabled = true;
     startHit.addEventListener('click', begin);
+    veil.hidden = false;
+    veil.classList.remove('off', 'playing');
+    veilTitle.innerHTML = '🔊 Listen first';
+    veilNote.innerHTML = 'The order is spoken once &mdash; press to play it.';
   }
 
   /* --- results ----------------------------------------------------------- */
@@ -334,16 +359,6 @@
     overlay.innerHTML = '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button>';
     el('#kiosk-again').addEventListener('click', renderStart);
     report(seconds, speed);
-  }
-
-  function pathSvg() {
-    if (state.points.length < 2) return '';
-    const r = stage.getBoundingClientRect();
-    const d = state.points.map((p, i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
-    const last = state.points[state.points.length - 1];
-    return '<svg class="kiosk-path" viewBox="0 0 ' + Math.round(r.width) + ' ' + Math.round(r.height) + '" role="img" ' +
-      'aria-label="The path your pointer travelled"><path d="' + d + '"></path>' +
-      '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="5"></circle></svg>';
   }
 
   function report(seconds, speed) {
@@ -365,7 +380,7 @@
     const asked = { panel02: 'Eat in', panel03: '새우버거', panel04: '치즈스틱', panel05: '코카콜라', panel06: '카드 결제' };
     const wrongItems = Object.keys(asked)
       .filter(k => state.chosen[k] && state.chosen[k] !== asked[k])
-      .map(k => state.chosen[k] + ' (asked for ' + asked[k] + ')');
+      .map(k => en(state.chosen[k]) + ' (asked for ' + en(asked[k]) + ')');
     const wrongPin = state.code !== PIN;
     const slips = wrongItems.concat(wrongPin ? ['payment number ' + (state.code || 'blank') + ' (asked for ' + PIN + ')'] : []);
     const orderNote = slips.length
@@ -388,26 +403,26 @@
         ? 'Your numbers sit on the far side of the gap — in a browser that usually means a menu you ' +
           'cannot read, not anything about you.'
         : 'One of your numbers sits on each side of the gap.');
-    const against =
-      '<h3>Against the study</h3>' +
-      '<table class="kiosk-vs"><thead><tr><th></th><th>Time</th><th>Errors</th></tr></thead><tbody>' +
-      '<tr class="you"><th>You</th><td>' + seconds.toFixed(1) + ' s</td><td>' + errors + '</td></tr>' +
-      '<tr><th>Healthy controls (n=22)</th><td>' + HC.time + ' s</td><td>' + HC.errors.toFixed(1) + '</td></tr>' +
-      '<tr><th>With mild cognitive impairment (n=32)</th><td>' + MCI.time + ' s</td><td>' + MCI.errors.toFixed(1) + '</td></tr>' +
+    // One table for everything: the four measures as rows, you beside the two
+    // groups. It used to be a list of your numbers followed by a second table
+    // repeating two of them against the study. Dashes mean the study's own
+    // figure is not quoted here, not that it did not measure one.
+    const na = s => '<td class="na">' + s + '</td>';
+    const vs =
+      '<table class="kiosk-vs"><thead><tr><th></th><th>You</th>' +
+      '<th>Healthy controls (n=22)</th><th>With MCI (n=32)</th></tr></thead><tbody>' +
+      '<tr><th>Time to completion</th><td>' + seconds.toFixed(1) + ' s</td>' +
+      '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
+      '<tr><th>Number of errors</th><td>' + errors + '</td>' +
+      '<td>' + HC.errors.toFixed(1) + '</td><td>' + MCI.errors.toFixed(1) + '</td></tr>' +
+      '<tr><th>Hand movement speed</th>' +
+      (mouse ? '<td>' + Math.round(speed) + ' px/s</td>' : na('needs a mouse')) +
+      na('&mdash;') + na('&mdash;') + '</tr>' +
+      '<tr><th>Scanpath length</th>' + na('needs an eye tracker') + na('&mdash;') + na('&mdash;') + '</tr>' +
       '</tbody></table>' +
       // Where the numbers land, not what they mean about the reader — the one
       // line that stops the table from being read as a verdict.
       '<p class="kiosk-vs-note">' + placing + ' A browser cannot screen anyone for anything.</p>';
-
-    const measures =
-      '<ul class="kiosk-measures">' +
-        '<li><b>Time to completion</b><span>' + seconds.toFixed(1) + ' s</span></li>' +
-        '<li><b>Number of errors</b><span>' + errors + '</span></li>' +
-        (mouse
-          ? '<li><b>Hand movement speed</b><span>' + Math.round(speed) + ' px/s</span></li>'
-          : '<li class="absent"><b>Hand movement speed</b><span>needs a mouse</span></li>') +
-        '<li class="absent"><b>Scanpath length</b><span>needs an eye tracker</span></li>' +
-      '</ul>';
 
     // Both reports describe the same run. One sentence each: the only thing
     // that changes is the direction of the conditional — Had you / If you —
@@ -428,17 +443,9 @@
         : '<p><b>If you</b> avoid those wrong turns next time, the same run comes in cleaner still.</p>';
 
     result.innerHTML =
-      '<h3>Your measurements</h3>' + measures + orderNote +
+      '<h3>Your measurements, against the study</h3>' + vs + orderNote +
       '<p class="kiosk-best">' + (isBest ? 'That is your fastest run in this browser.'
         : 'Your fastest run in this browser is ' + best + ' s.') + '</p>' +
-      against +
-      (mouse
-        ? '<figure class="paper-figure">' + pathSvg() +
-            '<figcaption class="kiosk-figcaption">Where your pointer went. The study traced the same path with a ' +
-            'tracked hand controller &mdash; its length over time is one of the four biomarkers.</figcaption>' +
-          '</figure>'
-        : '<p class="kiosk-note"><strong>Hand movement was not measured.</strong> A finger reports where it lands, ' +
-          'not the path between. Run this with a mouse and the speed and the path both appear.</p>') +
 
       '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers</b> &mdash; and how a report words ' +
       'them changes what its reader does next. A second study wrote the same result two ways.</p>' +
@@ -496,6 +503,7 @@
   }
 
   renderStart();
-  // The button plays the order and nothing else: mid-task it would be a replay.
-  if (sayBtn) sayBtn.addEventListener('click', sayOrder);
+  // The veil plays the order and nothing else: mid-task it would be a replay,
+  // and sayOrder refuses once the clip is spent.
+  veil.addEventListener('click', sayOrder);
 })();
