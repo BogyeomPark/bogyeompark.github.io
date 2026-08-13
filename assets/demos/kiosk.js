@@ -486,10 +486,20 @@
     // sentence holds whether the run came in over it or under it.
     const taken = Math.max(1, Math.round(seconds));
     const hc = Math.round(HC.time);
-    const against = hc === taken ? ', which is about what it took.' : ', not ' + taken + '.';
+    // One wrong item, or ten seconds off the study's mean. Below that there is no
+    // better run to describe and both wordings come out saying that the run would
+    // have been what it already was. The margin is a number here rather than a
+    // hedge inside a sentence, because "about" cannot hide a difference of nothing.
+    const room = errors > 0 || seconds > HC.time + 10;
+    const perfect = 'You got every item right, and ' +
+      (seconds <= HC.time
+        ? 'came in under the healthy-control mean the study reported.'
+        : 'came within a few seconds of the healthy-control mean the study reported.') +
+      ' There is no counterfactual to write &mdash; which is also why the study&rsquo;s two reports ' +
+      'needed a result with something in it to explain.';
     const pair = !errors
-      ? ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds' + against,
-         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds' + against]
+      ? ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds, not ' + taken + '.',
+         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds, not ' + taken + '.']
       : misordered
         ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
            'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
@@ -532,23 +542,31 @@
     // read as a verdict on the click that has already been made.
     const TITLE = ['The impact of past inputs on present outcomes',
                    'The impact of present inputs on future outcomes'];
+    const study =
+      '<p>Twenty people each read one of the two &mdash; reports on an MRI result, not a lunch order. ' +
+      'They rated them <b>equally clear</b>; what differed was where their attention went. The ' +
+      '<b>counterfactual</b> readers dwelt on what had already happened, the <b>prefactual</b> readers ' +
+      'on what to do next.</p>';
+    const kept =
+      '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report ' +
+      'made them think about. Nothing here was measured on you either: your time and errors never left ' +
+      'this browser, and the only things that leave are two anonymous counts &mdash; a run started, a ' +
+      'run finished.</p>';
     const reveal = (again) =>
       '<div class="research-note">' +
-      '<p>You read the <b>' + KIND[shown] + '</b> version of your result &mdash; the one the study called ' +
-      '&ldquo;' + TITLE[shown] + '&rdquo;. Half of the people who get here read the ' + KIND[1 - shown] +
-      ' version instead, &ldquo;' + TITLE[1 - shown] + '&rdquo;:</p>' +
-      '<p class="kiosk-other">' + pair[1 - shown] + '</p>' +
-      '<p>Twenty people each read one of the two &mdash; reports on an MRI result, not a lunch order. They ' +
-      'rated them <b>equally clear</b>; what differed was where their attention went. Asked about it ' +
-      'afterwards, the <b>counterfactual</b> readers dwelt on what had already happened and the ' +
-      '<b>prefactual</b> readers on what to do next &mdash; self-reflection against self-improvement. Same ' +
-      'facts, and the wording decided which way they faced.</p>' +
-      '<p>The two buttons under your report were that same split: one looks back over the run, the other ' +
-      'starts the next.</p>' +
-      '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report made ' +
-      'them think about. Nothing here was measured on you either: your time and errors never left this ' +
-      'browser, and the only things that leave are two anonymous counts &mdash; a run started, a run ' +
-      'finished.</p>' +
+      (room
+        ? '<p>Half of the people who get here read this instead:</p>' +
+          '<p class="kiosk-other">' + pair[1 - shown] + '</p>' +
+          '<p>Same facts, different tense. The study called yours the <b>' + KIND[shown] + '</b> report, ' +
+          '&ldquo;' + TITLE[shown] + '&rdquo;, and that one the <b>' + KIND[1 - shown] + '</b>, &ldquo;' +
+          TITLE[1 - shown] + '&rdquo;.</p>' +
+          study +
+          '<p>The two buttons under your report were that same split: one looks back over the run, the ' +
+          'other starts the next.</p>'
+        : '<p>The study wrote one result two ways and gave each reader one of them: the <b>counterfactual</b> ' +
+          'report, &ldquo;' + TITLE[0] + '&rdquo;, and the <b>prefactual</b>, &ldquo;' + TITLE[1] +
+          '&rdquo;. Yours had nothing to put in either.</p>' + study) +
+      kept +
       '</div>';
 
     // Only what this run produced: the four measures, where they landed, and what
@@ -573,15 +591,17 @@
 
       '<div id="kiosk-report-body" hidden>' +
       '<h3 id="kiosk-report">Your result</h3>' +
-      '<p class="kiosk-report-line">' + pair[shown] + '</p>' +
-      // Two ways on, weighted the same and worded so that neither hints at what it
-      // stands for. Reading the run back costs a click and re-running costs a
-      // minute, so these two are not a choice between equals and nothing is drawn
-      // from which one is pressed; the run itself is the behaviour that counts.
-      '<div class="kiosk-actions" id="kiosk-next">' +
-        (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
-      '</div>' +
-      '<div id="kiosk-steps-out"></div>' +
+      (room
+        ? '<p class="kiosk-report-line">' + pair[shown] + '</p>' +
+          // Two ways on, weighted the same and worded so that neither hints at what
+          // it stands for. Reading the run back costs a click and re-running costs a
+          // minute, so these two are not a choice between equals and nothing is drawn
+          // from which one is pressed; the run itself is the behaviour that counts.
+          '<div class="kiosk-actions" id="kiosk-next">' +
+            (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
+          '</div>' +
+          '<div id="kiosk-steps-out"></div>'
+        : '<p class="kiosk-report-line">' + perfect + '</p>') +
       '<p class="kiosk-aside"><button class="kiosk-plain" type="button" data-act="tell">' +
       'What did I just read?</button></p>' +
       '<div id="kiosk-reveal"></div></div>' +
@@ -598,7 +618,8 @@
     // explanation waits for that, or for the reader to ask for it outright — put on
     // the first click, it would have contaminated every re-run that followed it.
     const explain = (again) => {
-      el('#kiosk-next').hidden = true;
+      const next = el('#kiosk-next');
+      if (next) next.hidden = true;
       el('.kiosk-aside').hidden = true;
       // Run it again resets the task where it stands rather than handing over a
       // second button called something else for the same thing. The explanation
