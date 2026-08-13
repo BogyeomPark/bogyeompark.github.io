@@ -238,6 +238,21 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .work:hover img { box-shadow: var(--shadow); }
 
 
+/* Cards. Written into the page by assets/demos/kiosk.js, so a search of the
+   static HTML will not find them - do not delete these as dead rules.
+   Fold by available width, not by a fixed breakpoint: three fixed columns left
+   the cards at 175px in the 900-1100px band, which squeezed every title. */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 15px; }
+.card {
+  padding: 22px 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+}
+.card h3 { margin: 12px 0 9px; font-size: 1.08rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+.card p { margin: 0; color: var(--body); font-size: 0.89rem; line-height: 1.58; }
+.card .button { margin-top: 15px; }
+
 .card-index { color: var(--muted); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; }
 
 
@@ -438,6 +453,11 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 
 /* CV pages: the PDF rendered to images by build_assets.py, stacked like a
    document viewer. Shown as plates so they read as pages, not screenshots. */
+/* A finding revealed after the reader has committed to an answer. */
+.research-note { margin-top: 20px; padding: 18px 20px; border-left: 3px solid var(--accent); background: var(--soft); }
+.research-note p { margin: 0; color: var(--ink); font-size: 0.95rem; }
+.research-note p + p { margin-top: 10px; }
+
 .cv-viewer { display: grid; gap: 18px; margin-top: 40px; }
 .cv-page {
   display: block;

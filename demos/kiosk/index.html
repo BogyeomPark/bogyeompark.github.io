@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Kiosk Test | Bogyeom Park</title>
+  <meta name="description" content="The six-step virtual kiosk task from our JMIR study, in a browser. Measures time, errors and hand movement speed, then writes the result up two ways.">
+  <meta name="author" content="Bogyeom Park">
+  <meta name="theme-color" content="#1b3a66">
+  <link rel="canonical" href="https://bogyeompark.github.io/demos/kiosk/">
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Bogyeom Park">
+  <meta property="og:title" content="Ordering a meal, as a cognitive test">
+  <meta property="og:description" content="The six-step virtual kiosk task from our JMIR study, in a browser. Measures time, errors and hand movement speed, then writes the result up two ways.">
+  <meta property="og:url" content="https://bogyeompark.github.io/demos/kiosk/">
+  <meta property="og:image" content="https://bogyeompark.github.io/assets/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bogyeom Park (박보겸), Integrated Ph.D. Student at the SeoulTech HAI Lab">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="/assets/site.css?v=d3847169">
+  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=6e21b3a6">
+  <script src="/assets/demos/kiosk.js?v=ab2bae2e" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="site-shell">
+    <aside class="sidebar" aria-label="Profile and navigation">
+      <div class="sidebar-top"><img class="profile-photo" src="/assets/bogyeom-park-224.webp" width="224" height="288" alt="Portrait of Bogyeom Park"><div class="identity"><h1><a href="/">Bogyeom Park</a></h1><span class="korean-name" lang="ko">박보겸</span><p class="role">Integrated Ph.D. Student<br><a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">SeoulTech HAI Lab</a></p><a class="sidebar-email" href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</a></div></div>
+      <nav class="side-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/publications/">Publications</a><a href="/news/">News</a><a href="/demos/" aria-current="page">Demos</a><a href="/cv/">CV</a></nav>
+      <div class="profile-links" aria-label="External profiles"><a href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Scholar</a><a href="https://orcid.org/0009-0005-3046-9621" target="_blank" rel="noopener noreferrer">ORCID</a><a href="https://github.com/BogyeomPark" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+    </aside>
+    <main id="main-content">
+      <header class="page-header">
+        <p class="paper-breadcrumb"><a href="/demos/">Demos</a> / Virtual kiosk test</p>
+        <h2>Ordering a meal, as a cognitive test</h2>
+        <p class="lead">Using a kiosk asks more of you than it looks: hold the order in memory, find each item on an unfamiliar menu, and act. In our JMIR study, how people did exactly that separated participants with mild cognitive impairment from healthy controls. This is that task, in a browser.</p>
+      </header>
+
+      <section class="content-section">
+        <div class="kiosk-task">
+          <p id="kiosk-task-line"></p>
+          <button class="kiosk-say" type="button" id="kiosk-say">🔊 Read aloud</button>
+        </div>
+        <p class="kiosk-figcaption"><label><input type="checkbox" id="kiosk-mute"> Mute the spoken prompts</label></p>
+
+        <div class="kiosk-stage" id="kiosk-stage"></div>
+
+        <div class="kiosk-result" id="kiosk-result" hidden></div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>What this measures</h2></div>
+        <p>The study drew four biomarkers from the virtual kiosk test. Three of them survive the move to a browser, because a mouse or a fingertip stands in for the hand controller well enough:</p>
+        <ul class="takeaway-list">
+          <li><b>Time to completion</b> &mdash; how long all six steps take. Measured here exactly as in the study.</li>
+          <li><b>Number of errors</b> &mdash; selections that were not the item asked for. Measured here exactly as in the study.</li>
+          <li><b>Hand movement speed</b> &mdash; total distance the hand travelled, divided by time. Here it is pointer distance instead of a controller tracked by base stations.</li>
+          <li><b>Scanpath length</b> &mdash; how far the eyes travelled. <b>Not reproduced.</b> This one needed the eye tracker built into the headset, and it is the clearest answer to why the study used VR rather than a screen.</li>
+        </ul>
+        <p>In the study, participants with mild cognitive impairment moved their hands more slowly, took longer, made more errors, and had longer scanpaths than healthy controls. Combining these behavioural measures with MRI biomarkers detected impairment with 94.4% accuracy.</p>
+      </section>
+
+      <footer><span>© 2026 Bogyeom Park</span><span><a href="/demos/">← All demos</a></span></footer>
+    </main>
+  </div>
+</body>
+</html>

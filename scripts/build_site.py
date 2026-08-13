@@ -103,6 +103,18 @@ PAGES = [
         ),
     },
     {
+        "file": "demos/kiosk/index.html",
+        "url": "/demos/kiosk/",
+        "nav": "demos",
+        "assets": ["/assets/demos/kiosk.css", "/assets/demos/kiosk.js"],
+        "title": f"Virtual Kiosk Test | {NAME}",
+        "og_title": "Ordering a meal, as a cognitive test",
+        "description": (
+            "The six-step virtual kiosk task from our JMIR study, in a browser. Measures time, "
+            "errors and hand movement speed, then writes the result up two ways."
+        ),
+    },
+    {
         "file": "cv/index.html",
         "url": "/cv/",
         "nav": "cv",
@@ -531,6 +543,14 @@ def build_head(page, css_v, js_v):
             out.append(f'  <meta name="citation_pdf_url" content="{SITE}{pdf}">')
 
     out.append(f'  <link rel="stylesheet" href="/assets/site.css?v={css_v}">')
+    # Pages with their own stylesheet or script (the demos) list them here; each is
+    # versioned by content hash like the shared assets.
+    for asset in page.get("assets", []):
+        version = asset_version(asset)
+        if asset.endswith(".css"):
+            out.append(f'  <link rel="stylesheet" href="{asset}?v={version}">')
+        else:
+            out.append(f'  <script src="{asset}?v={version}" defer></script>')
     if page.get("script"):
         out.append(f'  <script src="/assets/site.js?v={js_v}" defer></script>')
     if page.get("person_schema"):

@@ -212,6 +212,12 @@ venue 표기에는 공식 명칭 그대로 쓰고(`CHI EA '25: Extended Abstract
 네 곳(링크 밑줄 tint · 포커스 링 · `theme-color` · `build_assets.py`의 favicon/og 팔레트)에도
 나타나므로, 강조색을 바꿀 때는 그 넷을 같이 본다.
 
+### 4-2-A. 데모가 쓰는 클래스는 지우지 말 것
+
+`.card`, `.card-grid`, `.research-note`, `.metric*`는 **`assets/demos/kiosk.js`가 실행 중에 만든다.**
+정적 HTML을 훑는 도구에는 "미사용"으로 잡히지만 지우면 데모가 무너진다 (실제로 한 번 지워졌다).
+CSS 주석에도 표시해 두었다.
+
 ### 4-3. 반응형
 
 고정 브레이크포인트로 열 수를 정하지 않는다. `repeat(auto-fit, minmax(Npx, 1fr))`로

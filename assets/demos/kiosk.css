@@ -1,0 +1,159 @@
+/* Virtual kiosk demo. Structure follows the six-step task from the JMIR study;
+   the interface is drawn from scratch rather than reusing the original assets,
+   which were built on a commercial kiosk's artwork. */
+
+.kiosk-task {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin-top: 34px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--accent);
+  background: var(--soft);
+}
+.kiosk-task p { margin: 0; color: var(--ink); font-size: 1.02rem; }
+.kiosk-task strong { font-weight: 600; }
+.kiosk-task .kiosk-say {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--body);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 7px 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.kiosk-task .kiosk-say:hover { border-color: var(--accent); color: var(--accent-dark); }
+
+.kiosk-stage { margin-top: 26px; }
+.kiosk-screen {
+  max-width: 520px;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.kiosk-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 18px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.kiosk-head span { font-size: 0.72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.kiosk-body { padding: 22px 20px 24px; min-height: 300px; }
+.kiosk-prompt { margin: 0 0 18px; color: var(--ink); font-size: 1.06rem; font-weight: 600; text-align: center; }
+
+.kiosk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 10px; }
+.kiosk-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.kiosk-item:hover { border-color: var(--accent); background: var(--accent-pale); }
+.kiosk-item b { font-weight: 600; }
+.kiosk-item span { color: var(--muted); font-size: 0.76rem; }
+.kiosk-item.wrong { animation: kiosk-shake 220ms ease; border-color: var(--warm); }
+@keyframes kiosk-shake {
+  25% { transform: translateX(-4px); } 75% { transform: translateX(4px); }
+}
+
+.kiosk-wide { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.kiosk-start { display: grid; place-items: center; min-height: 260px; }
+.kiosk-start button {
+  width: 148px;
+  height: 148px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--on-accent);
+  font: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.kiosk-start button:hover { background: var(--accent-dark); }
+
+.kiosk-summary { margin: 0 0 18px; padding: 0; list-style: none; }
+.kiosk-summary li {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--body);
+  font-size: 0.9rem;
+}
+.kiosk-summary li b { color: var(--ink); font-weight: 600; }
+
+.kiosk-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 260px; margin: 0 auto; }
+.kiosk-pad button {
+  padding: 14px 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.kiosk-pad button:hover { border-color: var(--accent); background: var(--accent-pale); }
+.kiosk-code { margin: 0 0 14px; color: var(--ink); font-size: 1.3rem; font-weight: 600; letter-spacing: .3em; text-align: center; min-height: 1.6em; }
+
+.kiosk-back {
+  margin-top: 16px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.kiosk-back:hover { color: var(--accent-dark); }
+
+/* results ---------------------------------------------------------------- */
+.kiosk-result { margin-top: 30px; }
+.kiosk-result[hidden] { display: none; }
+.kiosk-path {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+.kiosk-path path { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.kiosk-path circle { fill: var(--warm); }
+.kiosk-figcaption { margin-top: 9px; color: var(--muted); font-size: 0.76rem; }
+.kiosk-best { margin-top: 14px; color: var(--muted); font-size: 0.85rem; }
+.kiosk-note {
+  margin-top: 26px;
+  padding: 16px 18px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.6;
+}
+.kiosk-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+@media (max-width: 680px) {
+  .kiosk-task { grid-template-columns: 1fr; }
+  .kiosk-body { min-height: 260px; }
+}
