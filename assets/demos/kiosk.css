@@ -51,15 +51,16 @@
 .kiosk-hit:hover { border-color: var(--accent); background: rgba(31, 66, 117, 0.08); }
 .kiosk-hit:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.45); outline-offset: 2px; }
 .kiosk-hit.round { border-radius: 50%; }
-.kiosk-hit.miss { border-color: var(--warm); background: rgba(181, 93, 62, 0.14); animation: kiosk-shake 220ms ease; }
-@keyframes kiosk-shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
 
-.kiosk-dots { position: absolute; left: 0; right: 0; top: 80%; display: flex; justify-content: center; gap: 6%; }
-.kiosk-dots span {
-  width: 14px; height: 14px; border-radius: 50%;
-  background: var(--line); border: 1px solid var(--line);
+.kiosk-digit {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-size: 2rem;
+  line-height: 1;
+  pointer-events: none;
 }
-.kiosk-dots span.on { background: var(--accent); border-color: var(--accent); }
 
 .kiosk-restart {
   position: absolute; left: 50%; bottom: 12%; transform: translateX(-50%);
