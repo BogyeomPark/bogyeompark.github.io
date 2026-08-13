@@ -106,8 +106,33 @@ def render():
     return "".join(parts)
 
 
+def check_publications_page():
+    """The publications page is hand-written but must use the CV's section names.
+
+    They drifted once already - the page merged journal and conference work under
+    one heading while the CV split them - so the same body of work read as two
+    different lists depending on where a visitor landed.
+    """
+    path = os.path.join(ROOT, "publications", "index.html")
+    if not os.path.isfile(path):
+        return []
+    with open(path, encoding="utf-8") as fh:
+        page = fh.read()
+    wanted = [cv_data.SECTION_TITLES[k] for k in ("journal", "international", "domestic")]
+    return [t for t in wanted if t not in page and esc(t) not in page]
+
+
 def main():
     check = "--check" in sys.argv[1:]
+
+    missing = check_publications_page()
+    if missing:
+        print("publications/index.html is missing these CV section titles:")
+        for title in missing:
+            print("  -", title)
+        if check:
+            sys.exit(1)
+
     with open(PAGE, encoding="utf-8", newline="") as fh:
         page = fh.read()
 
