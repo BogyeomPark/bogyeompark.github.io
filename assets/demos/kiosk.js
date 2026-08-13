@@ -104,31 +104,32 @@
   const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false };
 
   /* --- speech: Korean screens, Korean voice, or silence ------------------ */
-  let koVoice = null;
+  let voice = null;
   const findVoice = () => {
     const voices = window.speechSynthesis ? speechSynthesis.getVoices() : [];
-    const korean = voices.filter(v => /^ko/i.test(v.lang));
-    // The study's kiosk spoke with a woman's voice; prefer the Korean voices
-    // that are one, then any Korean voice at all.
-    koVoice = korean.find(v => /heami|yuna|sunhi|여성|female|nari|jiwon/i.test(v.name))
-      || korean.find(v => !/male|남성|injoon|gookmin/i.test(v.name))
-      || korean[0] || null;
+    const english = voices.filter(v => /^en/i.test(v.lang));
+    // A woman's voice, as the study's kiosk had. Named female voices first,
+    // then anything not explicitly male, then any English voice at all.
+    voice = english.find(v => /samantha|zira|aria|jenny|female|google us english|karen|moira|serena/i.test(v.name))
+      || english.find(v => !/male|david|mark|guy|daniel|alex|fred/i.test(v.name))
+      || english[0] || null;
     const btn = el('#kiosk-say');
     if (btn) {
-      btn.disabled = !koVoice;
-      btn.textContent = koVoice ? '🔊 다시 듣기' : 'No Korean voice installed';
+      btn.disabled = !voice;
+      btn.textContent = voice ? '🔊 Replay' : 'No English voice installed';
     }
   };
   if (window.speechSynthesis) {
     findVoice();
     speechSynthesis.addEventListener('voiceschanged', findVoice);
   }
-  const TASK_KO = '새우버거, 치즈스틱, 코카콜라를 주문해 주세요. 결제 비밀번호는 일삼칠구, ' + PIN.split('').join(' ') + ' 입니다.';
+  const TASK_EN = 'Order a shrimp burger, cheese sticks and a Coca-Cola. Your payment number is ' +
+    PIN.split('').join(' ') + '. Touch Start when you are ready.';
   const say = (text) => {
-    if (!koVoice || el('#kiosk-mute').checked) return;
+    if (!voice || el('#kiosk-mute').checked) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.voice = koVoice; u.lang = koVoice.lang; u.rate = 0.95;
+    u.voice = voice; u.lang = voice.lang; u.rate = 0.95;
     speechSynthesis.speak(u);
   };
 
@@ -153,8 +154,8 @@
         '<img src="/assets/demos/kiosk/' + step.panel + '.webp" alt="Kiosk screen: ' + step.en + '">' +
         hits + extra +
       '</div>';
-    caption.textContent = step.en;
-    if (!silent) say(step.ko);
+    caption.textContent = '';
+    if (!silent) say(step.en);
   }
 
   function renderStep() {
@@ -226,9 +227,8 @@
   function renderStart() {
     state.step = 0;
     paint(STEPS[0], '', true);
-    caption.textContent = 'Order a shrimp burger, cheese sticks and a Coca-Cola. The payment number is ' +
-      PIN.split('').join(' ') + '. Touch Start when you are ready.';
-    say(TASK_KO);
+    caption.textContent = TASK_EN + ' It will not be repeated once you begin.';
+    say(TASK_EN);
     el('[data-i]').addEventListener('click', begin);
   }
 
@@ -239,11 +239,11 @@
     const seconds = (performance.now() - state.started) / 1000;
     const speed = state.distance / seconds;
     state.step = -1;
-    caption.textContent = 'Thank you.';
+    caption.textContent = '';
     stage.innerHTML = '<div class="kiosk-panel"><img src="/assets/demos/kiosk/panel08.webp" alt="Kiosk screen: thank you">' +
       '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button></div>';
     el('#kiosk-again').addEventListener('click', renderStart);
-    say('수고하셨습니다.');
+    say('Thank you.');
     report(seconds, speed);
   }
 
@@ -360,5 +360,5 @@
 
   renderStart();
   const sayBtn = el('#kiosk-say');
-  if (sayBtn) sayBtn.addEventListener('click', () => { say(state.step <= 0 ? TASK_KO : STEPS[state.step].ko); });
+  if (sayBtn) sayBtn.addEventListener('click', () => { say(state.step <= 0 ? TASK_EN : (STEPS[state.step] || {}).en || ''); });
 })();

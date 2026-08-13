@@ -21,8 +21,8 @@
   <meta property="og:image:alt" content="Bogyeom Park (박보겸), Integrated Ph.D. Student at the SeoulTech HAI Lab">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="/assets/site.css?v=d3847169">
-  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=9b781132">
-  <script src="/assets/demos/kiosk.js?v=4e570c94" defer></script>
+  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=59a0e0df">
+  <script src="/assets/demos/kiosk.js?v=6d675909" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -36,15 +36,11 @@
       <header class="page-header">
         <p class="paper-breadcrumb"><a href="/demos/">Demos</a> / Virtual kiosk test</p>
         <h2>Ordering a meal, as a cognitive test</h2>
-        <p class="lead">Using a kiosk asks more of you than it looks: hold the order in memory, find each item on an unfamiliar menu, and act. In our JMIR study, how people did exactly that separated participants with mild cognitive impairment from healthy controls. This is that task, in a browser.</p>
+        <p class="lead">Using a kiosk asks more of you than it looks: hold an order in memory, find each item on an unfamiliar menu, and act. In our JMIR study, how people did exactly that separated participants with mild cognitive impairment from healthy controls. This is that task, in a browser — the order is given once, and the kiosk does not remind you of it.</p>
       </header>
 
       <section class="content-section">
-        <div class="kiosk-task">
-          <p id="kiosk-task-line">Use the kiosk to order a <strong>shrimp burger</strong>, <strong>cheese sticks</strong>, and a <strong>Coca-Cola</strong>.</p>
-          <button type="button" id="kiosk-say">🔊 다시 듣기</button>
-        </div>
-        <p class="kiosk-options"><label><input type="checkbox" id="kiosk-mute"> Mute the spoken prompts</label> &middot; The screens and the voice are the Korean originals from the study; each prompt is translated under the screen.</p>
+        <p class="kiosk-options"><button type="button" id="kiosk-say">🔊 Replay</button><label><input type="checkbox" id="kiosk-mute"> Mute</label><span>The screens are the Korean originals from the study; the task is spoken once in English before you start, and not repeated.</span></p>
 
         <div class="kiosk-stage" id="kiosk-stage"></div>
         <p class="kiosk-caption" id="kiosk-caption"></p>

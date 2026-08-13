@@ -1,32 +1,21 @@
 /* Virtual kiosk demo. The screens are the study's own panels; the click targets
    are positioned over them in percentages so everything scales together. */
 
-.kiosk-task {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: center;
-  margin-top: 32px;
-  padding: 17px 19px;
-  border-left: 3px solid var(--accent);
-  background: var(--soft);
+.kiosk-options {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin: 30px 0 0; color: var(--muted); font-size: 0.79rem;
 }
-.kiosk-task p { margin: 0; color: var(--ink); font-size: 1.02rem; }
-.kiosk-task button {
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--paper);
-  color: var(--body);
-  font: inherit;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 7px 13px;
-  cursor: pointer;
-  white-space: nowrap;
+.kiosk-options button {
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper); color: var(--body);
+  font: inherit; font-size: 0.78rem; font-weight: 600;
+  padding: 6px 13px; cursor: pointer;
 }
-.kiosk-task button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-dark); }
-.kiosk-task button:disabled { color: var(--muted); cursor: default; }
-.kiosk-options { margin: 9px 0 0; color: var(--muted); font-size: 0.79rem; }
+.kiosk-options button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-dark); }
+.kiosk-options button:disabled { color: var(--muted); cursor: default; }
+.kiosk-options span { flex: 1 1 240px; }
+.kiosk-options-old {
+ margin: 9px 0 0; color: var(--muted); font-size: 0.79rem; }
 
 .kiosk-stage { margin-top: 22px; }
 .kiosk-panel { position: relative; max-width: 330px; margin: 0 auto; }
