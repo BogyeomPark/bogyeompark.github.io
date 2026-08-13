@@ -1,0 +1,11 @@
+/* News-page refinements layered over site.css (loaded on /news/ only). */
+
+/* A year heading used to draw its own full-width top border right under the
+   border-bottom of the last item above it — two rules with a hollow band
+   between them. It now wears the short accent bar every section heading on
+   this site already uses, and the item's own rule stays the only full line.
+   The list's top border goes too: the first year heading is the opening. */
+.news-list { border-top: 0; }
+.news-year { position: relative; margin: 46px 0 0; padding-top: 15px; border-top: 0; }
+.news-year::before { content: ""; position: absolute; top: 0; left: 0; width: 26px; height: 2px; background: var(--accent); }
+.news-list .news-year:first-child { margin-top: 0; padding-top: 15px; }

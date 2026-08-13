@@ -88,6 +88,7 @@ PAGES = [
         "file": "news/index.html",
         "url": "/news/",
         "nav": "news",
+        "assets": ["/assets/news.css"],
         "title": f"News | {NAME}",
         "og_title": f"Research news — {NAME}",
         "description": f"Research news and milestones from {NAME}.",
