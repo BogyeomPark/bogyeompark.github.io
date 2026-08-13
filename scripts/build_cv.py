@@ -25,8 +25,8 @@ OUTPUT = ROOT / "assets" / "cv" / "Bogyeom_Park_CV.pdf"
 
 PAGE_W, PAGE_H = letter
 MARGIN_X = 0.80 * inch
-MARGIN_TOP = 0.68 * inch
-MARGIN_BOTTOM = 0.52 * inch
+MARGIN_TOP = 0.62 * inch
+MARGIN_BOTTOM = 0.46 * inch
 
 INK = colors.black
 RULE = colors.black
@@ -63,9 +63,9 @@ styles.add(
         parent=styles["Normal"],
         fontName="Times-Bold",
         fontSize=11.5,
-        leading=13.5,
+        leading=13.2,
         textColor=INK,
-        spaceBefore=11,
+        spaceBefore=8,
         spaceAfter=1,
         keepWithNext=True,
     )
@@ -76,9 +76,9 @@ styles.add(
         parent=styles["Normal"],
         fontName="Times-Roman",
         fontSize=10.4,
-        leading=12.6,
+        leading=12.1,
         textColor=INK,
-        spaceAfter=3,
+        spaceAfter=2.5,
     )
 )
 styles.add(
@@ -97,7 +97,7 @@ styles.add(
         parent=styles["Body"],
         fontName="Times-Bold",
         fontSize=10.7,
-        leading=12.6,
+        leading=12.1,
         spaceAfter=0.5,
     )
 )
@@ -157,7 +157,7 @@ def footer(canvas, doc):
 def section(title):
     return [
         Paragraph(title.upper(), styles["Section"]),
-        HRFlowable(width="100%", thickness=0.6, color=RULE, spaceAfter=6),
+        HRFlowable(width="100%", thickness=0.6, color=RULE, spaceAfter=4),
     ]
 
 
@@ -191,14 +191,14 @@ def publication(title, authors, venue):
         Paragraph(title, styles["EntryTitle"]),
         Paragraph(authors.replace("Bogyeom Park", "<b>Bogyeom Park</b>").replace("Hyobin Park", "<b>Hyobin Park</b>"), styles["Small"]),
         Paragraph(venue, styles["Meta"]),
-        Spacer(1, 6),
+        Spacer(1, 4),
     ])
 
 
 def project(title, role, dates, bullets):
     items = [Paragraph(title, styles["EntryTitle"]), two_col(role, dates, "CVItalic", "CVItalicRight")]
     items.extend(bullet(item) for item in bullets)
-    items.append(Spacer(1, 6))
+    items.append(Spacer(1, 4))
     return [KeepTogether(items)]
 
 

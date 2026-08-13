@@ -16,7 +16,7 @@ SECTION_TITLES = {
     "awards": "Honors & Awards",
     "journal": "Journal Articles",
     "international": "International Conference Papers",
-    "domestic": "Domestic Conference Papers",
+    "domestic": "Korean Conference Papers",
     "experience": "Research Experience",
     "teaching": "Teaching & Mentoring",
     "skills": "Skills",
@@ -93,7 +93,7 @@ JOURNAL_ARTICLES = [
 
 EXTENDED_ABSTRACTS = [
     {
-        "title": "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
+        "title": "Assessing Critical Thinking through a Multi-Agent LLM-Based Debate Chatbot",
         "authors": "Bogyeom Park and Kyoungwon Seo",
         "venue": (
             "CHI EA '25: Extended Abstracts of the 2025 CHI Conference on Human Factors in Computing Systems - "
@@ -298,11 +298,13 @@ TEACHING = [
     },
     {
         "title": "2026 AX Academy Big Data Boot Camp",
-        "dates": "May 2026 - Present",
+        "dates": "May 2026 - Aug 2026",
         "role": "Tutor, Hyundai Motor Group",
         "bullets": [
-            "Mentored participants through project-based big data sprints and supported the "
-            "development of their team projects",
+            "Mentored nine participants from across the company, each developing an individual "
+            "big data project from proposal to final deliverable",
+            "Advised on analysis design and revised project plans with participants through the "
+            "boot camp's project-based sprints",
         ],
     },
 ]

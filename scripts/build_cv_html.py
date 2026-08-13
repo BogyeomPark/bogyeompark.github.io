@@ -47,17 +47,47 @@ def page_files():
     return sorted(files, key=lambda f: int(re.search(r"\d+", f).group()))
 
 
+def page_sections():
+    """Which CV sections land on each page, so alt text says what is on it.
+
+    "page 2 of 3" tells a screen reader nothing about the content. The section
+    names are read off the PDF itself rather than guessed from cv_data order,
+    because where a page breaks depends on the layout, not on the data.
+    """
+    try:
+        import fitz  # PyMuPDF, same dependency build_assets.py rasterises with
+    except ImportError:
+        return []
+    pdf = os.path.join(ROOT, "assets", "cv", "Bogyeom_Park_CV.pdf")
+    if not os.path.isfile(pdf):
+        return []
+    titles = list(cv_data.SECTION_TITLES.values())
+    # Whole-line match, not substring: "AI in Education" and "educational"
+    # both contain "EDUCATION", which put Education on all three pages.
+    found = []
+    with fitz.open(pdf) as doc:
+        for page in doc:
+            lines = {line.strip().upper() for line in page.get_text().splitlines()}
+            found.append([t for t in titles if t.upper() in lines])
+    return found
+
+
 def render():
     files = page_files()
     total = len(files)
+    sections = page_sections()
     rows = []
     for index, name in enumerate(files, 1):
         with Image.open(os.path.join(PAGES_DIR, name)) as im:
             width, height = im.size
+        alt = "Academic CV, page %d of %d" % (index, total)
+        on_page = sections[index - 1] if index <= len(sections) else []
+        if on_page:
+            alt += ": " + ", ".join(on_page)
         rows.append(
             '        <img class="cv-page" src="/assets/cv/pages/%s" width="%d" height="%d"'
-            ' decoding="async"%s alt="Academic CV, page %d of %d">\n'
-            % (name, width, height, "" if index == 1 else ' loading="lazy"', index, total)
+            ' decoding="async"%s alt="%s">\n'
+            % (name, width, height, "" if index == 1 else ' loading="lazy"', esc(alt))
         )
     return (
         '      <section class="cv-viewer" aria-label="Academic CV, %d pages">\n'

@@ -29,7 +29,7 @@ SITE = "https://bogyeompark.github.io"
 NAME = "Bogyeom Park"
 NAME_KO = "박보겸"
 FORMER_NAME = "Hyobin Park"
-ROLE = "Integrated Ph.D. Student"
+ROLE = "Ph.D. Student"
 LAB = "Human-centered Artificial Intelligence Lab"
 LAB_SHORT = "SeoulTech HAI Lab"
 UNIVERSITY = "Seoul National University of Science and Technology"
@@ -131,13 +131,13 @@ PAGES = [
         "script": True,
         "og_type": "article",
         "title": f"Multi-Agent Debate Chatbot | {NAME}",
-        "og_title": "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
+        "og_title": "Assessing Critical Thinking through a Multi-Agent LLM-Based Debate Chatbot",
         "description": (
             "Assessing Critical Thinking through a Multi-Agent LLM-Based Debate Chatbot "
             f"by {NAME} and Kyoungwon Seo, CHI EA 2025."
         ),
         "citation": {
-            "title": "Assessing Critical Thinking Through a Multi-Agent LLM-Based Debate Chatbot",
+            "title": "Assessing Critical Thinking through a Multi-Agent LLM-Based Debate Chatbot",
             "authors": [NAME, "Kyoungwon Seo"],
             "date": "2025/04/25",
             "conference": "Extended Abstracts of the CHI Conference on Human Factors in Computing Systems",
@@ -586,7 +586,9 @@ def build_sidebar(page):
         '      <div class="sidebar-top">'
         f'<img class="profile-photo" src="{PORTRAIT}" width="{w}" height="{h}" '
         f'alt="Portrait of {NAME}">'
-        f'<div class="identity"><h1><a href="/">{NAME}</a></h1>'
+        # Not an <h1>: the page's own title carries that on every page, and the
+        # site name repeated as <h1> gave all 18 pages the same top heading.
+        f'<div class="identity"><p class="site-name"><a href="/">{NAME}</a></p>'
         f'<span class="korean-name" lang="ko">{NAME_KO}</span>'
         # "Human-Centered Agentic AI" used to sit here, directly under the lab name,
         # where it read as an expansion of HAI — which stands for Human-centered

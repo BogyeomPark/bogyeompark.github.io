@@ -7,7 +7,7 @@
  *
  * Measures two of the study's four VR-derived biomarkers — time to completion
  * and number of errors. The other two stay with the study's hardware: hand
- * movement speed was a tracked hand in metres per second, which a mouse in
+ * movement speed was a tracked hand in meters per second, which a mouse in
  * pixels cannot stand in for, and scanpath length needed the headset's eye
  * tracker.
  *
@@ -21,13 +21,20 @@
  * tally() below, carrying no times, errors or choices.
  */
 (() => {
-  // Measured off the panels rather than eyeballed, so the targets sit on the
-  // cards instead of around them.
-  const COL = [[3.5, 24.2], [27.6, 48.3], [51.8, 72.4], [75.9, 96.5]];
-  const BACK = { x: 62, y: 2.2, w: 35, h: 5.5 };
+  // Measured off the panels rather than eyeballed, so a target sits on its card
+  // instead of near it: each column, row and radius below is the card's own,
+  // found by the same script that prepares the screens. Hand-set numbers had the
+  // rows starting a third of a percent low and every radius a shade too tight,
+  // which showed the moment a hover outline was drawn on top of a card.
+  const COL = [[3.23, 23.93], [27.46, 48.16], [51.63, 72.33], [75.83, 96.53]];
+  const TILE_R = 2.9, CARD_R = 6.54, KEY_R = 5.65;
+  // The pill itself, and the same on every screen: the panels used to draw it
+  // at five different distances from the edge, so build_kiosk_panels.py now moves
+  // it to one — BACK_BOX there is this box.
+  const BACK = { x: 62.89, y: 2.71, w: 33.2, h: 4.16 };
   const PIN = '6289';   // the study's own password, JMIR 2024;26:e54538
   const box = (col, top, bottom) => ({ x: COL[col][0], w: COL[col][1] - COL[col][0], y: top, h: bottom - top });
-  const back = { label: '이전 화면', area: BACK, back: true, r: 5.5 };
+  const back = { label: '이전 화면', area: BACK, back: true, r: 4.2 };   // half its own height: a pill
 
   const STEPS = [
     {
@@ -39,8 +46,8 @@
       panel: 'panel02', ko: '식사하실 장소를 선택해 주세요.',
       en: 'Where will you eat?', target: 'Eat in',
       hits: [
-        { label: 'Eat in', area: { x: 2.9, y: 47.7, w: 45.2, h: 30.3 }, r: 5 },
-        { label: 'Take out', area: { x: 51.3, y: 47.7, w: 45.2, h: 30.3 }, r: 5 },
+        { label: 'Eat in', area: { x: 2.91, y: 47.76, w: 45.15, h: 30.14 }, r: CARD_R },
+        { label: 'Take out', area: { x: 51.29, y: 47.76, w: 45.15, h: 30.14 }, r: CARD_R },
       ],
     },
     {
@@ -48,10 +55,10 @@
       en: 'Choose a burger.', target: '새우버거',
       hits: [
         back,
-        { label: '소고기버거', area: box(0, 32.6, 43.5), r: 2.6 }, { label: '치즈버거', area: box(1, 32.6, 43.5), r: 2.6 },
-        { label: '치킨버거', area: box(2, 32.6, 43.5), r: 2.6 }, { label: '마늘버거', area: box(3, 32.6, 43.5), r: 2.6 },
-        { label: '불고기버거', area: box(0, 46.5, 57.5), r: 2.6 }, { label: '양파버거', area: box(1, 46.5, 57.5), r: 2.6 },
-        { label: '새우버거', area: box(2, 46.5, 57.5), r: 2.6 }, { label: '토마토버거', area: box(3, 46.5, 57.5), r: 2.6 },
+        { label: '소고기버거', area: box(0, 32.12, 43.43), r: TILE_R }, { label: '치즈버거', area: box(1, 32.12, 43.43), r: TILE_R },
+        { label: '치킨버거', area: box(2, 32.12, 43.43), r: TILE_R }, { label: '마늘버거', area: box(3, 32.12, 43.43), r: TILE_R },
+        { label: '불고기버거', area: box(0, 46.14, 57.45), r: TILE_R }, { label: '양파버거', area: box(1, 46.14, 57.45), r: TILE_R },
+        { label: '새우버거', area: box(2, 46.14, 57.45), r: TILE_R }, { label: '토마토버거', area: box(3, 46.14, 57.45), r: TILE_R },
       ],
     },
     {
@@ -59,10 +66,10 @@
       en: 'Choose a side.', target: '치즈스틱',
       hits: [
         back,
-        { label: '감자튀김', area: box(0, 46.3, 57.2), r: 2.6 }, { label: '치즈스틱', area: box(1, 46.3, 57.2), r: 2.6 },
-        { label: '스트링 치즈', area: box(2, 46.3, 57.2), r: 2.6 }, { label: '해시브라운', area: box(3, 46.3, 57.2), r: 2.6 },
-        { label: '치킨 랩', area: box(0, 60.3, 71.2), r: 2.6 }, { label: '사과 파이', area: box(1, 60.3, 71.2), r: 2.6 },
-        { label: '핫케이크', area: box(2, 60.3, 71.2), r: 2.6 }, { label: '치킨 너겟', area: box(3, 60.3, 71.2), r: 2.6 },
+        { label: '감자튀김', area: box(0, 45.94, 57.21), r: TILE_R }, { label: '치즈스틱', area: box(1, 45.94, 57.21), r: TILE_R },
+        { label: '스트링 치즈', area: box(2, 45.94, 57.21), r: TILE_R }, { label: '해시브라운', area: box(3, 45.94, 57.21), r: TILE_R },
+        { label: '치킨 랩', area: box(0, 59.96, 71.23), r: TILE_R }, { label: '사과 파이', area: box(1, 59.96, 71.23), r: TILE_R },
+        { label: '핫케이크', area: box(2, 59.96, 71.23), r: TILE_R }, { label: '치킨 너겟', area: box(3, 59.96, 71.23), r: TILE_R },
       ],
     },
     {
@@ -70,10 +77,10 @@
       en: 'Choose a drink.', target: '코카콜라',
       hits: [
         back,
-        { label: '코카콜라', area: box(0, 59.7, 70.8), r: 2.6 }, { label: '사이다', area: box(1, 59.7, 70.8), r: 2.6 },
-        { label: '환타 오렌지', area: box(2, 59.7, 70.8), r: 2.6 }, { label: '생수', area: box(3, 59.7, 70.8), r: 2.6 },
-        { label: '바닐라 쉐이크', area: box(0, 73.9, 84.7), r: 2.6 }, { label: '초코 쉐이크', area: box(1, 73.9, 84.7), r: 2.6 },
-        { label: '딸기 쉐이크', area: box(2, 73.9, 84.7), r: 2.6 }, { label: '우유', area: box(3, 73.9, 84.7), r: 2.6 },
+        { label: '코카콜라', area: box(0, 59.47, 70.70), r: TILE_R }, { label: '사이다', area: box(1, 59.47, 70.70), r: TILE_R },
+        { label: '환타 오렌지', area: box(2, 59.47, 70.70), r: TILE_R }, { label: '생수', area: box(3, 59.47, 70.70), r: TILE_R },
+        { label: '바닐라 쉐이크', area: box(0, 73.41, 84.72), r: TILE_R }, { label: '초코 쉐이크', area: box(1, 73.41, 84.72), r: TILE_R },
+        { label: '딸기 쉐이크', area: box(2, 73.41, 84.72), r: TILE_R }, { label: '우유', area: box(3, 73.41, 84.72), r: TILE_R },
       ],
     },
     {
@@ -81,15 +88,19 @@
       en: 'Check your order, then choose a payment method.', target: '카드 결제',
       hits: [
         back,
-        { label: '카드 결제', area: { x: 3.2, y: 56.6, w: 45.2, h: 30.2 }, r: 5 },
-        { label: '모바일 상품권', area: { x: 51.6, y: 56.6, w: 45.1, h: 30.2 }, r: 5 },
+        // The voucher card is drawn a third of a percent higher than the card
+        // beside it; both hits follow their own card rather than one average.
+        { label: '카드 결제', area: { x: 3.23, y: 56.61, w: 45.15, h: 30.14 }, r: CARD_R },
+        { label: '모바일 상품권', area: { x: 51.62, y: 56.24, w: 45.07, h: 30.14 }, r: CARD_R },
       ],
     },
     { panel: 'panel07', ko: '비밀번호를 입력해 주세요.', en: 'Enter your four-digit number.', keypad: true },
   ];
 
-  const KEY_X = [6.6, 37.6, 68.7], KEY_W = 24.8;
-  const KEY_Y = [21.7, 35.6, 49.5, 63.4], KEY_H = 12.3;
+  // The twelve keys are drawn on a perfectly regular grid; these are its own
+  // numbers rather than an approximation of them.
+  const KEY_X = [6.46, 37.48, 68.58], KEY_W = 24.98;
+  const KEY_Y = [21.74, 35.64, 49.54, 63.47], KEY_H = 12.24;
   const KEYS = [
     ['1', 0, 0], ['2', 1, 0], ['3', 2, 0],
     ['4', 0, 1], ['5', 1, 1], ['6', 2, 1],
@@ -139,22 +150,59 @@
   // ever created, fetched or decoded mid-run — the three things that made the
   // stage blink. The panels are decorative here: the instruction on each is in
   // the caption underneath, as text.
-  // The screens are the study's own, so their Korean is baked into the image.
-  // These chips sit on top of it, each filled with the colour sampled from the
-  // panel underneath, so the English reads as part of the screen rather than as
-  // a translation stuck beside it. Generated by scripts/build_kiosk_en.py.
+  // The screens are the study's own, with the Korean lifted out of the pixels and
+  // the cards that carried a fixed order left empty — see
+  // scripts/build_kiosk_panels.py, which also measures where each label went and
+  // in what colour. So the English is text on an empty band rather than a patch
+  // laid over Korean, and there is no moment where the Korean is what you see.
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const enLayer = (panel) => ((window.KIOSK_EN || {})[panel] || []).map(i =>
     '<span class="kiosk-en" style="left:' + i.x + '%;top:' + i.y + '%;width:' + i.w + '%;height:' + i.h +
-    '%;background:' + i.bg + ';color:' + i.c + ';font-size:' + i.s + 'cqw;text-align:' + i.a +
+    '%;color:' + i.c + ';font-size:' + i.s + 'cqw;text-align:' + i.a +
     (i.r ? ';border-radius:' + i.r + 'cqw' : '') + '">' +
     i.t.map(esc).join('<br>') + '</span>').join('');
+
+  /* --- what was actually ordered -------------------------------------------
+   * The collapsed headers and the confirmation screen show the order so far. On
+   * the study's screens that was a shrimp burger, cheese sticks and a Coca-Cola
+   * whatever the visitor picked — the screens are one participant's run, caught as
+   * photographs. Those cards now arrive empty and this fills them in.
+   *
+   * The photo is the item's own tile on the menu screen, seen through a window:
+   * the panel is the background image, scaled so that one tile fills the card and
+   * offset so that it is the tile you see. A percentage background-position
+   * resolves against (container - image), so a crop starting at x% of a source
+   * w% wide sits at x / (100 - w).
+   */
+  const CARDS = window.KIOSK_CARDS || { items: {}, slots: {} };
+
+  const photoStyle = (item) => {
+    const [x, y, w, h] = item.photo;
+    return 'background-image:url(/assets/demos/kiosk/' + item.p + '-en.webp);' +
+      'background-size:' + (100 / w * 100).toFixed(2) + '% ' + (100 / h * 100).toFixed(2) + '%;' +
+      'background-position:' + (x / (100 - w) * 100).toFixed(3) + '% ' +
+      (y / (100 - h) * 100).toFixed(3) + '%';
+  };
+
+  const cardLayer = (panel) => (CARDS.slots[panel] || []).map(s => {
+    const item = CARDS.items[state.chosen[s.src]];
+    if (!item) return '';          // nothing chosen yet: the card stays empty
+    const band = (a, b) => 'top:' + a + '%;height:' + (b - a) + '%';
+    return '<div class="kiosk-card" style="left:' + s.x + '%;top:' + s.y + '%;width:' + s.w +
+      '%;height:' + s.h + '%;background:' + s.cw + ';border-radius:' + s.r + 'cqw">' +
+      '<span class="kiosk-card-photo" style="height:' + s.photo + '%;' + photoStyle(item) + '"></span>' +
+      '<b style="' + band(s.name[0], s.name[1]) + ';font-size:' + s.ns + 'cqw;color:' + s.nc + '">' +
+        esc(item.en) + '</b>' +
+      '<i style="' + band(s.price[0], s.price[1]) + ';font-size:' + s.ps + 'cqw;color:' + s.pc + '">' +
+        esc(item.price) + '</i>' +
+      '</div>';
+  }).join('');
 
   const PANELS = STEPS.map(s => s.panel).concat('panel08');
   stage.innerHTML =
     '<div class="kiosk-panel">' +
       PANELS.map(p => '<img class="kiosk-screen" data-panel="' + p + '" alt="" ' +
-        'src="/assets/demos/kiosk/' + p + '.webp">').join('') +
+        'src="/assets/demos/kiosk/' + p + '-en.webp">').join('') +
       PANELS.map(p => '<div class="kiosk-en-layer" data-panel="' + p + '">' + enLayer(p) + '</div>').join('') +
       '<div class="kiosk-overlay"></div>' +
       // The whole screen sits behind this veil until the order has been heard:
@@ -241,7 +289,9 @@
       'width:' + h.area.w + '%;height:' + h.area.h + '%' +
       (h.r ? ';border-radius:' + h.r + 'cqw' : '') + '"></button>').join('');
     showPanel(step.panel);
-    overlay.innerHTML = hits + extra;
+    // The cards are redrawn with every screen rather than once at the start:
+    // what they show is whatever has been chosen by the time you arrive.
+    overlay.innerHTML = hits + cardLayer(step.panel) + extra;
     // The screen's own instruction, in English. A Korean participant could read
     // it off the panel, so a visitor who cannot read Korean should have it too —
     // but written, not spoken. The study's only spoken instruction came before
@@ -271,7 +321,7 @@
     const keys = KEYS.map(([k, cx, cy]) =>
       '<button class="kiosk-hit" type="button" data-k="' + k + '" aria-label="' + k + '"' +
       ' style="left:' + KEY_X[cx] + '%;top:' + KEY_Y[cy] + '%;width:' + KEY_W + '%;height:' + KEY_H + '%;' +
-      'border-radius:4.6cqw"></button>').join('');
+      'border-radius:' + KEY_R + 'cqw"></button>').join('');
     const digits = CODE_BOX.map(([x0, x1], i) =>
       '<span class="kiosk-digit" style="left:' + x0 + '%;top:' + CODE_Y + '%;width:' + (x1 - x0) +
       '%;height:' + CODE_H + '%">' +
@@ -326,7 +376,7 @@
     // remove the memory demand the task exists to measure. It is also never
     // played automatically — where autoplay is allowed the clip would be spent
     // before anyone was listening, and where it is blocked it would not sound
-    // at all. Pressing the veil is the one behaviour every browser agrees on.
+    // at all. Pressing the veil is the one behavior every browser agrees on.
     startHit = el('[data-i]');
     startHit.disabled = true;
     startHit.addEventListener('click', begin);
@@ -381,12 +431,15 @@
     const nearHc = v => (a, b) => Math.abs(v - a) <= Math.abs(v - b);
     const timeHc = nearHc(seconds)(HC.time, MCI.time);
     const errHc = nearHc(errors)(HC.errors, MCI.errors);
+    // Stated as distance to a printed mean, not as a side of a gap: "you are on
+    // the healthy side" reads as a verdict about the reader no matter what the
+    // disclaimer above it says.
     const placing = timeHc && errHc
-      ? 'Your numbers sit on the healthy-control side of the gap.'
+      ? 'Both of your values are closer to the healthy-control means in the study.'
       : (!timeHc && !errHc
-        ? 'Your numbers sit on the far side of the gap — in a browser that usually means a menu you ' +
-          'cannot read, not anything about you.'
-        : 'One of your numbers sits on each side of the gap.');
+        ? 'Both of your values are closer to the means of the group with MCI — in a browser that ' +
+          'usually means a menu you cannot read, not anything about you.'
+        : 'Your two values split — one closer to each group mean.');
     // One table for everything: the four measures as rows, you beside the two
     // groups. It used to be a list of your numbers followed by a second table
     // repeating two of them against the study.
@@ -407,23 +460,32 @@
       // line that stops the table from being read as a verdict.
       '<p class="kiosk-vs-note">' + placing + ' A browser cannot screen anyone for anything.</p>';
 
-    // Both reports describe the same run. One sentence each: the only thing
-    // that changes is the direction of the conditional — Had you / If you —
-    // which is the whole contrast the narrative study was built on. The
-    // measurements list above already holds the numbers; repeating them here
-    // was what made the report read long.
+    // Both reports describe the same run, and the only thing that differs between
+    // them is the direction of the conditional — Had you / would have against If
+    // you / will. That is the whole of what the narrative study varied, so it has
+    // to be the whole of what varies here: same verb, same clause, same numbers on
+    // both sides. An earlier pair failed that. Only the counterfactual carried
+    // "not 87 seconds", so it also restated the failure, and the two used
+    // different words for the same thing (chosen correctly against avoid those
+    // wrong turns) — which left any difference in effect unattributable to tense.
     const secs = n => n + (n === 1 ? ' second' : ' seconds');
-    const back = !errors
-      ? '<p><b>Had you</b> paused at even one step to re-read the menu, your ' + secs(taken) + ' would have grown.</p>'
+    const steps = n => (n === 1 ? 'one step' : n + ' steps');
+    const pair = !errors
+      // Nothing went wrong, so the conditional has to run the other way: what a
+      // wrong step would have cost, against what one will cost.
+      ? ['Had you taken a wrong step, this order <b>would have taken</b> longer than ' + secs(taken) + '.',
+         'If you take a wrong step next time, this order <b>will take</b> longer than ' + secs(taken) + '.']
       : saved >= 1
-        ? '<p><b>Had you</b> chosen correctly at each step, this order would have taken about <b>' + secs(target) + '</b>, not ' + secs(taken) + '.</p>'
-        : '<p><b>Had you</b> chosen correctly at each step, the time would barely move &mdash; but ' +
-          (errors === 1 ? 'one step was' : errors + ' steps were') + ' taken twice.</p>';
-    const forward = !errors
-      ? '<p><b>If you</b> keep this pace on an unfamiliar menu, the ' + secs(taken) + ' will hold.</p>'
-      : saved >= 1
-        ? '<p><b>If you</b> avoid those wrong turns next time, the same order comes in around <b>' + secs(target) + '</b>.</p>'
-        : '<p><b>If you</b> avoid those wrong turns next time, the same run comes in cleaner still.</p>';
+        ? ['Had you chosen correctly at each step, this order <b>would have taken</b> about ' + secs(target) + ', not ' + taken + '.',
+           'If you choose correctly at each step next time, this order <b>will take</b> about ' + secs(target) + ', not ' + taken + '.']
+        // The wrong steps happened but cost less than a second, so there is no
+        // second number to give. Both sides say so, in the same words.
+        : ['Had you chosen correctly at each step, this order <b>would have taken</b> about the same ' + secs(taken) +
+           ' &mdash; ' + steps(errors) + ' went astray without costing you time.',
+           'If you choose correctly at each step next time, this order <b>will take</b> about the same ' + secs(taken) +
+           ' &mdash; ' + steps(errors) + ' went astray without costing you time.'];
+    const hadYou = '<p>' + pair[0] + '</p>';
+    const ifYou = '<p>' + pair[1] + '</p>';
 
     result.innerHTML =
       '<h3>Your measurements, against the study</h3>' + vs + orderNote +
@@ -439,10 +501,10 @@
       '<p>Same run, two directions. Pick the one that would actually change what you do.</p>' +
       '<div class="card-grid" id="kiosk-choice">' +
         '<article class="card" data-kind="counterfactual"><span class="card-index">COUNTERFACTUAL</span>' +
-          '<h3>What would have happened</h3>' + back +
+          '<h3>What would have happened</h3>' + hadYou +
           '<button class="button secondary" type="button" data-pick="counterfactual">This one moves me</button></article>' +
         '<article class="card" data-kind="prefactual"><span class="card-index">PREFACTUAL</span>' +
-          '<h3>What could happen next</h3>' + forward +
+          '<h3>What could happen next</h3>' + ifYou +
           '<button class="button secondary" type="button" data-pick="prefactual">This one moves me</button></article>' +
       '</div>' +
       '<div id="kiosk-reveal"></div></div>' +
@@ -480,7 +542,7 @@
       '<p>In one study, readers rated the two reports <b>equally clear</b>. The difference showed up in what ' +
       'they did next. <b>Counterfactual</b> readers looked back over the run they&rsquo;d just finished: ' +
       'self-reflection. <b>Prefactual</b> readers started planning the next one: self-improvement. ' +
-      'The wording picks the behaviour.</p>' +
+      'The wording may shape what readers do next.</p>' +
       '</div>';
     el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
   }

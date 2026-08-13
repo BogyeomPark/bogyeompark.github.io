@@ -183,7 +183,7 @@ def build_og_card():
     )
     draw.text((x, 222), "Bogyeom Park", font=font("georgia_bold", 84), fill="white")
     draw.text((x, 336), "박보겸", font=font("malgun", 34), fill=ACCENT_PALE)
-    draw.text((x, 400), "Integrated Ph.D. Student", font=font("ui", 30), fill=PAPER_TINT)
+    draw.text((x, 400), "Ph.D. Student", font=font("ui", 30), fill=PAPER_TINT)
     draw.text((x, 440), "SeoulTech HAI Lab", font=font("ui", 30), fill=PAPER_TINT)
     draw.line([x, 520, x + 54, 520], fill=ACCENT_PALE, width=4)
     draw.text((x, 546), "bogyeompark.github.io", font=font("ui", 24), fill=MUTED_TINT)

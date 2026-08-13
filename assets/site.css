@@ -125,8 +125,11 @@ a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4p
 }
 
 .identity { margin-top: 21px; }
-.identity h1 { margin: 0; font-size: 1.46rem; line-height: 1.25; letter-spacing: -0.015em; font-family: var(--serif); font-weight: 600; }
-.identity h1 a { color: inherit; text-decoration: none; }
+/* The site name is not the page's title - every page has its own <h1> in
+   .page-header / .paper-header. Keeping the name at <h1> made all 18 pages
+   announce the same heading to a screen reader. */
+.identity .site-name { margin: 0; font-size: 1.46rem; line-height: 1.25; letter-spacing: -0.015em; font-family: var(--serif); font-weight: 600; }
+.identity .site-name a { color: inherit; text-decoration: none; }
 .korean-name { display: block; margin-top: 3px; color: var(--muted); font-size: 0.88rem; font-weight: 500; }
 .role { margin: 13px 0 0; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
 .role a { font-weight: 600; text-decoration: none; }
@@ -189,7 +192,7 @@ a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4p
 main { min-width: 0; padding: 51px 0 66px 50px; }
 .page-header { padding-bottom: 40px; border-bottom: 1px solid var(--line); }
 .eyebrow { margin: 0 0 9px; color: var(--muted); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
-.page-header h2 {
+.page-header h1 {
   max-width: 800px;
   margin: 0;
   color: var(--ink);
@@ -384,7 +387,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .paper-header { padding-bottom: 30px; border-bottom: 1px solid var(--line); }
 .paper-breadcrumb { margin: 0 0 19px; color: var(--muted); font-size: 0.78rem; }
 .paper-breadcrumb a { text-decoration: none; }
-.paper-header h2 {
+.paper-header h1 {
   max-width: 900px;
   margin: 0;
   color: var(--ink);
@@ -545,7 +548,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
   .side-nav a::before { display: none; }
   .profile-links { margin-top: 17px; }
     main { padding: 36px 0 46px; }
-  .page-header h2 { font-size: clamp(2.25rem, 12vw, 3.25rem); }
+  .page-header h1 { font-size: clamp(2.25rem, 12vw, 3.25rem); }
   .lead { font-size: 0.96rem; }
       .section-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
   .news-item, .project-item { grid-template-columns: 1fr; gap: 7px; }
