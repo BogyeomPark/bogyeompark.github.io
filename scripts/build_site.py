@@ -106,7 +106,7 @@ PAGES = [
         "file": "demos/kiosk/index.html",
         "url": "/demos/kiosk/",
         "nav": "demos",
-        "assets": ["/assets/demos/kiosk.css", "/assets/demos/kiosk.js"],
+        "assets": ["/assets/demos/kiosk.css", "/assets/demos/kiosk-en.js", "/assets/demos/kiosk.js"],
         "title": f"Virtual Kiosk Test | {NAME}",
         "og_title": "Ordering a meal, as a cognitive test",
         "description": (

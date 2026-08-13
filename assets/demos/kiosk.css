@@ -20,7 +20,29 @@
 .kiosk-stage { margin-top: 22px; }
 /* Every panel is 1238x2475, give or take three pixels. The ratio lives on the
    frame because the screens inside it are stacked and cannot size it. */
-.kiosk-panel { position: relative; max-width: 330px; margin: 0 auto; aspect-ratio: 1238 / 2475; }
+.kiosk-panel {
+  position: relative; max-width: 330px; margin: 0 auto; aspect-ratio: 1238 / 2475;
+  container-type: inline-size;   /* label sizes are cqw, so text scales with the screen */
+}
+
+/* English laid over the Korean baked into the panel images. Fades with the
+   screen it belongs to, so it never appears over the wrong one. */
+.kiosk-en-layer {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 140ms linear;
+  pointer-events: none;
+}
+.kiosk-en-layer.on { opacity: 1; }
+.kiosk-en {
+  position: absolute;
+  display: grid; align-content: center;
+  overflow: hidden;
+  font-family: var(--sans);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
 .kiosk-screen {
   position: absolute;
   inset: 0;
