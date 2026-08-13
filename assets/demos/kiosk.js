@@ -477,9 +477,19 @@
     // which is the whole of the task — so it costs nothing in time, and a sentence
     // that promised seconds back for choosing correctly was charging for something
     // that never happened. The seconds stay in the table, where they are measured.
+    // A clean run has no wrong choice to look back on, so the pair turns on pace
+    // instead — against the study's own healthy-control mean, which is printed in
+    // the table above it. Anchoring it there is what keeps the sentence from being
+    // a tautology: "had you gone faster, it would have been faster" says nothing,
+    // and an invented target would be the same charge the time claim was dropped
+    // for. Matched, not beaten: the mean is a reference, not a goal, and the same
+    // sentence holds whether the run came in over it or under it.
+    const taken = Math.max(1, Math.round(seconds));
+    const hc = Math.round(HC.time);
+    const against = hc === taken ? ', which is about what it took.' : ', not ' + taken + '.';
     const pair = !errors
-      ? ['If you had missed one of the items, your order <b>would have gone</b> through with the wrong one in it.',
-         'If you miss one of the items next time, your order <b>will go</b> through with the wrong one in it.']
+      ? ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds' + against,
+         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds' + against]
       : misordered
         ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
            'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
