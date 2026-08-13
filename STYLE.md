@@ -215,8 +215,10 @@ venue 표기에는 공식 명칭 그대로 쓰고(`CHI EA '25: Extended Abstract
 
 ### 4-4. 이미지
 
-- **원본은 지우지 않는다.** 클릭하면 열리는 대상이다.
-- 화면에 쓰는 것은 `build_assets.py`가 만든 720px webp 썸네일.
+- **원본은 지우지 않는다.** news 사진은 클릭하면 열리는 대상이고, 논문 그림은 인쇄 품질 원본이다.
+- 화면에 쓰는 것은 `build_assets.py`가 만든 webp: news 사진 720px, 논문 그림 1400px.
+  논문 그림은 안에 글자가 있어서 폭과 품질을 더 준다.
+- HTML은 항상 webp를 가리킨다. 새 그림을 넣으면 `build_assets.py`를 돌리고 참조를 `.webp`로 쓴다.
 - 휴대폰 사진은 EXIF 회전 정보를 갖고 있다. 재인코딩하면 그 정보가 사라지므로
   `ImageOps.exif_transpose()`로 픽셀에 회전을 구워 넣는다.
 

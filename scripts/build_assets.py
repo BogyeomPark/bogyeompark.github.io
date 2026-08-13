@@ -41,6 +41,8 @@ FONTS = {
 HIGH_QUALITY_STEMS = {"hci-korea-best-paper-2025"}
 
 THUMB_WIDTH = 720
+# Paper figures carry text, so they keep more width than a photo thumbnail.
+FIGURE_WIDTH = 1400
 
 
 def font(name, size):
@@ -177,6 +179,34 @@ def build_og_card():
     return kb(out)
 
 
+def build_publication_figures():
+    """Re-encode paper figures for the web, keeping the originals as the source.
+
+    They arrive at print resolution — two were over 2.5 MB — and the publications
+    list loads all twelve at once. Figures are diagrams with text in them, so the
+    width stays generous and the quality high; the saving comes from webp.
+    """
+    src_root = os.path.join(ASSETS, "publications")
+    rows = []
+    for slug in sorted(os.listdir(src_root)):
+        folder = os.path.join(src_root, slug)
+        if not os.path.isdir(folder):
+            continue
+        for name in sorted(os.listdir(folder)):
+            stem, ext = os.path.splitext(name)
+            if ext.lower() not in {".png", ".jpg", ".jpeg"}:
+                continue
+            src = os.path.join(folder, name)
+            im = load_upright(src)
+            if im.width > FIGURE_WIDTH:
+                height = round(im.height * FIGURE_WIDTH / im.width)
+                im = im.resize((FIGURE_WIDTH, height), Image.LANCZOS)
+            out = os.path.join(folder, stem + ".webp")
+            im.save(out, "WEBP", quality=86, method=6)
+            rows.append((slug, name, kb(src), kb(out)))
+    return rows
+
+
 def build_cv_pages():
     """Rasterise the CV so the page can show it without a PDF viewer.
 
@@ -224,6 +254,14 @@ def main():
     print(f"icons      favicon.ico {ico_kb} KB, apple-touch-icon.png {apple_kb} KB")
 
     print(f"og card    og-card.jpg {build_og_card()} KB")
+
+    print("publication figures")
+    before = after = 0
+    for slug, name, src_kb, out_kb in build_publication_figures():
+        before += src_kb
+        after += out_kb
+        print(f"  {slug}/{name:<34} {src_kb:>5} KB -> {out_kb:>4} KB")
+    print(f"  {'total':<44} {before:>5} KB -> {after:>4} KB")
 
     print("cv pages")
     for index, size, size_kb in build_cv_pages():
