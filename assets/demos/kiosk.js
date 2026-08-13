@@ -134,7 +134,11 @@
   const caption = el('#kiosk-caption');
   if (!stage) return;
 
-  const state = { step: -1, started: 0, errors: 0, code: '', chosen: {}, typed: false };
+  // `chosen` is the order as it stands and `picks` is how it got there. Going back
+  // overwrites a choice but not the error it counted — the study counts selections
+  // that were not the item asked for, and one was made — so without the history a
+  // corrected run looks like an order with an error in it and nothing wrong.
+  const state = { step: -1, started: 0, errors: 0, code: '', chosen: {}, picks: [], typed: false };
 
   // scrollIntoView with an explicit behavior ignores the CSS reduced-motion
   // override, so the OS setting has to be read here too.
@@ -222,10 +226,17 @@
   const enLayers = {};
   stage.querySelectorAll('.kiosk-en-layer').forEach(d => { enLayers[d.dataset.panel] = d; });
 
+  // All eight screens stay in the page so that stepping through never waits on a
+  // decode, but only the one on show may be read. Left in the accessibility tree,
+  // the other seven let a screen reader read every menu — and the answers to a task
+  // whose whole demand is holding an order in memory — before it has begun.
   const showPanel = (panel) => {
     Object.keys(screens).forEach(p => {
-      screens[p].classList.toggle('on', p === panel);
-      enLayers[p].classList.toggle('on', p === panel);
+      const on = p === panel;
+      screens[p].classList.toggle('on', on);
+      enLayers[p].classList.toggle('on', on);
+      screens[p].setAttribute('aria-hidden', String(!on));
+      enLayers[p].setAttribute('aria-hidden', String(!on));
     });
   };
 
@@ -260,7 +271,9 @@
     startHit.classList.add('ready');   // the wash lifts and the ring pulses
   };
 
-  const liftVeil = () => { veil.classList.add('off'); releaseStart(); };
+  // Faded out but still a button, the veil kept its place in the tab order and
+  // could be pressed by a keyboard from behind the screen it had just uncovered.
+  const liftVeil = () => { veil.classList.add('off'); veil.disabled = true; releaseStart(); };
 
   const sayOrder = () => {
     if (orderSpent) return;
@@ -310,6 +323,7 @@
       // and the task moves on — the participant only finds out at the end.
       if (step.target) {
         state.chosen[step.panel] = hit.label;
+        state.picks.push({ panel: step.panel, label: hit.label, right: hit.label === step.target });
         if (hit.label !== step.target) state.errors += 1;
       }
       advance();
@@ -349,7 +363,7 @@
 
   function begin() {
     spendOrder();                      // it is not repeated once you begin
-    Object.assign(state, { step: 1, started: performance.now(), errors: 0, code: '', chosen: {}, typed: false });
+    Object.assign(state, { step: 1, started: performance.now(), errors: 0, code: '', chosen: {}, picks: [], typed: false });
     result.hidden = true;
     tally('kiosk-run-started', 'Kiosk run started');
     renderStep();
@@ -381,6 +395,7 @@
     startHit.disabled = true;
     startHit.addEventListener('click', begin);
     veil.hidden = false;
+    veil.disabled = false;
     veil.classList.remove('off', 'playing');
     veilTitle.innerHTML = '🔊 Listen first';
     veilNote.innerHTML = 'The order is spoken once &mdash; press to play it.';
@@ -394,8 +409,9 @@
     state.step = -1;
     caption.textContent = '';
     showPanel('panel08');
-    overlay.innerHTML = '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button>';
-    el('#kiosk-again').addEventListener('click', renderStart);
+    // The restart lives in the report, where the reader is: one on the screen and
+    // one under the result meant two buttons with the same words on the same page.
+    overlay.innerHTML = '';
     report(seconds);
   }
 
@@ -405,14 +421,23 @@
     // What was actually ordered, against what was asked for. The kiosk never
     // said anything at the time.
     const asked = { panel02: 'Eat in', panel03: '새우버거', panel04: '치즈스틱', panel05: '코카콜라', panel06: '카드 결제' };
-    const wrongItems = Object.keys(asked)
-      .filter(k => state.chosen[k] && state.chosen[k] !== asked[k])
-      .map(k => en(state.chosen[k]) + ' (asked for ' + en(asked[k]) + ')');
+    const wrongPanels = Object.keys(asked).filter(k => state.chosen[k] && state.chosen[k] !== asked[k]);
+    const wrongItems = wrongPanels.map(k => en(state.chosen[k]) + ' (asked for ' + en(asked[k]) + ')');
     const wrongPin = state.code !== PIN;
     const slips = wrongItems.concat(wrongPin ? ['payment number ' + (state.code || 'blank') + ' (asked for ' + PIN + ')'] : []);
+    // Steps that were got wrong and then put right: the order is correct, and the
+    // error the study would have counted still happened.
+    const fixes = Object.keys(asked)
+      .filter(k => state.chosen[k] === asked[k] && state.picks.some(p => p.panel === k && !p.right))
+      .map(k => ({ panel: k, first: en(state.picks.find(p => p.panel === k && !p.right).label) }));
+    const fixList = fixes.map(f => f.first + ' for ' + en(asked[f.panel])).join(', ');
     const orderNote = slips.length
-      ? '<p class="kiosk-best">You ordered ' + slips.join(', ') + '.</p>'
-      : '<p class="kiosk-best">Everything you ordered matched the request.</p>';
+      ? '<p class="kiosk-best">You ordered ' + slips.join(', ') +
+        (fixes.length ? ', and went back to change ' + fixList : '') + '.</p>'
+      : fixes.length
+        ? '<p class="kiosk-best">Everything you ordered matched the request &mdash; you went back to change ' +
+          fixList + '.</p>'
+        : '<p class="kiosk-best">Everything you ordered matched the request.</p>';
 
     // Table 3 of the study, means as printed: healthy controls (n=22) against
     // patients with mild cognitive impairment (n=32). All four biomarkers are
@@ -458,7 +483,8 @@
       // not being able to screen anyone used to be repeated here; it is already
       // the disclaimer above the task, which is the place someone worried about
       // their memory reads it — before they hold a score, not after.
-      '<p class="kiosk-vs-note">' + placing + '</p>';
+      '<p class="kiosk-vs-note">' + placing + ' These are the two groups&rsquo; averages from the ' +
+      'study, not a score: a browser cannot screen anyone for anything.</p>';
 
     // Both reports describe the same run, and the only thing that differs between
     // them is where the conditional points: If you had / would have against If you /
@@ -466,54 +492,55 @@
     // would do something" against "If you do something, you will do something" — and
     // they are the whole of what it varied, so they are the whole of what varies here:
     // same opening, same verb, same clause, same numbers on both sides.
-    // A step is a step and what came out of it is an item; an earlier sentence
-    // counted the first and named the second. Only the items are counted here —
-    // the payment number is wrong in its own way, and is its own clause.
     const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
-    const misordered = wrongItems.length;
-    const instead = misordered === 1
-      ? 'not the one item you picked instead'
-      : 'not the ' + (WORDS[misordered] || misordered) + ' items you picked instead';
-    // Both wordings turn on what was ordered rather than on the clock. A wrong
-    // item here is taken, counted and passed over — the kiosk never asks again,
-    // which is the whole of the task — so it costs nothing in time, and a sentence
-    // that promised seconds back for choosing correctly was charging for something
-    // that never happened. The seconds stay in the table, where they are measured.
-    // A clean run has no wrong choice to look back on, so the pair turns on pace
-    // instead — against the study's own healthy-control mean, which is printed in
-    // the table above it. Anchoring it there is what keeps the sentence from being
-    // a tautology: "had you gone faster, it would have been faster" says nothing,
-    // and an invented target would be the same charge the time claim was dropped
-    // for. Matched, not beaten: the mean is a reference, not a goal, and the same
-    // sentence holds whether the run came in over it or under it.
+    const misordered = wrongPanels.length;
+    const picked = misordered ? en(state.chosen[wrongPanels[0]]) : '';
+    const wanted = misordered ? en(asked[wrongPanels[0]]) : '';
+    const count = n => (WORDS[n] || n);
+
+    // What happened, in plain words and named, before either wording of it. The
+    // report used to open on the framing alone — "the one item you picked instead"
+    // — which is true and forgettable, and left the two versions reading as two
+    // sayings rather than two readings of one run.
+    const facts = [
+      'You completed the order with ' + (errors ? count(errors) + ' error' + (errors === 1 ? '' : 's') : 'no errors') + '.',
+      misordered === 1 ? 'You selected ' + picked + ' instead of ' + wanted + '.'
+        : misordered > 1 ? 'You selected ' + wrongPanels.map(k => en(state.chosen[k]) + ' instead of ' + en(asked[k])).join(', ') + '.'
+        : '',
+      fixes.length ? 'You went back to change ' + fixList + '.' : '',
+      wrongPin ? 'You typed ' + (state.code || 'nothing') + ' instead of ' + PIN + '.' : '',
+    ].filter(Boolean).join(' ');
+
+    // Both wordings say the same thing about the same choice; only the direction of
+    // the conditional moves, which is the whole of what the study varied. Naming the
+    // item is what makes that visible — the tense is easy to miss when the subject
+    // is "the one item you picked instead".
     const taken = Math.max(1, Math.round(seconds));
     const hc = Math.round(HC.time);
     // One wrong item, or a time outside the control group's own spread: 39.48 s,
-    // SD 18.96, both from the study's table. A run inside that spread is an
-    // ordinary control-group time, so there is no better run to describe and both
-    // wordings come out saying the run would have been what it already was. The
-    // line is the study's number rather than a round one picked here, because a
-    // margin invented for the occasion is the same unfounded figure the time claim
-    // was dropped for — and because this boundary decides what half the visitors
-    // read. It also keeps the smallest improvement the report ever offers at about
-    // twenty seconds, which is a difference worth a sentence.
+    // SD 18.96, both from the study's table. Inside that spread is an ordinary
+    // control-group time with nothing to improve on, and a wording that promises an
+    // improvement of nothing says nothing. The line is the study's number rather
+    // than a round one picked here, and it decides what half the visitors read.
     const room = errors > 0 || seconds > HC.time + HC.timeSD;
-    const perfect = 'You got every item right, and ' +
-      (seconds <= HC.time
-        ? 'came in under the healthy-control mean the study reported.'
-        : 'came in inside the spread of the study&rsquo;s healthy controls.') +
-      ' There is no counterfactual to write &mdash; which is also why the study&rsquo;s two reports ' +
-      'needed a result with something in it to explain.';
-    const pair = !errors
-      ? ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds, not ' + taken + '.',
-         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds, not ' + taken + '.']
-      : misordered
-        ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
-           'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
-        // Every item was right and only the payment number was not, so that is what
-        // both sentences are about.
-        : ['If you had entered the number you were given, this order <b>would have gone</b> through as asked.',
-           'If you enter the number you were given next time, this order <b>will go</b> through as asked.'];
+    const pair = misordered === 1
+      ? ['If you had chosen <b>' + wanted + '</b> instead of <b>' + picked + '</b>, your order <b>would have matched</b> the request.',
+         'If you choose <b>' + wanted + '</b> instead of <b>' + picked + '</b> next time, your order <b>will match</b> the request.']
+      : misordered > 1
+      ? ['If you had chosen what was asked for at those ' + count(misordered) + ' steps, your order <b>would have matched</b> the request.',
+         'If you choose what was asked for at those ' + count(misordered) + ' steps next time, your order <b>will match</b> the request.']
+      : wrongPin
+      ? ['If you had typed <b>' + PIN + '</b>, this order <b>would have gone</b> through as asked.',
+         'If you type <b>' + PIN + '</b> next time, this order <b>will go</b> through as asked.']
+      : fixes.length
+      // Everything ended as asked and the error is a choice made and taken back, so
+      // the pair points at the going back rather than at the order.
+      ? ['If you had chosen <b>' + en(asked[fixes[0].panel]) + '</b> first, you <b>would not have gone</b> back to change it.',
+         'If you choose <b>' + en(asked[fixes[0].panel]) + '</b> first next time, you <b>will not go</b> back to change it.']
+      // Nothing was wrong, so the pair turns on pace, against the study's own mean
+      // rather than a target invented here.
+      : ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds, not ' + taken + '.',
+         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds, not ' + taken + '.'];
 
     // One of the two, at random, and never both at once: side by side the reader
     // sees the manipulation and it stops working on them, which is also why
@@ -536,9 +563,12 @@
         const ask = asked[panel];
         const got = state.chosen[panel];
         const right = got === ask;
-        return '<li' + (right ? '' : ' class="wrong"') + '><b>' + name + '</b><span>' +
-          (got ? en(got) : '&mdash;') +
-          (right ? '' : ' <i>asked for ' + en(ask) + '</i>') + '</span></li>';
+        const undone = right && state.picks.some(p => p.panel === panel && !p.right);
+        return '<li' + (right ? (undone ? ' class="fixed"' : '') : ' class="wrong"') + '><b>' + name +
+          '</b><span>' + (got ? en(got) : '&mdash;') +
+          (right ? '' : ' <i>asked for ' + en(ask) + '</i>') +
+          (undone ? ' <i>first picked ' + en(state.picks.find(p => p.panel === panel && !p.right).label) +
+            '</i>' : '') + '</span></li>';
       }).join('') +
       '<li' + (state.code === PIN ? '' : ' class="wrong"') + '><b>Payment number</b><span>' +
       (state.code || 'blank') + (state.code === PIN ? '' : ' <i>asked for ' + PIN + '</i>') +
@@ -554,12 +584,25 @@
       'They rated them <b>equally clear</b>; what differed was where their attention went. The ' +
       '<b>counterfactual</b> readers dwelt on what had already happened, the <b>prefactual</b> readers ' +
       'on what to do next.</p>';
+    // A run with nothing wrong in it is the one a reader is most likely to have,
+    // and it used to end the section: no report, no wordings, nothing to see. The
+    // example is somebody else's run, in the third person and labelled as such, so
+    // that the best performance is not the one sent away from the point of the page.
+    const example = () =>
+      '<p class="kiosk-facts">An example, not your run. Someone completes the order with one error: ' +
+      'they select Beef Burger instead of Shrimp Burger.</p>' +
+      '<p class="kiosk-other"><b>' + KIND[0] + '</b> &mdash; &ldquo;' + TITLE[0] + '&rdquo;<br>' +
+      'If they had chosen <b>Shrimp Burger</b> instead of <b>Beef Burger</b>, their order ' +
+      '<b>would have matched</b> the request.</p>' +
+      '<p class="kiosk-other"><b>' + KIND[1] + '</b> &mdash; &ldquo;' + TITLE[1] + '&rdquo;<br>' +
+      'If they choose <b>Shrimp Burger</b> instead of <b>Beef Burger</b> next time, their order ' +
+      '<b>will match</b> the request.</p>';
     const kept =
       '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report ' +
       'made them think about. Nothing here was measured on you either: your time and errors never left ' +
       'this browser, and the only things that leave are two anonymous counts &mdash; a run started, a ' +
       'run finished.</p>';
-    const reveal = (again) =>
+    const reveal = () =>
       '<div class="research-note">' +
       (room
         ? '<p>Half of the people who get here read this instead:</p>' +
@@ -567,12 +610,8 @@
           '<p>Same facts, different tense. The study called yours the <b>' + KIND[shown] + '</b> report, ' +
           '&ldquo;' + TITLE[shown] + '&rdquo;, and that one the <b>' + KIND[1 - shown] + '</b>, &ldquo;' +
           TITLE[1 - shown] + '&rdquo;.</p>' +
-          study +
-          '<p>The two buttons under your report were that same split: one looks back over the run, the ' +
-          'other starts the next.</p>'
-        : '<p>The study wrote one result two ways and gave each reader one of them: the <b>counterfactual</b> ' +
-          'report, &ldquo;' + TITLE[0] + '&rdquo;, and the <b>prefactual</b>, &ldquo;' + TITLE[1] +
-          '&rdquo;. Yours had nothing to put in either.</p>' + study) +
+          study
+        : example() + study) +
       kept +
       '</div>';
 
@@ -598,20 +637,28 @@
 
       '<div id="kiosk-report-body" hidden>' +
       '<h3 id="kiosk-report">Your result</h3>' +
+      '<p class="kiosk-facts">' + facts + '</p>' +
       (room
         ? '<p class="kiosk-report-line">' + pair[shown] + '</p>' +
-          // Two ways on, weighted the same and worded so that neither hints at what
-          // it stands for. Reading the run back costs a click and re-running costs a
-          // minute, so these two are not a choice between equals and nothing is drawn
-          // from which one is pressed; the run itself is the behaviour that counts.
           '<div class="kiosk-actions" id="kiosk-next">' +
-            (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
-          '</div>' +
-          '<div id="kiosk-steps-out"></div>'
-        : '<p class="kiosk-report-line">' + perfect + '</p>') +
-      '<p class="kiosk-aside"><button class="kiosk-plain" type="button" data-act="tell">' +
-      'What did I just read?</button></p>' +
-      '<div id="kiosk-reveal"></div></div>' +
+            '<button class="button" type="button" data-act="other">See the other version</button>' +
+          '</div>'
+        : '<p class="kiosk-report-line">Your run had no error to explain, so a report of it cannot be ' +
+          'written either way &mdash; which is also what the study&rsquo;s two reports needed a result ' +
+          'for.</p>' +
+          '<div class="kiosk-actions" id="kiosk-next">' +
+            '<button class="button" type="button" data-act="example">Show me an example anyway</button>' +
+          '</div>') +
+      '<div id="kiosk-reveal"></div>' +
+      // The two ways on come after the explanation rather than before it. They used
+      // to gate it, so that pressing one could not be coloured by knowing what the
+      // wordings were — which mattered while the press was thought to be what the
+      // study measured, and stopped mattering when it turned out to have asked its
+      // readers instead.
+      '<div class="kiosk-actions" id="kiosk-ways" hidden>' +
+        (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
+      '</div>' +
+      '<div id="kiosk-steps-out"></div></div>' +
       // The two studies leave in the same form, side by side — one used to be
       // a button and the other an inline link, which read as different kinds
       // of thing. The old "demonstration, not a screening test" note is gone:
@@ -620,39 +667,32 @@
       '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
 
     result.hidden = false;
+    // Focused rather than announced: a live region would read the whole table, the
+    // report and both study links out in one breath. Taking the reader to it lets
+    // them read it at their own pace, and the scroll below does the same visually.
+    result.focus({ preventScroll: true });
     // Reading the run back explains nothing and takes nothing away: it opens in
     // place, both ways on stay, and the reader can still go again afterwards. The
     // explanation waits for that, or for the reader to ask for it outright — put on
     // the first click, it would have contaminated every re-run that followed it.
-    const explain = (again) => {
-      const next = el('#kiosk-next');
-      if (next) next.hidden = true;
-      el('.kiosk-aside').hidden = true;
-      // Run it again resets the task where it stands rather than handing over a
-      // second button called something else for the same thing. The explanation
-      // then sits under it to be read, or not, on the way back up.
-      if (again) renderStart();
-      el('#kiosk-reveal').innerHTML = reveal(again) + (again
-        ? '<p class="kiosk-aside"><button class="kiosk-plain" type="button" id="kiosk-to-task">' +
-          'Back to the task &uarr;</button></p>'
-        : '');
-      const up = el('#kiosk-to-task');
-      if (up) up.addEventListener('click', () =>
-        stage.scrollIntoView({ behavior: SCROLL, block: 'center' }));
-      el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
-    };
-
     result.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
       const act = b.dataset.act;
-      // Reading the run back opens in place and explains nothing: the explanation
-      // would contaminate any re-run that came after it, and the re-run is the
-      // behaviour worth having.
       if (act === 'look') {
         b.disabled = true;
         el('#kiosk-steps-out').innerHTML = stepList();
         return;
       }
-      explain(act === 'again');
+      if (act === 'again') {
+        renderStart();
+        stage.scrollIntoView({ behavior: SCROLL, block: 'center' });
+        return;
+      }
+      // The other version, or the worked one for a run that has none. Either way
+      // the ways on appear underneath it, now that there is nothing left to spoil.
+      el('#kiosk-next').hidden = true;
+      el('#kiosk-reveal').innerHTML = reveal();
+      el('#kiosk-ways').hidden = false;
+      el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
     }));
     el('#kiosk-open-report').addEventListener('click', (e) => {
       el('#kiosk-report-body').hidden = false;

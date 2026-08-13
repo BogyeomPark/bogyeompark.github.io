@@ -67,6 +67,9 @@
   opacity: 0;
 }
 .kiosk-screen.on { opacity: 1; }
+/* Off-screen panels are hidden from the pointer as well as the eye; aria-hidden in
+   kiosk.js does the same for a screen reader. */
+.kiosk-screen:not(.on), .kiosk-en-layer:not(.on) { pointer-events: none; }
 .kiosk-overlay { position: absolute; inset: 0; }
 
 /* Invisible until hovered: the original screens carry all the affordance. */
@@ -180,6 +183,8 @@
 .kiosk-handoff .button { margin: 0; }
 
 #kiosk-report-body[hidden] { display: none; }
+/* The run in plain words, above whichever way of putting it the reader drew. */
+.kiosk-facts { margin: 14px 0 0; color: var(--muted); font-size: 0.93rem; line-height: 1.7; }
 /* One report, set larger than body copy: it is the thing being read, not a
    caption on something else. */
 .kiosk-report-line {
@@ -215,3 +220,6 @@
 .kiosk-steps li span { text-align: right; }
 .kiosk-steps li i { color: var(--muted); font-style: normal; font-size: 0.85rem; }
 .kiosk-steps li.wrong span { color: var(--accent); font-weight: 600; }
+/* A step that was got wrong and then put right: correct, and worth showing as
+   something that took two goes. */
+.kiosk-steps li.fixed i { color: var(--accent); }
