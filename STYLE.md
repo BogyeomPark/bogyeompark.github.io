@@ -1,0 +1,176 @@
+# 사이트 작성 규칙
+
+이 사이트를 고칠 때 지키는 규칙. 새 세션·새 사람이 이어받을 때 여기부터 읽는다.
+**원칙: 같은 것은 한 곳에만 쓰고, 나머지는 거기서 생성한다.**
+
+---
+
+## 1. 무엇이 생성물이고 무엇이 손으로 쓰는 파일인가
+
+| 파일 | 소유 | 고칠 때 |
+|---|---|---|
+| 모든 페이지의 `<head>`, 사이드바 | `scripts/build_site.py` | 스크립트의 `PAGES`·`NAV`를 고치고 다시 실행 |
+| `sitemap.xml`, `robots.txt` | `scripts/build_site.py` | 직접 고치지 않는다 |
+| `/cv/` 본문 (`cv:start`~`cv:end` 사이) | `scripts/build_cv_html.py` | `scripts/cv_data.py`를 고친다 |
+| `assets/cv/Bogyeom_Park_CV.pdf` | `scripts/build_cv.py` | `scripts/cv_data.py`를 고친다 |
+| `assets/news/thumbs/*`, `favicon.ico`, `apple-touch-icon.png`, `og-card.jpg`, `bogyeom-park-224.webp` | `scripts/build_assets.py` | 원본 이미지를 바꾸고 다시 실행 |
+| 각 페이지 `<main>` 안의 본문 | 손으로 작성 | 직접 편집 |
+
+**CV 내용은 `scripts/cv_data.py` 한 곳에만 있다.** PDF와 웹페이지가 같은 모듈을 읽으므로,
+둘 중 하나만 고치면 다음 빌드에서 덮어써진다.
+
+## 2. 빌드·검사 명령
+
+```bash
+python scripts/build_site.py          # head·사이드바·sitemap 동기화
+python scripts/build_cv_html.py       # cv_data -> /cv/ 본문
+python scripts/build_assets.py        # 썸네일·아이콘·og 카드 재생성
+
+# PDF는 reportlab이 필요하고, 이 PC에서는 base가 아니라 agent 환경에만 있다
+"$HOME/anaconda3/envs/agent/python.exe" scripts/build_cv.py
+```
+
+검사만 하고 파일은 안 건드리는 모드 (커밋 전에 돌린다):
+
+```bash
+python scripts/build_site.py --check
+python scripts/build_cv_html.py --check
+```
+
+`build_cv_html.py --check`는 **publications 페이지가 CV의 섹션 이름을 안 쓰면 실패**한다.
+그 페이지는 손으로 쓰는 파일이라 데이터에서 생성할 수 없어서 검사로 묶어 둔 것이다.
+
+---
+
+## 3. 표기 규칙
+
+### 3-1. 페이지 제목 = nav 이름
+
+nav에서 `News`를 눌렀는데 제목이 "Research updates & milestones"면 방문자가 자기 위치를 의심한다.
+**`<h2>`는 nav 항목과 같은 단어를 쓰고**, 설명 문구는 그 아래 `.lead` 한 줄로 내린다.
+섹션 페이지에는 `.eyebrow`를 쓰지 않는다 (nav 이름과 같은 말이 두 번 나온다).
+
+홈은 예외 — `.eyebrow`가 분야를 표시하고, `<h2>`는 연구 주장을 담는다.
+
+### 3-2. 논문 섹션 이름
+
+`scripts/cv_data.py`의 `SECTION_TITLES`가 유일한 원천이다. 현재:
+
+| 섹션 | 내용 |
+|---|---|
+| `Journal Articles` | 심사 학술지 논문 |
+| `International Conference Papers` | 국제 학회 (CHI EA, ITC-CSCC, ICEIC …) |
+| `Domestic Conference Papers` | 국내 학회 (HCI Korea) |
+
+세 이름은 **같은 문법 형태**(범위 + Papers/Articles)를 유지한다.
+국제/국내는 합치지 않는다 — 합쳐서 연도순으로 두면 국내 최신 논문이 CHI·JMIR 위로 올라가고,
+해외 심사자에게는 한국어 지역 학회가 CHI 옆에 붙은 것으로 보인다.
+
+이 이름은 `/publications/`와 `/cv/`와 PDF **세 곳에 같이** 나타난다.
+
+### 3-3. 링크 라벨 (닫힌 어휘 — 새 표현을 만들지 않는다)
+
+**본문 링크 줄** (`.paper-links`, `.news-links`) — *목적지*를 이름으로 쓴다:
+
+| 라벨 | 가리키는 곳 |
+|---|---|
+| `Project page →` | 이 사이트 안의 논문 상세 페이지 |
+| `PDF ↗` | 이 사이트에 올린 논문 파일 |
+| `Publisher ↗` | 공식 게재 기록 (ACM, IEEE Xplore, DBpia, 학회 proceedings) |
+| `Video ↗` | 발표·데모 영상 |
+| `News ↗` | 연구실 소식 게시물 |
+| `Related paper →` | 같은 연구의 다른 판본 (국내 ↔ 국제) |
+
+**순서도 이 표의 순서**를 따른다. 없는 항목은 건너뛴다.
+
+**버튼 줄** (`.paper-actions`, `.button-row`) — *동작*을 이름으로 쓴다.
+같은 PDF를 가리키는 버튼이 두 개라 목적지로는 구분이 안 되기 때문:
+
+| 라벨 | 동작 |
+|---|---|
+| `Open PDF ↗` | 새 탭에서 열기 (주 버튼) |
+| `Download PDF` | 내려받기 |
+
+화살표: **`↗` = 외부 사이트 / 새 탭**, **`→` = 이 사이트 안**. 예외 없다.
+
+### 3-4. 저자 표기
+
+- 본인 이름은 `<strong>Bogyeom Park</strong>`로 굵게 — 저자 목록에서 자기 위치가 보여야 한다.
+- 공동 제1저자는 `<sup>†</sup>`를 이름 뒤에 붙이고, 목록 끝에
+  `<span class="author-note">† Co-first authors (equal contribution)</span>`를 단다.
+- 개명 전 논문은 옛 이름을 쓰고 `<span class="former-name-note">(now Bogyeom Park)</span>`를 붙인다.
+  옛 이름을 지우면 그 논문의 인용이 끊긴다.
+- 수상은 그 논문 카드의 `.publication-badges`에 붙인다. 페이지 상단에 몰아두지 않는다 —
+  어느 논문 얘긴지 사라지고, 정작 논문 목록을 아래로 밀어낸다.
+
+### 3-5. 학회 명칭
+
+`Extended Abstracts`는 CHI의 **짧은 트랙 논문집 이름**이지 논문 종류가 아니다.
+venue 표기에는 공식 명칭 그대로 쓰고(`CHI EA '25: Extended Abstracts of the …`),
+**섹션 제목으로는 쓰지 않는다** (초록만 낸 것으로 오해된다).
+
+### 3-6. 지표 표기
+
+- JMIR: `JCR Q1; Top 3%` — percentile 표현과 섞지 않는다 (Top 3%와 96th percentile은 다른 수치다).
+- CHI LBW 채택률은 그 해 수치를 쓰고 분모를 같이 적는다: `32.7% acceptance; 619/1,888`.
+- 출처 링크를 걸 수 있는 수치만 싣는다.
+
+---
+
+## 4. 디자인 규칙
+
+### 4-1. 굵기와 색
+
+로드된 폰트는 Inter(본문)·Newsreader(제목). **굵기는 네 단계만** 쓴다:
+
+| 굵기 | 용도 |
+|---|---|
+| 400 | 본문 |
+| 500 | 보조 정보 (venue, 날짜) |
+| 600 | 제목, 항목 제목, 현재 nav |
+| 700 | 아주 드문 강조 |
+
+`650`·`750`·`850` 같은 값을 쓰지 않는다. 폰트가 안 실릴 때 전부 700으로 뭉개져
+"강조가 어딘지 모르겠는" 상태가 됐던 원인이다.
+
+**글자 색은 세 가지뿐**: `--ink`(제목) · `--body`(본문) · `--muted`(보조).
+더 강조하고 싶으면 새 회색을 만들지 말고 굵기나 크기를 쓴다.
+
+### 4-2. 색은 변수로만
+
+새 색을 CSS에 직접 적지 않는다. `:root`에 변수를 만들고 다크모드 블록에도 짝을 넣는다.
+예외는 `--plate`(논문 그림 판) — 그림 자체가 흰 배경이라 다크모드에서도 흰색을 유지한다.
+
+### 4-3. 반응형
+
+고정 브레이크포인트로 열 수를 정하지 않는다. `repeat(auto-fit, minmax(Npx, 1fr))`로
+**내용 폭에 따라 접히게** 한다. 3열 고정 때문에 900~1100px에서 카드가 175px로 짜부라진 적이 있다.
+
+### 4-4. 이미지
+
+- **원본은 지우지 않는다.** 클릭하면 열리는 대상이다.
+- 화면에 쓰는 것은 `build_assets.py`가 만든 720px webp 썸네일.
+- 휴대폰 사진은 EXIF 회전 정보를 갖고 있다. 재인코딩하면 그 정보가 사라지므로
+  `ImageOps.exif_transpose()`로 픽셀에 회전을 구워 넣는다.
+
+---
+
+## 5. 새 논문을 추가할 때
+
+1. `assets/publications/<slug>/`에 `paper.pdf`와 대표 그림을 넣는다.
+2. `scripts/cv_data.py`의 해당 목록에 항목을 추가한다 (제목·저자·venue·url).
+3. `/publications/index.html`에 카드를 추가한다 — 링크 줄은 §3-3 순서와 어휘를 따른다.
+4. 상세 페이지가 필요하면 `publications/<slug>/index.html`을 만들고
+   `scripts/build_site.py`의 `PAGES`에 등록한다 (`citation` 항목까지 채우면 Google Scholar가 색인한다).
+5. 빌드:
+   ```bash
+   python scripts/build_cv_html.py
+   "$HOME/anaconda3/envs/agent/python.exe" scripts/build_cv.py
+   python scripts/build_site.py
+   ```
+6. `--check` 두 개를 돌려 통과하는지 확인하고 커밋한다.
+
+## 6. 커밋
+
+푸시하면 곧바로 공개된다(GitHub Pages, `main` 브랜치). 커밋 전에 `--check`를 돌린다.
+새 파일이 페이지에서 참조되는데 untracked로 남으면 라이브에서 깨지므로 `git add -A`를 쓴다.
