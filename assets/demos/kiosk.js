@@ -104,13 +104,25 @@
 
   const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
 
-  // Fetch every screen up front. Each step replaces the panel outright, so
-  // without this the stage sits empty while the next image comes down the wire
-  // — invisible on localhost, a white flash on a real connection. panel08 is
-  // the thank-you screen and is not in STEPS.
-  STEPS.map(s => s.panel).concat('panel08').forEach(p => {
-    new Image().src = '/assets/demos/kiosk/' + p + '.webp';
-  });
+  // Every screen is laid down once, stacked, and stays in the page for good.
+  // Stepping through the task only changes which one is opaque, so no image is
+  // ever created, fetched or decoded mid-run — the three things that made the
+  // stage blink. The panels are decorative here: the instruction on each is in
+  // the caption underneath, as text.
+  const PANELS = STEPS.map(s => s.panel).concat('panel08');
+  stage.innerHTML =
+    '<div class="kiosk-panel">' +
+      PANELS.map(p => '<img class="kiosk-screen" data-panel="' + p + '" alt="" ' +
+        'src="/assets/demos/kiosk/' + p + '.webp">').join('') +
+      '<div class="kiosk-overlay"></div>' +
+    '</div>';
+  const overlay = el('.kiosk-overlay');
+  const screens = {};
+  stage.querySelectorAll('.kiosk-screen').forEach(im => { screens[im.dataset.panel] = im; });
+
+  const showPanel = (panel) => {
+    Object.keys(screens).forEach(p => screens[p].classList.toggle('on', p === panel));
+  };
 
   /* --- speech: pre-rendered clips ---------------------------------------- */
   // Files, not SpeechSynthesis. Most machines have no English voice installed
@@ -170,11 +182,8 @@
       '<button class="kiosk-hit' + (h.round ? ' round' : '') + '" type="button" data-i="' + i + '"' +
       ' aria-label="' + h.label + '" style="left:' + h.area.x + '%;top:' + h.area.y + '%;' +
       'width:' + h.area.w + '%;height:' + h.area.h + '%"></button>').join('');
-    stage.innerHTML =
-      '<div class="kiosk-panel">' +
-        '<img src="/assets/demos/kiosk/' + step.panel + '.webp" alt="Kiosk screen: ' + step.en + '">' +
-        hits + extra +
-      '</div>';
+    showPanel(step.panel);
+    overlay.innerHTML = hits + extra;
     // The screen's own instruction, in English. A Korean participant could read
     // it off the panel, so a visitor who cannot read Korean should have it too —
     // but written, not spoken. The study's only spoken instruction came before
@@ -271,8 +280,8 @@
     const speed = state.distance / seconds;
     state.step = -1;
     caption.textContent = '';
-    stage.innerHTML = '<div class="kiosk-panel"><img src="/assets/demos/kiosk/panel08.webp" alt="Kiosk screen: thank you">' +
-      '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button></div>';
+    showPanel('panel08');
+    overlay.innerHTML = '<button class="kiosk-restart" type="button" id="kiosk-again">Run it again</button>';
     el('#kiosk-again').addEventListener('click', renderStart);
     report(seconds, speed);
   }
