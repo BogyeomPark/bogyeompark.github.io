@@ -74,7 +74,15 @@
   cursor: pointer;
 }
 .kiosk-hit:hover:not(:disabled) { border-color: var(--accent); background: rgba(31, 66, 117, 0.08); }
-.kiosk-hit:disabled { cursor: default; }
+/* The gate has to be seen, not deduced: while the order is unheard the start
+   circle sits washed out, and the moment the clip ends it comes back and
+   rings once — the unlock is felt without reading anything. */
+.kiosk-hit:disabled { cursor: default; background: rgba(245, 249, 249, 0.6); }
+.kiosk-hit.ready { animation: kiosk-ready 1s ease-out 2; }
+@keyframes kiosk-ready {
+  from { box-shadow: 0 0 0 0 rgba(31, 66, 117, 0.4); }
+  to { box-shadow: 0 0 0 20px rgba(31, 66, 117, 0); }
+}
 .kiosk-hit:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.45); outline-offset: 2px; }
 .kiosk-hit.round { border-radius: 50%; }
 

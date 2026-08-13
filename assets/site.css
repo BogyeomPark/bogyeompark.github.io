@@ -560,6 +560,6 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  * { transition: none !important; }
+  * { transition: none !important; animation: none !important; }
 }
 

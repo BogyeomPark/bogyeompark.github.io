@@ -180,7 +180,7 @@
   // The standing warning — played once, memorise it — sits beside the button,
   // where it is read before anything is pressed. These three only track what
   // to do now.
-  const READY_NOTE = 'Press play when you are ready.';
+  const READY_NOTE = 'Play the order first — Start unlocks when it ends.';
   const PLAYING_NOTE = 'Hold it in memory.';
   const HELD_NOTE = 'That was the only time it is played. Touch Start when you have it.';
 
@@ -188,7 +188,11 @@
   // run started cold has nothing to remember — unusable numbers and a worse
   // report to read at the end.
   let startHit = null;
-  const releaseStart = () => { if (startHit) startHit.disabled = false; };
+  const releaseStart = () => {
+    if (!startHit || !startHit.disabled) return;
+    startHit.disabled = false;
+    startHit.classList.add('ready');   // the wash lifts and the ring pulses
+  };
 
   const sayOrder = () => {
     if (orderSpent) return;
