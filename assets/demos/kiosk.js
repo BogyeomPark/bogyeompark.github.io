@@ -315,20 +315,21 @@
     const timeHc = nearHc(seconds)(HC.time, MCI.time);
     const errHc = nearHc(errors)(HC.errors, MCI.errors);
     const placing = timeHc && errHc
-      ? 'Both of your numbers sit nearer the healthy control averages.'
+      ? 'Both of your numbers fall on the healthy control side of that gap.'
       : (!timeHc && !errHc
-        ? 'Both of your numbers sit nearer the averages of the group with mild cognitive impairment.'
-        : 'Your ' + (timeHc ? 'time sits nearer the healthy control average, your errors nearer the other group'
-          : 'errors sit nearer the healthy control average, your time nearer the other group') + '.');
+        ? 'Both of your numbers fall on the far side of it — which in a browser usually means a menu you ' +
+          'cannot read, rather than anything about you.'
+        : 'One of your numbers falls on each side of it.');
     // Where the numbers land, not what they mean about the reader. This task
     // has no eye tracker, a mouse instead of a tracked hand, and none of the
     // clinical assessment the study's diagnoses actually rested on.
     const against =
       '<h3>Against the study</h3>' +
-      '<p>Healthy controls averaged <b>' + HC.time + ' s</b> and <b>' + HC.errors + ' errors</b>; ' +
-      'participants with mild cognitive impairment averaged <b>' + MCI.time + ' s</b> and <b>' +
-      MCI.errors + ' errors</b>. You took <b>' + seconds.toFixed(1) + ' s</b> and made <b>' + errors +
-      '</b>. ' + placing + '</p>' +
+      '<p>You have just ordered a burger. The same six steps took the healthy controls <b>' + HC.time +
+      ' s</b> and <b>' + HC.errors + ' errors</b> on average; the participants with mild cognitive ' +
+      'impairment took <b>' + MCI.time + ' s</b> and made <b>' + MCI.errors + '</b>. That distance is ' +
+      'the whole finding. You took <b>' + seconds.toFixed(1) + ' s</b> and made <b>' + errors + '</b>. ' +
+      placing + '</p>' +
       '<p class="kiosk-caveat">That is a comparison of numbers, not a result about you. The diagnoses in ' +
       'the study came from a neuropsychological battery and an MRI scan, on participants in their ' +
       'seventies, in a headset that tracked the hands and eyes. A browser cannot screen anyone for anything.</p>';
