@@ -21,8 +21,8 @@
   <meta property="og:image:alt" content="Bogyeom Park (박보겸), Integrated Ph.D. Student at the SeoulTech HAI Lab">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="/assets/site.css?v=d3847169">
-  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=6e21b3a6">
-  <script src="/assets/demos/kiosk.js?v=ab2bae2e" defer></script>
+  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=eff9e1e9">
+  <script src="/assets/demos/kiosk.js?v=a631e97d" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -41,12 +41,13 @@
 
       <section class="content-section">
         <div class="kiosk-task">
-          <p id="kiosk-task-line"></p>
-          <button class="kiosk-say" type="button" id="kiosk-say">🔊 Read aloud</button>
+          <p id="kiosk-task-line">Use the kiosk to order a <strong>shrimp burger</strong>, <strong>cheese sticks</strong>, and a <strong>Coca-Cola</strong>.</p>
+          <button type="button" id="kiosk-say">🔊 다시 듣기</button>
         </div>
-        <p class="kiosk-figcaption"><label><input type="checkbox" id="kiosk-mute"> Mute the spoken prompts</label></p>
+        <p class="kiosk-options"><label><input type="checkbox" id="kiosk-mute"> Mute the spoken prompts</label> &middot; The screens and the voice are the Korean originals from the study; each prompt is translated under the screen.</p>
 
         <div class="kiosk-stage" id="kiosk-stage"></div>
+        <p class="kiosk-caption" id="kiosk-caption"></p>
 
         <div class="kiosk-result" id="kiosk-result" hidden></div>
       </section>

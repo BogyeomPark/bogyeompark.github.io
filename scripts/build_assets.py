@@ -200,9 +200,12 @@ def build_publication_figures():
     list loads all twelve at once. Figures are diagrams with text in them, so the
     width stays generous and the quality high; the saving comes from webp.
     """
-    src_root = os.path.join(ASSETS, "publications")
     rows = []
-    for slug in sorted(os.listdir(src_root)):
+    roots = [os.path.join(ASSETS, "publications"), os.path.join(ASSETS, "demos")]
+    for src_root in roots:
+      if not os.path.isdir(src_root):
+        continue
+      for slug in sorted(os.listdir(src_root)):
         folder = os.path.join(src_root, slug)
         if not os.path.isdir(folder):
             continue
