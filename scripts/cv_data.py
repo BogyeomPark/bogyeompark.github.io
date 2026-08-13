@@ -50,7 +50,7 @@ EDUCATION = [
     {
         "org": "Seoul National University of Science and Technology",
         "place": "Seoul, South Korea",
-        "degree": "Integrated Ph.D. in Applied Artificial Intelligence",
+        "degree": "Ph.D. in Applied Artificial Intelligence",
         "dates": "Mar. 2023 - Present",
         "bullets": ["Advisor: Kyoungwon Seo"],
     },
