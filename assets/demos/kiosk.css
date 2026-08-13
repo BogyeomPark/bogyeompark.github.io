@@ -94,6 +94,20 @@
 }
 .kiosk-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
 
-@media (max-width: 680px) {
-  .kiosk-task { grid-template-columns: 1fr; }
+/* The handoff into the report. Without it people read their score and stop. */
+.kiosk-handoff {
+  margin-top: 32px; padding: 24px 26px;
+  border-left: 3px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--accent-pale);
 }
+.kiosk-handoff p { margin: 0 0 16px; color: var(--body); }
+.kiosk-handoff b { color: var(--ink); }
+.kiosk-handoff .button { margin: 0; }
+
+#kiosk-report-body[hidden] { display: none; }
+#kiosk-report-body #kiosk-choice { margin-top: 22px; }
+#kiosk-report-body .card p { font-size: 0.93rem; line-height: 1.68; }
+#kiosk-report-body .card p:last-of-type { margin-bottom: 20px; }
+#kiosk-report-body .card b { color: var(--ink); font-weight: 600; }
+#kiosk-report-body .card .button { width: 100%; text-align: center; }

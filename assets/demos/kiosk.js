@@ -101,7 +101,7 @@
   const caption = el('#kiosk-caption');
   if (!stage) return;
 
-  const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false };
+  const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
 
   /* --- speech: Korean screens, Korean voice, or silence ------------------ */
   let voice = null;
@@ -134,7 +134,9 @@
   };
 
   /* --- pointer path ------------------------------------------------------ */
+  stage.addEventListener('pointerdown', (e) => { if (e.pointerType) state.pointer = e.pointerType; });
   stage.addEventListener('pointermove', (e) => {
+    if (e.pointerType) state.pointer = e.pointerType;
     if (state.step < 0) return;
     const r = stage.getBoundingClientRect();
     const x = e.clientX - r.left, y = e.clientY - r.top;
@@ -263,6 +265,10 @@
     const perStep = seconds / 6;
     const saved = Math.round(errors * perStep);
     const target = Math.max(1, taken - saved);
+    // A mouse is dragged between targets, so the pointer traces a path the way
+    // a hand controller did. A finger only reports where it lands: the straight
+    // lines between taps are not a hand path, so the speed is not measured.
+    const mouse = state.pointer !== 'touch' && state.points.length > 12;
     const best = Number(localStorage.getItem(KEY) || 0);
     const isBest = !best || seconds < best;
     if (isBest) localStorage.setItem(KEY, String(Math.round(seconds * 10) / 10));
@@ -283,46 +289,60 @@
       '<ul class="kiosk-measures">' +
         '<li><b>Time to completion</b><span>' + seconds.toFixed(1) + ' s</span></li>' +
         '<li><b>Number of errors</b><span>' + errors + '</span></li>' +
-        '<li><b>Hand movement speed</b><span>' + Math.round(speed) + ' px/s</span></li>' +
+        (mouse
+          ? '<li><b>Hand movement speed</b><span>' + Math.round(speed) + ' px/s</span></li>'
+          : '<li class="absent"><b>Hand movement speed</b><span>needs a mouse</span></li>') +
         '<li class="absent"><b>Scanpath length</b><span>needs an eye tracker</span></li>' +
       '</ul>';
 
     // Both reports describe the same three numbers. Only the direction of the
     // conditional changes — the contrast the narrative study was built on.
+    const speedLine = (a, b) => mouse ? a : b;
     const back = errors && saved >= 1
       ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
         '. Had you chosen correctly at each step, this order would have taken about <b>' + target +
         ' seconds</b> rather than ' + taken + '.</p>' +
-        '<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it moved more slowly while ' +
-        'searching the menu, the same wrong turns would have cost more than they did.</p>'
+        speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it moved more slowly while ' +
+        'searching the menu, the same wrong turns would have cost more than they did.</p>', '')
       : '<p>You made <b>no wrong selections</b>, and the order took <b>' + taken + ' seconds</b>. Had you ' +
         'paused at even one step to re-read the menu, that number would have grown.</p>' +
-        '<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it wandered between items ' +
-        'before settling, the same six steps would have covered more ground.</p>';
+        speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it wandered between items ' +
+        'before settling, the same six steps would have covered more ground.</p>', '');
 
     const forward = errors && saved >= 1
       ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
         '. If you avoid them next time and keep this pace, your order will take about <b>' + target +
         ' seconds</b>.</p>' +
-        '<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If you keep that speed while ' +
-        'reading ahead to the next step, the wrong turns will disappear before they cost anything.</p>'
+        speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If you keep that speed while ' +
+        'reading ahead to the next step, the wrong turns will disappear before they cost anything.</p>', '')
       : '<p>You made <b>no wrong selections</b>, and the order took <b>' + taken + ' seconds</b>. If you keep ' +
         'this up on an unfamiliar menu, the result will hold.</p>' +
-        '<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If it keeps moving straight to ' +
-        'each target, the distance it covers will stay short as the task gets longer.</p>';
+        speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If it keeps moving straight to ' +
+        'each target, the distance it covers will stay short as the task gets longer.</p>', '');
 
     result.innerHTML =
       '<h3>Your measurements</h3>' + measures + orderNote +
       '<p class="kiosk-best">' + (isBest ? 'That is your fastest run in this browser.'
         : 'Your fastest run in this browser is ' + best + ' s.') + '</p>' +
-      '<figure class="paper-figure">' + pathSvg() +
-        '<figcaption class="kiosk-figcaption">Where your pointer went. The study recorded the same thing from a ' +
-        'hand controller tracked by base stations; its length divided by time is one of the four biomarkers.</figcaption>' +
-      '</figure>' +
+      (mouse
+        ? '<figure class="paper-figure">' + pathSvg() +
+            '<figcaption class="kiosk-figcaption">Where your pointer went. The study recorded the same thing from a ' +
+            'hand controller tracked by base stations; its length divided by time is one of the four biomarkers.</figcaption>' +
+          '</figure>'
+        : '<p class="kiosk-note"><strong>Hand movement was not measured on this run.</strong> A finger reports only ' +
+          'where it lands, so the straight lines between taps are not the path a hand took. The study tracked a ' +
+          'controller continuously, and a mouse is the closest thing a browser has: run this on a computer and ' +
+          'the speed and the path both appear.</p>') +
 
-      '<h3 id="kiosk-report">Two reports of the same result</h3>' +
-      '<p>A separate study asked which kind of explanation actually moves someone to act. Both reports below ' +
-      'describe the run you just finished, in the two forms it compared.</p>' +
+      '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers.</b> Someone still has to be told what ' +
+      'they mean &mdash; and how that is written changes what the reader does about it. A second study wrote the ' +
+      'same result two ways to find out which.</p>' +
+      '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
+
+      '<div id="kiosk-report-body" hidden>' +
+      '<h3 id="kiosk-report">Your result, written two ways</h3>' +
+      '<p>Both of these describe the run you just finished. Read them, then pick the one that would actually ' +
+      'make you do something differently.</p>' +
       '<div class="card-grid" id="kiosk-choice">' +
         '<article class="card"><span class="card-index">COUNTERFACTUAL</span>' +
           '<h3>The impact of past inputs on present outcomes</h3>' + back +
@@ -331,7 +351,7 @@
           '<h3>The impact of present inputs on future outcomes</h3>' + forward +
           '<button class="button secondary" type="button" data-pick="prefactual">This one moves me</button></article>' +
       '</div>' +
-      '<div id="kiosk-reveal"></div>' +
+      '<div id="kiosk-reveal"></div></div>' +
       '<p class="kiosk-note"><strong>A demonstration, not a screening test.</strong> The study reached a diagnosis ' +
       'through clinical assessment, an MRI scan and an eye-tracking headset; this page reproduces the task and three ' +
       'of its measures. Nothing you do here leaves your browser.</p>' +
@@ -340,7 +360,12 @@
 
     result.hidden = false;
     result.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => reveal(b.dataset.pick)));
-    el('#kiosk-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el('#kiosk-open-report').addEventListener('click', (e) => {
+      el('#kiosk-report-body').hidden = false;
+      e.currentTarget.parentNode.hidden = true;
+      el('#kiosk-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function reveal(pick) {
