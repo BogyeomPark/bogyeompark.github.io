@@ -40,7 +40,7 @@
      that needs more emphasis than --body gets weight or size, not a new shade. */
   --ink: #17252a;
   --body: #46575c;
-  --muted: #6b7c81;
+  --muted: #66787d;   /* 4.6:1 on white; #6b7c81 came to 4.0, and small text needs 4.5 */
   --line: #dfe7e9;
   --paper: #ffffff;
   --soft: #f5f9f9;
