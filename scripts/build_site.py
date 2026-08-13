@@ -252,6 +252,178 @@ PAGES = [
         },
     },
     {
+        "file": "publications/advancing-mci-itc2024/index.html",
+        "url": "/publications/advancing-mci-itc2024/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"Advancing MCI Detection | {NAME}",
+        "og_title": "Advancing Mild Cognitive Impairment Detection: Integrating VR, MRI, and Neuropsychological Insights",
+        "description": (
+            "VR behavioral biomarkers alongside MRI and neuropsychological testing for early MCI "
+            "detection, reaching 94.4% accuracy. ITC-CSCC 2024."
+        ),
+        "citation": {
+            "title": (
+                "Advancing Mild Cognitive Impairment Detection: Integrating VR, MRI, and "
+                "Neuropsychological Insights for Comprehensive Diagnosis"
+            ),
+            "authors": [NAME, "Jinseok Park", "Hojin Choi", "Hokyoung Ryu", "Kyoungwon Seo"],
+            "date": "2024",
+            "conference": (
+                "2024 International Technical Conference on Circuits/Systems, Computers, and "
+                "Communications (ITC-CSCC)"
+            ),
+            "firstpage": "1",
+            "lastpage": "6",
+            "doi": "10.1109/ITC-CSCC62988.2024.10628151",
+            "pdf": "/assets/publications/advancing-mci-itc2024/paper.pdf",
+        },
+    },
+    {
+        "file": "publications/multimodal-mci-itc2024/index.html",
+        "url": "/publications/multimodal-mci-itc2024/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"Multimodal MCI Detection with EEG, MRI and VR | {NAME}",
+        "og_title": "Multimodal Machine Learning Model for MCI Detection Using EEG, MRI and VR Data",
+        "description": (
+            "A multimodal model combining EEG, MRI and VR behavioral data for mild cognitive "
+            "impairment detection. ITC-CSCC 2024."
+        ),
+        "citation": {
+            "title": "Multimodal Machine Learning Model for MCI Detection Using EEG, MRI and VR Data",
+            "authors": ["Mariem Kallel", NAME, "Kyoungwon Seo", "Seong-Eun Kim"],
+            "date": "2024",
+            "conference": (
+                "2024 International Technical Conference on Circuits/Systems, Computers, and "
+                "Communications (ITC-CSCC)"
+            ),
+            "firstpage": "1",
+            "lastpage": "6",
+            "doi": "10.1109/ITC-CSCC62988.2024.10628204",
+        },
+    },
+    {
+        "file": "publications/veem-iceic2024/index.html",
+        "url": "/publications/veem-iceic2024/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"VEEM Biomarkers for Early MCI Screening | {NAME}",
+        "og_title": "Early Screening of Mild Cognitive Impairment Using Multimodal VR-EP-EEG-MRI (VEEM) Biomarkers",
+        "description": (
+            "Eye and pupil measures combined with EEG and MRI for early screening of mild cognitive "
+            "impairment. ICEIC 2024."
+        ),
+        "citation": {
+            "title": (
+                "Early Screening of Mild Cognitive Impairment Using Multimodal VR-EP-EEG-MRI (VEEM) "
+                "Biomarkers via Machine Learning"
+            ),
+            "authors": ["Se Young Kim", NAME, "Dohyun Kim", "Hojin Choi", "Jinseok Park",
+                        "Hokyoung Ryu", "Kyoungwon Seo"],
+            "date": "2024",
+            "conference": "2024 International Conference on Electronics, Information, and Communication (ICEIC)",
+            "firstpage": "1",
+            "lastpage": "4",
+            "doi": "10.1109/ICEIC61013.2024.10457109",
+        },
+    },
+    {
+        "file": "publications/agentic-career-hci2026/index.html",
+        "url": "/publications/agentic-career-hci2026/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"Agentic AI for Career Counseling | {NAME}",
+        "og_title": "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
+        "description": (
+            "An agentic AI system built from teacher-stated needs to support career and college "
+            "counseling, validated by domain experts. HCI Korea 2026."
+        ),
+        "citation": {
+            "title": (
+                "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career "
+                "Counseling System"
+            ),
+            "authors": [NAME, "Mina Yoo", "Dongkuk Lee", "Mi-ae Choi", "Seona Park", "So Young Jo",
+                        "Kyoungwon Seo"],
+            "date": "2026",
+            "conference": "Proceedings of HCI Korea 2026",
+            "pdf": "/assets/publications/agentic-career-hci2026/paper.pdf",
+        },
+    },
+    {
+        "file": "publications/self-disclosure-hci2025/index.html",
+        "url": "/publications/self-disclosure-hci2025/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"Self-Disclosing Chatbots and Self-Reflection | {NAME}",
+        "og_title": "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
+        "description": (
+            "Whether a chatbot that discloses something of its own leads students to reflect more "
+            "deeply on academic stress. Best Paper Award, HCI Korea 2025."
+        ),
+        "citation": {
+            "title": (
+                "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student "
+                "Self-Reflection"
+            ),
+            "authors": ["Minyoung Park", NAME, "Kyoungwon Seo"],
+            "date": "2025",
+            "conference": "Proceedings of HCI Korea 2025",
+            "firstpage": "560",
+            "lastpage": "568",
+            "pdf": "/assets/publications/self-disclosure-hci2025/paper.pdf",
+        },
+    },
+    {
+        "file": "publications/heritage-tree-hci2024/index.html",
+        "url": "/publications/heritage-tree-hci2024/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"AI Heritage Tree Disease Diagnosis | {NAME}",
+        "og_title": "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning",
+        "description": (
+            "Transfer learning for diagnosing disease in Zelkova serrata, the species that accounts "
+            "for most of Korea's protected trees. HCI Korea 2024."
+        ),
+        "citation": {
+            "title": (
+                "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer "
+                "Learning: A Case Study of Zelkova serrata"
+            ),
+            "authors": ["Sabin Lee", NAME, "Daejung Kim", "Kyoungwon Seo"],
+            "date": "2024",
+            "conference": "Proceedings of HCI Korea 2024",
+            "firstpage": "212",
+            "lastpage": "219",
+            "pdf": "/assets/publications/heritage-tree-hci2024/paper.pdf",
+        },
+    },
+    {
+        "file": "publications/counterfactual-prefactual-hci2023/index.html",
+        "url": "/publications/counterfactual-prefactual-hci2023/",
+        "nav": "publications",
+        "og_type": "article",
+        "title": f"Counterfactual vs. Prefactual Narrative AI | {NAME}",
+        "og_title": "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
+        "description": (
+            "Two narrative explanations of an MRI report score the same on causability but work "
+            "through different mechanisms. HCI Korea 2023."
+        ),
+        "citation": {
+            "title": (
+                "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data "
+                "by Different Mechanisms"
+            ),
+            "authors": ["Hyobin Park", "Kyoungwon Seo"],
+            "date": "2023",
+            "conference": "Proceedings of HCI Korea 2023",
+            "firstpage": "828",
+            "lastpage": "835",
+            "pdf": "/assets/publications/counterfactual-prefactual-hci2023/paper.pdf",
+        },
+    },
+    {
         "file": "404.html",
         "url": None,
         "nav": None,
@@ -349,7 +521,8 @@ def build_head(page, css_v, js_v):
             out.append(f'  <meta name="citation_firstpage" content="{cite["firstpage"]}">')
         if cite.get("lastpage"):
             out.append(f'  <meta name="citation_lastpage" content="{cite["lastpage"]}">')
-        out.append(f'  <meta name="citation_doi" content="{cite["doi"]}">')
+        if cite.get("doi"):
+            out.append(f'  <meta name="citation_doi" content="{cite["doi"]}">')
         pdf = cite.get("pdf")
         if pdf and os.path.isfile(os.path.join(ROOT, pdf.lstrip("/"))):
             out.append(f'  <meta name="citation_pdf_url" content="{SITE}{pdf}">')

@@ -227,8 +227,12 @@ venue 표기에는 공식 명칭 그대로 쓰고(`CHI EA '25: Extended Abstract
 1. `assets/publications/<slug>/`에 `paper.pdf`와 대표 그림을 넣는다.
 2. `scripts/cv_data.py`의 해당 목록에 항목을 추가한다 (제목·저자·venue·url).
 3. `/publications/index.html`에 카드를 추가한다 — 링크 줄은 §3-3 순서와 어휘를 따른다.
-4. 상세 페이지가 필요하면 `publications/<slug>/index.html`을 만들고
-   `scripts/build_site.py`의 `PAGES`에 등록한다 (`citation` 항목까지 채우면 Google Scholar가 색인한다).
+4. **상세 페이지를 만든다** (`publications/<slug>/index.html`) — 저널이든 국제학회든 국내학회든
+   예외 없이. 12편 전부 있고, 없으면 목록에서 제목이 갈 곳이 없어진다. 구조는 기존 페이지와 같게:
+   breadcrumb / 제목 / 저자 / venue / 버튼 / 목차 / 그림 / Overview / Method / Key Findings /
+   Contribution / Citation. 그리고 `scripts/build_site.py`의 `PAGES`에 등록한다
+   (`citation` 항목까지 채우면 Google Scholar가 색인한다. DOI가 없으면 생략해도 된다).
+   **논문 전문을 여기 올리지 않는 경우엔 Key Findings를 비워 둔다** — 수치를 추측해 넣지 않는다.
 5. 빌드:
    ```bash
    python scripts/build_cv_html.py

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Heritage Tree Disease Diagnosis | Bogyeom Park</title>
+  <meta name="description" content="Transfer learning for diagnosing disease in Zelkova serrata, the species that accounts for most of Korea's protected trees. HCI Korea 2024.">
+  <meta name="author" content="Bogyeom Park">
+  <meta name="theme-color" content="#0f4c5c">
+  <link rel="canonical" href="https://bogyeompark.github.io/publications/heritage-tree-hci2024/">
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Bogyeom Park">
+  <meta property="og:title" content="Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning">
+  <meta property="og:description" content="Transfer learning for diagnosing disease in Zelkova serrata, the species that accounts for most of Korea's protected trees. HCI Korea 2024.">
+  <meta property="og:url" content="https://bogyeompark.github.io/publications/heritage-tree-hci2024/">
+  <meta property="og:image" content="https://bogyeompark.github.io/assets/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bogyeom Park (박보겸), Integrated Ph.D. Student at the SeoulTech HAI Lab">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="citation_title" content="Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: A Case Study of Zelkova serrata">
+  <meta name="citation_author" content="Sabin Lee">
+  <meta name="citation_author" content="Bogyeom Park">
+  <meta name="citation_author" content="Daejung Kim">
+  <meta name="citation_author" content="Kyoungwon Seo">
+  <meta name="citation_publication_date" content="2024">
+  <meta name="citation_conference_title" content="Proceedings of HCI Korea 2024">
+  <meta name="citation_firstpage" content="212">
+  <meta name="citation_lastpage" content="219">
+  <meta name="citation_pdf_url" content="https://bogyeompark.github.io/assets/publications/heritage-tree-hci2024/paper.pdf">
+  <link rel="stylesheet" href="/assets/site.css?v=80821fcb">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="site-shell">
+    <aside class="sidebar" aria-label="Profile and navigation">
+      <div class="sidebar-top"><img class="profile-photo" src="/assets/bogyeom-park-224.webp" width="224" height="288" alt="Portrait of Bogyeom Park"><div class="identity"><h1><a href="/">Bogyeom Park</a></h1><span class="korean-name" lang="ko">박보겸</span><p class="role">Integrated Ph.D. Student<br><a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">SeoulTech HAI Lab</a><br>Human-Centered Agentic AI</p></div></div>
+      <nav class="side-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/publications/" aria-current="page">Publications</a><a href="/news/">News</a><a href="/demos/">Demos</a><a href="/cv/">CV</a></nav>
+      <div class="profile-links" aria-label="External profiles"><a href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Scholar</a><a href="https://github.com/BogyeomPark" target="_blank" rel="noopener noreferrer">GitHub</a><a href="mailto:bogyeom@seoultech.ac.kr">Email</a></div>
+      <p class="sidebar-note">Human-centered Artificial Intelligence Lab<br>Seoul National University of Science and Technology</p>
+    </aside>
+    <main id="main-content">
+      <header class="paper-header">
+        <p class="paper-breadcrumb"><a href="/publications/">Publications</a> / HCI Korea 2024</p>
+        <h2>Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: A Case Study of Zelkova serrata</h2>
+        <p class="paper-authors">Sabin Lee, <strong>Bogyeom Park</strong>, Daejung Kim, and Kyoungwon Seo</p>
+        <p class="paper-venue">HCI Korea 2024 &middot; Pages 212&ndash;219</p>
+        <div class="paper-actions"><a class="button" href="/assets/publications/heritage-tree-hci2024/paper.pdf" target="_blank" rel="noopener noreferrer">Open PDF &#8599;</a><a class="button secondary" href="https://conference.hcikorea.org/pds/2024/HCI2024%20Proceedings.pdf" target="_blank" rel="noopener noreferrer">Publisher &#8599;</a></div>
+      </header>
+
+      <nav class="paper-toc" aria-label="On this page"><strong>On this page</strong><a href="#overview">Overview</a><a href="#method">Method</a><a href="#findings">Key Findings</a><a href="#contribution">Contribution</a><a href="#citation">Citation</a></nav>
+
+      <figure class="paper-figure"><img src="/assets/publications/heritage-tree-hci2024/figure-2.png" alt="A Zelkova serrata leaf image divided into individually cropped leaves"><figcaption>Figure 2. Leaf images are cropped individually before classification.</figcaption></figure>
+
+      <section class="paper-section" id="overview"><h3>Overview</h3><p>Heritage trees are protected by law, but the monitoring that protection assumes is expensive enough that trees are lost every year to disease caught too late. More than half of South Korea&rsquo;s designated protected trees are Zelkova serrata, which makes it the case worth solving first.</p></section>
+
+      <section class="paper-section" id="method"><h3>Method</h3><p>A dataset of 680 Zelkova serrata images was labelled and then validated by a tree specialist with 29 years of diagnostic experience. Several state-of-the-art models were compared under transfer learning, first with ImageNet weights alone and then with additional pre-training on plant disease datasets, using label smoothing to handle uncertain cases.</p></section>
+
+      <section class="paper-section" id="findings"><h3>Key Findings</h3><div class="metric-grid"><div class="metric"><strong>99.45%</strong><span>Best F1 score once models were also pre-trained on plant disease data.</span></div><div class="metric"><strong>92.0&ndash;96.3%</strong><span>F1 range from ImageNet weights alone, before any domain pre-training.</span></div></div></section>
+
+      <section class="paper-section" id="contribution"><h3>Contribution</h3><ul class="takeaway-list"><li>An expert-validated image dataset for a species that accounts for most of the country&rsquo;s protected trees.</li><li>Shows that domain pre-training, not architecture choice, carries the remaining accuracy.</li><li>Puts continuous monitoring within reach of the budgets that currently prevent it.</li></ul></section>
+
+      <section class="paper-section" id="citation"><h3>Citation</h3><div class="citation-box">Lee, S., Park, B., Kim, D., &amp; Seo, K. (2024). Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: A Case Study of Zelkova serrata. In <em>Proceedings of HCI Korea 2024</em>, 212&ndash;219.</div></section>
+      <footer><span>&copy; 2026 Bogyeom Park</span><span><a href="/publications/">&larr; All publications</a></span></footer>
+    </main>
+  </div>
+</body>
+</html>
