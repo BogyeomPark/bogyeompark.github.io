@@ -275,7 +275,9 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
   font-weight: 600;
   letter-spacing: .06em;
   text-transform: uppercase;
-  white-space: nowrap;
+  /* Chips must never invade the text column: cap at the date column and wrap
+     rather than overlap. Labels stay one word so this never actually fires. */
+  max-width: 100%;
 }
 .news-date span.award { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .news-item h3, .project-item h3 { margin: 0 0 6px; font-size: 1.12rem; line-height: 1.4; font-weight: 600; letter-spacing: -0.012em; }
