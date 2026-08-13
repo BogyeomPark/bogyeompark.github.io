@@ -401,10 +401,6 @@
 
   function report(seconds) {
     const errors = state.errors;
-    const taken = Math.max(1, Math.round(seconds));
-    const perStep = seconds / 6;
-    const saved = Math.round(errors * perStep);
-    const target = Math.max(1, taken - saved);
 
     // What was actually ordered, against what was asked for. The kiosk never
     // said anything at the time.
@@ -435,7 +431,11 @@
       : (!timeHc && !errHc
         ? 'Both of your values are closer to the means of the group with MCI — in a browser that ' +
           'usually means a menu you cannot read, not anything about you.'
-        : 'Your two values split — one closer to each group mean.');
+        // Which of the two went which way is left to the table. Naming it — "your
+        // errors are nearer the MCI mean" — reads as a finding about the reader
+        // however carefully the line around it is worded.
+        : 'Your two values fall on opposite sides: one is nearer the healthy-control mean, the '
+          + 'other nearer the mean of the group with MCI. Which is which is in the table above.');
     // One table for everything: the four measures as rows, you beside the two
     // groups. It used to be a list of your numbers followed by a second table
     // repeating two of them against the study.
@@ -464,8 +464,6 @@
     // would do something" against "If you do something, you will do something" — and
     // they are the whole of what it varied, so they are the whole of what varies here:
     // same opening, same verb, same clause, same numbers on both sides.
-    const secs = n => n + (n === 1 ? ' second' : ' seconds');
-    const steps = n => (n === 1 ? 'one step' : n + ' steps');
     // A step is a step and what came out of it is an item; an earlier sentence
     // counted the first and named the second. Only the items are counted here —
     // the payment number is wrong in its own way, and is its own clause.
@@ -474,26 +472,21 @@
     const instead = misordered === 1
       ? 'not the one item you picked instead'
       : 'not the ' + (WORDS[misordered] || misordered) + ' items you picked instead';
-    // Under five seconds nobody read a menu, and a saving that rounds to nothing
-    // has no second number to offer. Both would put a figure in the sentence that
-    // says nothing, so those runs are worded on the steps instead of the clock.
-    const timed = taken >= 5;
+    // Both wordings turn on what was ordered rather than on the clock. A wrong
+    // item here is taken, counted and passed over — the kiosk never asks again,
+    // which is the whole of the task — so it costs nothing in time, and a sentence
+    // that promised seconds back for choosing correctly was charging for something
+    // that never happened. The seconds stay in the table, where they are measured.
     const pair = !errors
-      ? (timed
-        ? ['If you had taken a wrong step, this order <b>would have taken</b> longer than ' + secs(taken) + '.',
-           'If you take a wrong step next time, this order <b>will take</b> longer than ' + secs(taken) + '.']
-        : ['If you had taken a wrong step, you <b>would have ordered</b> something nobody asked for.',
-           'If you take a wrong step next time, you <b>will order</b> something nobody asked for.'])
-      : (timed
-        ? ['If you had chosen correctly at each step, this order <b>would have taken</b> about ' + secs(target) + ', not ' + taken + '.',
-           'If you choose correctly at each step next time, this order <b>will take</b> about ' + secs(target) + ', not ' + taken + '.']
-        : misordered
-            ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
-               'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
-            // Every item was right and only the payment number was not, so that is
-            // what both sentences are about.
-            : ['If you had entered the number you were given, this order <b>would have gone</b> through as asked.',
-               'If you enter the number you were given next time, this order <b>will go</b> through as asked.']);
+      ? ['If you had missed one of the items, your order <b>would have gone</b> through with the wrong one in it.',
+         'If you miss one of the items next time, your order <b>will go</b> through with the wrong one in it.']
+      : misordered
+        ? ['If you had chosen correctly at each step, you <b>would have ordered</b> what was asked for, ' + instead + '.',
+           'If you choose correctly at each step next time, you <b>will order</b> what was asked for, ' + instead + '.']
+        // Every item was right and only the payment number was not, so that is what
+        // both sentences are about.
+        : ['If you had entered the number you were given, this order <b>would have gone</b> through as asked.',
+           'If you enter the number you were given next time, this order <b>will go</b> through as asked.'];
 
     // One of the two, at random, and never both at once: side by side the reader
     // sees the manipulation and it stops working on them, which is also why
@@ -531,15 +524,17 @@
                    'The impact of present inputs on future outcomes'];
     const reveal = (again) =>
       '<div class="research-note">' +
-      '<p>You read the <b>' + KIND[shown] + '</b> version of your result &mdash; the study titled that one ' +
+      '<p>You read the <b>' + KIND[shown] + '</b> version of your result &mdash; the one the study called ' +
       '&ldquo;' + TITLE[shown] + '&rdquo;. Half of the people who get here read the ' + KIND[1 - shown] +
-      ' one instead, &ldquo;' + TITLE[1 - shown] + '&rdquo;:</p>' +
+      ' version instead, &ldquo;' + TITLE[1 - shown] + '&rdquo;:</p>' +
       '<p class="kiosk-other">' + pair[1 - shown] + '</p>' +
-      '<p>Twenty people were each given one of the two, about an MRI report rather than a lunch order. They ' +
+      '<p>Twenty people each read one of the two &mdash; reports on an MRI result, not a lunch order. They ' +
       'rated them <b>equally clear</b>; what differed was where their attention went. Asked about it ' +
       'afterwards, the <b>counterfactual</b> readers dwelt on what had already happened and the ' +
       '<b>prefactual</b> readers on what to do next &mdash; self-reflection against self-improvement. Same ' +
       'facts, and the wording decided which way they faced.</p>' +
+      '<p>The two buttons under your report were that same split: one looks back over the run, the other ' +
+      'starts the next.</p>' +
       '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report made ' +
       'them think about. Nothing here was measured on you either: your time and errors never left this ' +
       'browser, and the only things that leave are two anonymous counts &mdash; a run started, a run ' +
