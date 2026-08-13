@@ -330,9 +330,9 @@
       'impairment took <b>' + MCI.time + ' s</b> and made <b>' + MCI.errors + '</b>. That distance is ' +
       'the whole finding. You took <b>' + seconds.toFixed(1) + ' s</b> and made <b>' + errors + '</b>. ' +
       placing + '</p>' +
-      '<p class="kiosk-caveat">That is a comparison of numbers, not a result about you. The diagnoses in ' +
-      'the study came from a neuropsychological battery and an MRI scan, on participants in their ' +
-      'seventies, in a headset that tracked the hands and eyes. A browser cannot screen anyone for anything.</p>';
+      // The full disclaimer lives once, at the foot of the report. Here it only
+      // has to stop the sentence above from being read as a verdict.
+      '<p class="kiosk-caveat">Numbers beside numbers. A browser cannot screen anyone for anything.</p>';
 
     const measures =
       '<ul class="kiosk-measures">' +
@@ -347,24 +347,33 @@
     // Both reports describe the same three numbers. Only the direction of the
     // conditional changes — the contrast the narrative study was built on.
     const speedLine = (a, b) => mouse ? a : b;
-    const back = errors && saved >= 1
+    const secs = n => n + (n === 1 ? ' second' : ' seconds');
+    // Branch on the errors themselves, never on what they cost: a fast run can
+    // round the cost to zero, and the report used to answer that by claiming
+    // there had been no wrong selections at all, one line under a count saying
+    // otherwise.
+    const back = errors
       ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
-        '. Had you chosen correctly at each step, this order would have taken about <b>' + target +
-        ' seconds</b> rather than ' + taken + '.</p>' +
+        (saved >= 1
+          ? '. Had you chosen correctly at each step, this order would have taken about <b>' + target +
+            '</b> rather than ' + secs(taken) + '.</p>'
+          : '. At this pace they cost you almost nothing &mdash; but each was a step you took twice.</p>') +
         speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it moved more slowly while ' +
         'searching the menu, the same wrong turns would have cost more than they did.</p>', '')
-      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + taken + ' seconds</b>. Had you ' +
+      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + secs(taken) + '</b>. Had you ' +
         'paused at even one step to re-read the menu, that number would have grown.</p>' +
         speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it wandered between items ' +
         'before settling, the same six steps would have covered more ground.</p>', '');
 
-    const forward = errors && saved >= 1
+    const forward = errors
       ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
-        '. If you avoid them next time and keep this pace, your order will take about <b>' + target +
-        ' seconds</b>.</p>' +
+        (saved >= 1
+          ? '. If you avoid them next time and keep this pace, your order will take about <b>' +
+            secs(target) + '</b>.</p>'
+          : '. Avoid them next time and the same run comes in shorter still.</p>') +
         speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If you keep that speed while ' +
         'reading ahead to the next step, the wrong turns will disappear before they cost anything.</p>', '')
-      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + taken + ' seconds</b>. If you keep ' +
+      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + secs(taken) + '</b>. If you keep ' +
         'this up on an unfamiliar menu, the result will hold.</p>' +
         speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If it keeps moving straight to ' +
         'each target, the distance it covers will stay short as the task gets longer.</p>', '');
@@ -376,23 +385,20 @@
       against +
       (mouse
         ? '<figure class="paper-figure">' + pathSvg() +
-            '<figcaption class="kiosk-figcaption">Where your pointer went. The study recorded the same thing from a ' +
-            'hand controller tracked by base stations; its length divided by time is one of the four biomarkers.</figcaption>' +
+            '<figcaption class="kiosk-figcaption">Where your pointer went. The study traced the same path with a ' +
+            'tracked hand controller &mdash; its length over time is one of the four biomarkers.</figcaption>' +
           '</figure>'
-        : '<p class="kiosk-note"><strong>Hand movement was not measured on this run.</strong> A finger reports only ' +
-          'where it lands, so the straight lines between taps are not the path a hand took. The study tracked a ' +
-          'controller continuously, and a mouse is the closest thing a browser has: run this on a computer and ' +
-          'the speed and the path both appear.</p>') +
+        : '<p class="kiosk-note"><strong>Hand movement was not measured.</strong> A finger reports where it lands, ' +
+          'not the path between. Run this with a mouse and the speed and the path both appear.</p>') +
 
       '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers.</b> Someone still has to be told what ' +
-      'they mean &mdash; and how that is written changes what the reader does about it. A second study wrote the ' +
-      'same result two ways to find out which.</p>' +
+      'they mean &mdash; and the wording changes what they do about it. A second study wrote the same result ' +
+      'two ways to find out.</p>' +
       '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
 
       '<div id="kiosk-report-body" hidden>' +
       '<h3 id="kiosk-report">Your result, written two ways</h3>' +
-      '<p>Both of these describe the run you just finished. Read them, then pick the one that would actually ' +
-      'make you do something differently.</p>' +
+      '<p>Same run, both of them. Pick the one that would actually make you do something differently.</p>' +
       '<div class="card-grid" id="kiosk-choice">' +
         '<article class="card"><span class="card-index">COUNTERFACTUAL</span>' +
           '<h3>The impact of past inputs on present outcomes</h3>' + back +
