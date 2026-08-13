@@ -25,20 +25,20 @@
   const BACK = { x: 62, y: 2.2, w: 35, h: 5.5 };
   const PIN = '6289';   // the study's own password, JMIR 2024;26:e54538
   const box = (col, top, bottom) => ({ x: COL[col][0], w: COL[col][1] - COL[col][0], y: top, h: bottom - top });
-  const back = { label: '이전 화면', area: BACK, back: true };
+  const back = { label: '이전 화면', area: BACK, back: true, r: 5.5 };
 
   const STEPS = [
     {
       panel: 'panel01', ko: '주문을 시작하려면 시작버튼을 눌러주세요.',
       en: 'Touch the Start button to begin your order.',
-      hits: [{ label: 'Start', area: { x: 19, y: 45, w: 62, h: 33 }, round: true }],
+      hits: [{ label: 'Start', area: { x: 16.7, y: 46.2, w: 67.3, h: 33.6 }, round: true }],
     },
     {
       panel: 'panel02', ko: '식사하실 장소를 선택해 주세요.',
       en: 'Where will you eat?', target: 'Eat in',
       hits: [
-        { label: 'Eat in', area: { x: 5, y: 47, w: 43, h: 31 } },
-        { label: 'Take out', area: { x: 52, y: 47, w: 43, h: 31 } },
+        { label: 'Eat in', area: { x: 2.9, y: 47.7, w: 45.2, h: 30.3 }, r: 5 },
+        { label: 'Take out', area: { x: 51.3, y: 47.7, w: 45.2, h: 30.3 }, r: 5 },
       ],
     },
     {
@@ -46,10 +46,10 @@
       en: 'Choose a burger.', target: '새우버거',
       hits: [
         back,
-        { label: '소고기버거', area: box(0, 31.3, 42.6) }, { label: '치즈버거', area: box(1, 31.3, 42.6) },
-        { label: '치킨버거', area: box(2, 31.3, 42.6) }, { label: '마늘버거', area: box(3, 31.3, 42.6) },
-        { label: '불고기버거', area: box(0, 45.8, 57.1) }, { label: '양파버거', area: box(1, 45.8, 57.1) },
-        { label: '새우버거', area: box(2, 45.8, 57.1) }, { label: '토마토버거', area: box(3, 45.8, 57.1) },
+        { label: '소고기버거', area: box(0, 32.6, 43.5), r: 2.6 }, { label: '치즈버거', area: box(1, 32.6, 43.5), r: 2.6 },
+        { label: '치킨버거', area: box(2, 32.6, 43.5), r: 2.6 }, { label: '마늘버거', area: box(3, 32.6, 43.5), r: 2.6 },
+        { label: '불고기버거', area: box(0, 46.5, 57.5), r: 2.6 }, { label: '양파버거', area: box(1, 46.5, 57.5), r: 2.6 },
+        { label: '새우버거', area: box(2, 46.5, 57.5), r: 2.6 }, { label: '토마토버거', area: box(3, 46.5, 57.5), r: 2.6 },
       ],
     },
     {
@@ -57,10 +57,10 @@
       en: 'Choose a side.', target: '치즈스틱',
       hits: [
         back,
-        { label: '감자튀김', area: box(0, 45.8, 57.1) }, { label: '치즈스틱', area: box(1, 45.8, 57.1) },
-        { label: '스트링 치즈', area: box(2, 45.8, 57.1) }, { label: '해시브라운', area: box(3, 45.8, 57.1) },
-        { label: '치킨 랩', area: box(0, 60.8, 72.1) }, { label: '사과 파이', area: box(1, 60.8, 72.1) },
-        { label: '핫케이크', area: box(2, 60.8, 72.1) }, { label: '치킨 너겟', area: box(3, 60.8, 72.1) },
+        { label: '감자튀김', area: box(0, 46.3, 57.2), r: 2.6 }, { label: '치즈스틱', area: box(1, 46.3, 57.2), r: 2.6 },
+        { label: '스트링 치즈', area: box(2, 46.3, 57.2), r: 2.6 }, { label: '해시브라운', area: box(3, 46.3, 57.2), r: 2.6 },
+        { label: '치킨 랩', area: box(0, 60.3, 71.2), r: 2.6 }, { label: '사과 파이', area: box(1, 60.3, 71.2), r: 2.6 },
+        { label: '핫케이크', area: box(2, 60.3, 71.2), r: 2.6 }, { label: '치킨 너겟', area: box(3, 60.3, 71.2), r: 2.6 },
       ],
     },
     {
@@ -68,10 +68,10 @@
       en: 'Choose a drink.', target: '코카콜라',
       hits: [
         back,
-        { label: '코카콜라', area: box(0, 60.8, 72.1) }, { label: '사이다', area: box(1, 60.8, 72.1) },
-        { label: '환타 오렌지', area: box(2, 60.8, 72.1) }, { label: '생수', area: box(3, 60.8, 72.1) },
-        { label: '바닐라 쉐이크', area: box(0, 75.8, 87.1) }, { label: '초코 쉐이크', area: box(1, 75.8, 87.1) },
-        { label: '딸기 쉐이크', area: box(2, 75.8, 87.1) }, { label: '우유', area: box(3, 75.8, 87.1) },
+        { label: '코카콜라', area: box(0, 59.7, 70.8), r: 2.6 }, { label: '사이다', area: box(1, 59.7, 70.8), r: 2.6 },
+        { label: '환타 오렌지', area: box(2, 59.7, 70.8), r: 2.6 }, { label: '생수', area: box(3, 59.7, 70.8), r: 2.6 },
+        { label: '바닐라 쉐이크', area: box(0, 73.9, 84.7), r: 2.6 }, { label: '초코 쉐이크', area: box(1, 73.9, 84.7), r: 2.6 },
+        { label: '딸기 쉐이크', area: box(2, 73.9, 84.7), r: 2.6 }, { label: '우유', area: box(3, 73.9, 84.7), r: 2.6 },
       ],
     },
     {
@@ -79,15 +79,15 @@
       en: 'Check your order, then choose a payment method.', target: '카드 결제',
       hits: [
         back,
-        { label: '카드 결제', area: { x: 3, y: 56, w: 44, h: 30 } },
-        { label: '모바일 상품권', area: { x: 51, y: 56, w: 44, h: 30 } },
+        { label: '카드 결제', area: { x: 3.2, y: 56.6, w: 45.2, h: 30.2 }, r: 5 },
+        { label: '모바일 상품권', area: { x: 51.6, y: 56.6, w: 45.1, h: 30.2 }, r: 5 },
       ],
     },
     { panel: 'panel07', ko: '비밀번호를 입력해 주세요.', en: 'Enter your four-digit number.', keypad: true },
   ];
 
-  const KEY_X = [8, 39, 70], KEY_W = 22;
-  const KEY_Y = [21.8, 35.3, 48.8, 62.3], KEY_H = 11.5;
+  const KEY_X = [6.6, 37.6, 68.7], KEY_W = 24.8;
+  const KEY_Y = [21.7, 35.6, 49.5, 63.4], KEY_H = 12.3;
   const KEYS = [
     ['1', 0, 0], ['2', 1, 0], ['3', 2, 0],
     ['4', 0, 1], ['5', 1, 1], ['6', 2, 1],
@@ -96,7 +96,7 @@
   ];
   // The four boxes the entered digits appear in, measured off the panel.
   const CODE_BOX = [[7.7, 23.4], [30.9, 46.7], [54.1, 69.9], [77.3, 93.1]];
-  const CODE_Y = 80.9, CODE_H = 7.6;
+  const CODE_Y = 80.3, CODE_H = 8.2;
 
   const el = (s, r = document) => r.querySelector(s);
   const stage = el('#kiosk-stage');
@@ -127,7 +127,8 @@
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   const enLayer = (panel) => ((window.KIOSK_EN || {})[panel] || []).map(i =>
     '<span class="kiosk-en" style="left:' + i.x + '%;top:' + i.y + '%;width:' + i.w + '%;height:' + i.h +
-    '%;background:' + i.bg + ';color:' + i.c + ';font-size:' + i.s + 'cqw;text-align:' + i.a + '">' +
+    '%;background:' + i.bg + ';color:' + i.c + ';font-size:' + i.s + 'cqw;text-align:' + i.a +
+    (i.r ? ';border-radius:' + i.r + 'cqw' : '') + '">' +
     i.t.map(esc).join('<br>') + '</span>').join('');
 
   const PANELS = STEPS.map(s => s.panel).concat('panel08');
@@ -205,10 +206,13 @@
 
   /* --- rendering --------------------------------------------------------- */
   function paint(step, extra = '', silent = false) {
+    // Each control's own corner radius, so the hover outline follows its shape
+    // instead of cutting a 10px corner across a much rounder card or key.
     const hits = (step.hits || []).map((h, i) =>
       '<button class="kiosk-hit' + (h.round ? ' round' : '') + '" type="button" data-i="' + i + '"' +
       ' aria-label="' + h.label + '" style="left:' + h.area.x + '%;top:' + h.area.y + '%;' +
-      'width:' + h.area.w + '%;height:' + h.area.h + '%"></button>').join('');
+      'width:' + h.area.w + '%;height:' + h.area.h + '%' +
+      (h.r ? ';border-radius:' + h.r + 'cqw' : '') + '"></button>').join('');
     showPanel(step.panel);
     overlay.innerHTML = hits + extra;
     // The screen's own instruction, in English. A Korean participant could read
@@ -239,7 +243,8 @@
     const step = STEPS[state.step];
     const keys = KEYS.map(([k, cx, cy]) =>
       '<button class="kiosk-hit" type="button" data-k="' + k + '" aria-label="' + k + '"' +
-      ' style="left:' + KEY_X[cx] + '%;top:' + KEY_Y[cy] + '%;width:' + KEY_W + '%;height:' + KEY_H + '%"></button>').join('');
+      ' style="left:' + KEY_X[cx] + '%;top:' + KEY_Y[cy] + '%;width:' + KEY_W + '%;height:' + KEY_H + '%;' +
+      'border-radius:4.6cqw"></button>').join('');
     const digits = CODE_BOX.map(([x0, x1], i) =>
       '<span class="kiosk-digit" style="left:' + x0 + '%;top:' + CODE_Y + '%;width:' + (x1 - x0) +
       '%;height:' + CODE_H + '%">' +
@@ -354,31 +359,29 @@
     // Table 3 of the study: healthy controls (n=22) against patients with mild
     // cognitive impairment (n=32), mean (SD). Only the two performance measures
     // are quoted — hand speed there was metres per second of a tracked hand,
-    // which a mouse in pixels cannot be held against.
+    // which a mouse in pixels cannot be held against. A table, not a paragraph:
+    // the gap is the finding, and three rows show it faster than prose can.
     const HC = { time: 39.5, errors: 1.7 };
     const MCI = { time: 105.4, errors: 4.0 };
     const nearHc = v => (a, b) => Math.abs(v - a) <= Math.abs(v - b);
     const timeHc = nearHc(seconds)(HC.time, MCI.time);
     const errHc = nearHc(errors)(HC.errors, MCI.errors);
     const placing = timeHc && errHc
-      ? 'Both of your numbers fall on the healthy control side of that gap.'
+      ? 'Your numbers sit on the healthy-control side of the gap.'
       : (!timeHc && !errHc
-        ? 'Both of your numbers fall on the far side of it — which in a browser usually means a menu you ' +
-          'cannot read, rather than anything about you.'
-        : 'One of your numbers falls on each side of it.');
-    // Where the numbers land, not what they mean about the reader. This task
-    // has no eye tracker, a mouse instead of a tracked hand, and none of the
-    // clinical assessment the study's diagnoses actually rested on.
+        ? 'Your numbers sit on the far side of the gap — in a browser that usually means a menu you ' +
+          'cannot read, not anything about you.'
+        : 'One of your numbers sits on each side of the gap.');
     const against =
       '<h3>Against the study</h3>' +
-      '<p>You have just ordered a burger. The same six steps took the healthy controls <b>' + HC.time +
-      ' s</b> and <b>' + HC.errors + ' errors</b> on average; the participants with mild cognitive ' +
-      'impairment took <b>' + MCI.time + ' s</b> and made <b>' + MCI.errors + '</b>. That distance is ' +
-      'the whole finding. You took <b>' + seconds.toFixed(1) + ' s</b> and made <b>' + errors + '</b>. ' +
-      placing + '</p>' +
-      // The full disclaimer lives once, at the foot of the report. Here it only
-      // has to stop the sentence above from being read as a verdict.
-      '<p class="kiosk-caveat">Numbers beside numbers. A browser cannot screen anyone for anything.</p>';
+      '<table class="kiosk-vs"><thead><tr><th></th><th>Time</th><th>Errors</th></tr></thead><tbody>' +
+      '<tr class="you"><th>You</th><td>' + seconds.toFixed(1) + ' s</td><td>' + errors + '</td></tr>' +
+      '<tr><th>Healthy controls (n=22)</th><td>' + HC.time + ' s</td><td>' + HC.errors.toFixed(1) + '</td></tr>' +
+      '<tr><th>With mild cognitive impairment (n=32)</th><td>' + MCI.time + ' s</td><td>' + MCI.errors.toFixed(1) + '</td></tr>' +
+      '</tbody></table>' +
+      // Where the numbers land, not what they mean about the reader — the one
+      // line that stops the table from being read as a verdict.
+      '<p class="kiosk-vs-note">' + placing + ' A browser cannot screen anyone for anything.</p>';
 
     const measures =
       '<ul class="kiosk-measures">' +
@@ -390,39 +393,23 @@
         '<li class="absent"><b>Scanpath length</b><span>needs an eye tracker</span></li>' +
       '</ul>';
 
-    // Both reports describe the same three numbers. Only the direction of the
-    // conditional changes — the contrast the narrative study was built on.
-    const speedLine = (a, b) => mouse ? a : b;
+    // Both reports describe the same run. One sentence each: the only thing
+    // that changes is the direction of the conditional — Had you / If you —
+    // which is the whole contrast the narrative study was built on. The
+    // measurements list above already holds the numbers; repeating them here
+    // was what made the report read long.
     const secs = n => n + (n === 1 ? ' second' : ' seconds');
-    // Branch on the errors themselves, never on what they cost: a fast run can
-    // round the cost to zero, and the report used to answer that by claiming
-    // there had been no wrong selections at all, one line under a count saying
-    // otherwise.
-    const back = errors
-      ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
-        (saved >= 1
-          ? '. Had you chosen correctly at each step, this order would have taken about <b>' + target +
-            '</b> rather than ' + secs(taken) + '.</p>'
-          : '. At this pace they cost you almost nothing &mdash; but each was a step you took twice.</p>') +
-        speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it moved more slowly while ' +
-        'searching the menu, the same wrong turns would have cost more than they did.</p>', '')
-      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + secs(taken) + '</b>. Had you ' +
-        'paused at even one step to re-read the menu, that number would have grown.</p>' +
-        speedLine('<p>Your hand moved at ' + Math.round(speed) + ' pixels per second. Had it wandered between items ' +
-        'before settling, the same six steps would have covered more ground.</p>', '');
-
-    const forward = errors
-      ? '<p>You made <b>' + errors + '</b> ' + (errors === 1 ? 'wrong selection' : 'wrong selections') +
-        (saved >= 1
-          ? '. If you avoid them next time and keep this pace, your order will take about <b>' +
-            secs(target) + '</b>.</p>'
-          : '. Avoid them next time and the same run comes in shorter still.</p>') +
-        speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If you keep that speed while ' +
-        'reading ahead to the next step, the wrong turns will disappear before they cost anything.</p>', '')
-      : '<p>You made <b>no wrong selections</b>, and the order took <b>' + secs(taken) + '</b>. If you keep ' +
-        'this up on an unfamiliar menu, the result will hold.</p>' +
-        speedLine('<p>Your hand moves at ' + Math.round(speed) + ' pixels per second. If it keeps moving straight to ' +
-        'each target, the distance it covers will stay short as the task gets longer.</p>', '');
+    const back = !errors
+      ? '<p><b>Had you</b> paused at even one step to re-read the menu, your ' + secs(taken) + ' would have grown.</p>'
+      : saved >= 1
+        ? '<p><b>Had you</b> chosen correctly at each step, this order would have taken about <b>' + secs(target) + '</b>, not ' + secs(taken) + '.</p>'
+        : '<p><b>Had you</b> chosen correctly at each step, the time would barely move &mdash; but ' +
+          (errors === 1 ? 'one step was' : errors + ' steps were') + ' taken twice.</p>';
+    const forward = !errors
+      ? '<p><b>If you</b> keep this pace on an unfamiliar menu, the ' + secs(taken) + ' will hold.</p>'
+      : saved >= 1
+        ? '<p><b>If you</b> avoid those wrong turns next time, the same order comes in around <b>' + secs(target) + '</b>.</p>'
+        : '<p><b>If you</b> avoid those wrong turns next time, the same run comes in cleaner still.</p>';
 
     result.innerHTML =
       '<h3>Your measurements</h3>' + measures + orderNote +
@@ -437,28 +424,26 @@
         : '<p class="kiosk-note"><strong>Hand movement was not measured.</strong> A finger reports where it lands, ' +
           'not the path between. Run this with a mouse and the speed and the path both appear.</p>') +
 
-      '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers.</b> Someone still has to be told what ' +
-      'they mean &mdash; and the wording changes what they do about it. A second study wrote the same result ' +
-      'two ways to find out.</p>' +
+      '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers</b> &mdash; and how a report words ' +
+      'them changes what its reader does next. A second study wrote the same result two ways.</p>' +
       '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
 
       '<div id="kiosk-report-body" hidden>' +
       '<h3 id="kiosk-report">Your result, written two ways</h3>' +
-      '<p>Same run, both of them. Pick the one that would actually make you do something differently.</p>' +
+      '<p>Same run, two directions. Pick the one that would actually change what you do.</p>' +
       '<div class="card-grid" id="kiosk-choice">' +
-        '<article class="card"><span class="card-index">COUNTERFACTUAL</span>' +
-          '<h3>The impact of past inputs on present outcomes</h3>' + back +
+        '<article class="card" data-kind="counterfactual"><span class="card-index">COUNTERFACTUAL</span>' +
+          '<h3>What would have happened</h3>' + back +
           '<button class="button secondary" type="button" data-pick="counterfactual">This one moves me</button></article>' +
-        '<article class="card"><span class="card-index">PREFACTUAL</span>' +
-          '<h3>The impact of present inputs on future outcomes</h3>' + forward +
+        '<article class="card" data-kind="prefactual"><span class="card-index">PREFACTUAL</span>' +
+          '<h3>What could happen next</h3>' + forward +
           '<button class="button secondary" type="button" data-pick="prefactual">This one moves me</button></article>' +
       '</div>' +
       '<div id="kiosk-reveal"></div></div>' +
-      '<p class="kiosk-note"><strong>A demonstration, not a screening test.</strong> The study reached a diagnosis ' +
-      'through clinical assessment, an MRI scan and an eye-tracking headset; this page reproduces the task and three ' +
-      'of its measures. Your measurements never leave your browser &mdash; the page counts runs, not results.</p>' +
-      '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a>' +
-      '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
+      '<p class="kiosk-note"><strong>A demonstration, not a screening test.</strong> The study&rsquo;s diagnoses ' +
+      'rested on clinical assessment, an MRI scan and eye tracking; this page reproduces the task and three of its ' +
+      'measures. Your measurements never leave your browser &mdash; the page counts runs, not results.</p>' +
+      '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a></div>';
 
     result.hidden = false;
     result.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => reveal(b.dataset.pick)));
@@ -470,19 +455,26 @@
     result.scrollIntoView({ behavior: SCROLL, block: 'start' });
   }
 
+  // After the pick, both terms get their answer — the reader who chose one
+  // still wondered what the other word meant — and the pick stays visible on
+  // the cards instead of the section simply going dead.
   function reveal(pick) {
     localStorage.setItem('kiosk-narrative-pick', pick);
-    const mechanism = pick === 'counterfactual'
-      ? 'Readers of the counterfactual report looked <b>back</b>. They revisited what they had done, and asked how the analysis had reached its conclusion. The mechanism was <b>self-reflection</b>.'
-      : 'Readers of the prefactual report looked <b>forward</b>. They started planning what to change. The mechanism was <b>self-improvement</b>.';
+    const choice = el('#kiosk-choice');
+    choice.querySelectorAll('.card').forEach(c =>
+      c.classList.add(c.dataset.kind === pick ? 'picked' : 'dimmed'));
+    choice.querySelectorAll('button').forEach(b => {
+      b.disabled = true;
+      if (b.dataset.pick === pick) b.textContent = 'Your pick ✓';
+    });
     el('#kiosk-reveal').innerHTML =
       '<div class="research-note">' +
-      '<p>Twenty participants read one of these two reports and rated it on the System Causability Scale. ' +
-      'The scores came out <b>the same</b>: neither form explained better than the other.</p>' +
-      '<p>The interviews were where they parted. ' + mechanism + '</p>' +
-      '<p>So the choice is not which report is clearer. It is which of the two things you want a reader to do.</p>' +
+      '<p>In the study, readers rated the two reports <b>equally clear</b>. What split them was what they did ' +
+      'next: <b>counterfactual</b> readers looked back over their run &mdash; self-reflection; <b>prefactual</b> ' +
+      'readers started planning the next one &mdash; self-improvement. The wording picks the behaviour.</p>' +
+      '<p><a href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></p>' +
       '</div>';
-    el('#kiosk-choice').querySelectorAll('button').forEach(b => { b.disabled = true; });
+    el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
   }
 
   renderStart();

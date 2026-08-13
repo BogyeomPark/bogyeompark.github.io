@@ -114,6 +114,16 @@
   color: var(--muted); font-weight: 400;
 }
 
+/* The study comparison as three rows: the gap is the finding, and a table
+   shows it faster than the paragraph it replaced. */
+.kiosk-vs { max-width: 470px; margin: 14px 0 0; border-collapse: collapse; font-size: 0.92rem; }
+.kiosk-vs th, .kiosk-vs td { padding: 10px 0 10px 16px; border-bottom: 1px solid var(--line); text-align: right; font-weight: 400; color: var(--body); }
+.kiosk-vs th:first-child { padding-left: 0; text-align: left; }
+.kiosk-vs thead th { padding-top: 0; color: var(--muted); font-size: 0.7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.kiosk-vs td { min-width: 64px; white-space: nowrap; }
+.kiosk-vs tr.you th, .kiosk-vs tr.you td { color: var(--ink); font-weight: 600; }
+.kiosk-vs-note { margin-top: 12px; max-width: 470px; color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+
 .kiosk-path { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
 .kiosk-path path { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
 .kiosk-path circle { fill: var(--warm); }
@@ -141,6 +151,11 @@
 
 #kiosk-report-body[hidden] { display: none; }
 #kiosk-report-body #kiosk-choice { margin-top: 22px; }
+/* The pick stays visible on the cards: yours holds its colour, the other steps
+   back, and neither goes dead-grey the way plain disabled buttons read. */
+#kiosk-choice .card.picked { border-color: var(--accent); box-shadow: var(--shadow); }
+#kiosk-choice .card.dimmed { opacity: 0.55; }
+#kiosk-choice .card.picked .button:disabled { opacity: 1; color: var(--accent-dark); border-color: var(--accent); }
 #kiosk-report-body .card p { font-size: 0.93rem; line-height: 1.68; }
 #kiosk-report-body .card p:last-of-type { margin-bottom: 20px; }
 #kiosk-report-body .card b { color: var(--ink); font-weight: 600; }
