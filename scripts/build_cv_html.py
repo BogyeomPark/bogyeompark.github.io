@@ -1,8 +1,15 @@
-"""Render cv_data into the /cv/ page, between the cv:start and cv:end markers.
+"""Put the CV pages on the /cv/ page, between the cv:start and cv:end markers.
 
-The PDF (build_cv.py) and this page read the same module, so the two can never
-drift. Everything outside the markers - page heading, download buttons, footer -
-stays hand-edited.
+The page shows the PDF itself, rendered to images by build_assets.py. A PDF in
+an <iframe> is blank on much of mobile Safari — which is where a CV actually
+gets opened — and restating the whole CV as HTML underneath the download button
+just says the same thing twice.
+
+What the images cost: no text selection, and screen readers cannot read them.
+The PDF button covers both, and it is the version of record anyway.
+
+Run order matters: cv_data.py -> build_cv.py (PDF) -> build_assets.py (page
+images) -> this script.
 
 Usage:
   python scripts/build_cv_html.py
@@ -13,14 +20,17 @@ import os
 import re
 import sys
 
+from PIL import Image
+
 import cv_data
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGE = os.path.join(ROOT, "cv", "index.html")
+PAGES_DIR = os.path.join(ROOT, "assets", "cv", "pages")
 START = "<!-- cv:start -->"
 END = "<!-- cv:end -->"
 
-# The data carries intentional <b> markup, so only bare ampersands are escaped.
+# cv_data carries intentional <b> markup, so only bare ampersands are escaped.
 AMP = re.compile(r"&(?!(?:amp|lt|gt|quot|#\d+);)")
 
 
@@ -28,82 +38,32 @@ def esc(text):
     return AMP.sub("&amp;", text)
 
 
-def section(title, body):
-    return (
-        '      <section class="content-section">\n'
-        '        <div class="section-heading"><h2>%s</h2></div>\n'
-        "%s"
-        "      </section>\n" % (esc(title), body)
-    )
-
-
-def bullets(items, klass="cv-list"):
-    rows = "".join("          <li>%s</li>\n" % esc(i) for i in items)
-    return '        <ul class="%s">\n%s        </ul>\n' % (klass, rows)
-
-
-def entry(title, when, sub=None, items=(), url=None):
-    head = esc(title)
-    if url:
-        head = '<a href="%s">%s</a>' % (url, head)
-    out = '        <div class="cv-entry">\n'
-    out += '          <div class="cv-row"><h3>%s</h3>%s</div>\n' % (
-        head,
-        '<span class="cv-when">%s</span>' % esc(when) if when else "",
-    )
-    if sub:
-        out += '          <p class="cv-sub">%s</p>\n' % esc(sub)
-    if items:
-        out += bullets(items).replace("        ", "          ")
-    out += "        </div>\n"
-    return out
-
-
-def publications(entries):
-    out = ""
-    for p in entries:
-        out += entry(p["title"], "", sub=p["authors"], items=[p["venue"]], url=p.get("url"))
-    return out
+def page_files():
+    if not os.path.isdir(PAGES_DIR):
+        sys.exit("missing %s — run scripts/build_assets.py first" % PAGES_DIR)
+    files = [f for f in os.listdir(PAGES_DIR) if re.fullmatch(r"page-\d+\.webp", f)]
+    if not files:
+        sys.exit("no rendered CV pages in %s" % PAGES_DIR)
+    return sorted(files, key=lambda f: int(re.search(r"\d+", f).group()))
 
 
 def render():
-    parts = []
-
-    ri = cv_data.RESEARCH_INTEREST
-    parts.append(section(
-        "Research Interest",
-        '        <p class="cv-summary">%s</p>\n' % esc(ri["summary"]) + bullets(ri["bullets"]),
-    ))
-
-    parts.append(section(cv_data.SECTION_TITLES["education"], "".join(
-        entry(s["org"], s["dates"], sub=s["degree"], items=s["bullets"]) for s in cv_data.EDUCATION
-    )))
-
-    parts.append(section(cv_data.SECTION_TITLES["awards"], bullets(cv_data.AWARDS)))
-    parts.append(section(cv_data.SECTION_TITLES["journal"], publications(cv_data.JOURNAL_ARTICLES)))
-    parts.append(section(cv_data.SECTION_TITLES["international"], publications(cv_data.EXTENDED_ABSTRACTS)))
-    parts.append(section(cv_data.SECTION_TITLES["domestic"], publications(cv_data.DOMESTIC)))
-
-    experience = ""
-    for aff in cv_data.RESEARCH_EXPERIENCE:
-        experience += '        <div class="cv-affiliation">\n'
-        experience += '          <div class="cv-row"><h3>%s</h3><span class="cv-when">%s</span></div>\n' % (
-            esc(aff["org"]), esc(aff["dates"]))
-        experience += '          <p class="cv-sub">%s</p>\n' % esc(aff["role"])
-        experience += "        </div>\n"
-        for proj in aff["projects"]:
-            experience += entry(proj["title"], proj["dates"], sub=proj["role"], items=proj["bullets"])
-    parts.append(section(cv_data.SECTION_TITLES["experience"], experience))
-
-    parts.append(section(cv_data.SECTION_TITLES["teaching"], "".join(
-        entry(c["title"], c["dates"], sub=c["role"], items=c["bullets"]) for c in cv_data.TEACHING
-    )))
-
-    parts.append(section(cv_data.SECTION_TITLES["skills"], bullets(cv_data.SKILLS)))
-    parts.append(section(cv_data.SECTION_TITLES["patent"], '        <p class="cv-summary">%s</p>\n' % esc(cv_data.PATENT)))
-    parts.append(section(cv_data.SECTION_TITLES["service"], bullets(cv_data.SERVICE)))
-
-    return "".join(parts)
+    files = page_files()
+    total = len(files)
+    rows = []
+    for index, name in enumerate(files, 1):
+        with Image.open(os.path.join(PAGES_DIR, name)) as im:
+            width, height = im.size
+        rows.append(
+            '        <img class="cv-page" src="/assets/cv/pages/%s" width="%d" height="%d"'
+            ' decoding="async"%s alt="Academic CV, page %d of %d">\n'
+            % (name, width, height, "" if index == 1 else ' loading="lazy"', index, total)
+        )
+    return (
+        '      <section class="cv-viewer" aria-label="Academic CV, %d pages">\n'
+        "%s"
+        "      </section>\n" % (total, "".join(rows))
+    )
 
 
 def check_publications_page():
@@ -153,7 +113,7 @@ def main():
         sys.exit(1)
     with open(PAGE, "w", encoding="utf-8", newline="") as fh:
         fh.write(rebuilt)
-    print("cv/index.html rewritten (%d bytes of CV body)" % len(body))
+    print("cv/index.html rewritten (%d page images)" % len(page_files()))
 
 
 if __name__ == "__main__":

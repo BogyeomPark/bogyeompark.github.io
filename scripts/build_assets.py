@@ -177,6 +177,34 @@ def build_og_card():
     return kb(out)
 
 
+def build_cv_pages():
+    """Rasterise the CV so the page can show it without a PDF viewer.
+
+    A PDF in an <iframe> is blank on much of mobile Safari, and that is exactly
+    where a CV gets opened. Rendering each page to an image shows the real
+    document everywhere; the PDF itself stays one button away.
+    """
+    import fitz  # PyMuPDF
+
+    src = os.path.join(ASSETS, "cv", "Bogyeom_Park_CV.pdf")
+    out_dir = os.path.join(ASSETS, "cv", "pages")
+    os.makedirs(out_dir, exist_ok=True)
+    for stale in os.listdir(out_dir):
+        os.remove(os.path.join(out_dir, stale))
+
+    rows = []
+    with fitz.open(src) as doc:
+        for index, page in enumerate(doc, 1):
+            # 2x of the ~800px display width, so it stays sharp on retina
+            zoom = 1600 / page.rect.width
+            pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom))
+            image = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+            out = os.path.join(out_dir, "page-%d.webp" % index)
+            image.save(out, "WEBP", quality=82, method=6)
+            rows.append((index, image.size, kb(out)))
+    return rows
+
+
 def main():
     if not os.path.isdir(ASSETS):
         sys.exit("assets/ not found next to scripts/ — run from the repo")
@@ -196,6 +224,10 @@ def main():
     print(f"icons      favicon.ico {ico_kb} KB, apple-touch-icon.png {apple_kb} KB")
 
     print(f"og card    og-card.jpg {build_og_card()} KB")
+
+    print("cv pages")
+    for index, size, size_kb in build_cv_pages():
+        print(f"  page-{index}.webp  {size[0]}x{size[1]}  {size_kb} KB")
 
 
 if __name__ == "__main__":

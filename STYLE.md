@@ -11,8 +11,9 @@
 |---|---|---|
 | 모든 페이지의 `<head>`, 사이드바 | `scripts/build_site.py` | 스크립트의 `PAGES`·`NAV`를 고치고 다시 실행 |
 | `sitemap.xml`, `robots.txt` | `scripts/build_site.py` | 직접 고치지 않는다 |
-| `/cv/` 본문 (`cv:start`~`cv:end` 사이) | `scripts/build_cv_html.py` | `scripts/cv_data.py`를 고친다 |
+| `/cv/` 본문 (`cv:start`~`cv:end` 사이) | `scripts/build_cv_html.py` | 아래 순서대로 다시 실행 |
 | `assets/cv/Bogyeom_Park_CV.pdf` | `scripts/build_cv.py` | `scripts/cv_data.py`를 고친다 |
+| `assets/cv/pages/page-N.webp` | `scripts/build_assets.py` | PDF를 다시 만들고 실행 |
 | `assets/news/thumbs/*`, `favicon.ico`, `apple-touch-icon.png`, `og-card.jpg`, `bogyeom-park-224.webp` | `scripts/build_assets.py` | 원본 이미지를 바꾸고 다시 실행 |
 | 각 페이지 `<main>` 안의 본문 | 손으로 작성 | 직접 편집 |
 
@@ -100,13 +101,15 @@ Demos·News 페이지는 제목이 링크가 아니므로 거기서는 `Project 
 
 결과: 논문 카드는 위 네 라벨의 부분집합만 갖고, 순서는 항상 같다.
 
-**버튼 줄** (`.paper-actions`, `.button-row`) — *동작*을 이름으로 쓴다.
-같은 PDF를 가리키는 버튼이 두 개라 목적지로는 구분이 안 되기 때문:
+**버튼 줄** (`.paper-actions`, `.button-row`) — 주 동작 하나만 둔다:
 
 | 라벨 | 동작 |
 |---|---|
-| `Open PDF ↗` | 새 탭에서 열기 (주 버튼) |
-| `Download PDF` | 내려받기 |
+| `Open PDF ↗` | 브라우저 PDF 뷰어로 열기 |
+
+`Download PDF`를 따로 두지 않는다. 같은 파일을 가리키는 버튼이 둘이었고,
+**뷰어로 열면 검색도 되고 거기서 저장도 되므로 Open이 Download를 포함한다.**
+반대는 성립하지 않는다.
 
 화살표: **`↗` = 외부 사이트 / 새 탭**, **`→` = 이 사이트 안**. 예외 없다.
 
