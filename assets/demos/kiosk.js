@@ -104,6 +104,14 @@
 
   const state = { step: -1, started: 0, errors: 0, distance: 0, points: [], last: null, code: '', chosen: {}, typed: false, pointer: '' };
 
+  // Fetch every screen up front. Each step replaces the panel outright, so
+  // without this the stage sits empty while the next image comes down the wire
+  // — invisible on localhost, a white flash on a real connection. panel08 is
+  // the thank-you screen and is not in STEPS.
+  STEPS.map(s => s.panel).concat('panel08').forEach(p => {
+    new Image().src = '/assets/demos/kiosk/' + p + '.webp';
+  });
+
   /* --- speech: pre-rendered clips ---------------------------------------- */
   // Files, not SpeechSynthesis. Most machines have no English voice installed
   // at all, and the ones that do each pick a different voice at a different

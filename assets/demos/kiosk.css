@@ -22,10 +22,16 @@
 .kiosk-panel img {
   display: block;
   width: 100%;
+  /* Every panel is 1238x2475, give or take three pixels. Declaring the ratio
+     keeps the box standing while the next screen decodes; without it the stage
+     collapses to nothing between steps and the page flashes white. */
+  aspect-ratio: 1238 / 2475;
   height: auto;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--paper);
+  /* The screens are light grey, so any frame the new one has not painted in
+     yet reads as the kiosk rather than as a white flash. */
+  background: var(--soft);
 }
 
 /* Invisible until hovered: the original screens carry all the affordance. */
