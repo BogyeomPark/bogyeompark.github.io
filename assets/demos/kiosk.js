@@ -440,10 +440,12 @@
           '<button class="button secondary" type="button" data-pick="prefactual">This one moves me</button></article>' +
       '</div>' +
       '<div id="kiosk-reveal"></div></div>' +
-      '<p class="kiosk-note"><strong>A demonstration, not a screening test.</strong> The study&rsquo;s diagnoses ' +
-      'rested on clinical assessment, an MRI scan and eye tracking; this page reproduces the task and three of its ' +
-      'measures. Your measurements never leave your browser &mdash; the page counts runs, not results.</p>' +
-      '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a></div>';
+      // The two studies leave in the same form, side by side — one used to be
+      // a button and the other an inline link, which read as different kinds
+      // of thing. The old "demonstration, not a screening test" note is gone:
+      // the one line under the comparison table already does that job.
+      '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a>' +
+      '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
 
     result.hidden = false;
     result.querySelectorAll('[data-pick]').forEach(b => b.addEventListener('click', () => reveal(b.dataset.pick)));
@@ -469,10 +471,10 @@
     });
     el('#kiosk-reveal').innerHTML =
       '<div class="research-note">' +
-      '<p>In the study, readers rated the two reports <b>equally clear</b>. What split them was what they did ' +
-      'next: <b>counterfactual</b> readers looked back over their run &mdash; self-reflection; <b>prefactual</b> ' +
-      'readers started planning the next one &mdash; self-improvement. The wording picks the behaviour.</p>' +
-      '<p><a href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></p>' +
+      '<p>In one study, readers rated the two reports <b>equally clear</b>. The difference showed up in what ' +
+      'they did next. <b>Counterfactual</b> readers looked back over the run they&rsquo;d just finished: ' +
+      'self-reflection. <b>Prefactual</b> readers started planning the next one: self-improvement. ' +
+      'The wording picks the behaviour.</p>' +
       '</div>';
     el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
   }

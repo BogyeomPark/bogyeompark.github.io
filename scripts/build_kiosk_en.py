@@ -34,24 +34,28 @@ LAYERS = {
     "panel01": [(4, 24, 86, 17, "To start your order,|press the START button.", L, None),
                 (28, 54, 44, 16, "START", C, 0)],
     "panel02": [(4, 24, 86, 17, "Where will you be|eating today?", L, None),
-                (9, 65, 34, 9, "Eat in", C, 0),
-                (56, 65, 34, 9, "Take out", C, 0)],
+                # 매장에서 식사 spans 8.1..43.3 — the old 9..43 window left its
+                # first and last strokes showing beside the chip.
+                (5, 65, 42, 9, "Eat in", C, 0),
+                (53.5, 65, 42, 9, "Take out", C, 0)],
     "panel03": [(69, 3.0, 23, 3.4, "Back", C, None),
                 (1, 20, 97, 14, "Choose a BURGER.", L, 0),
                 (1, 62, 97, 14, "Choose a SIDE.", L, 0),
                 (1, 76, 97, 12, "Choose a DRINK.", L, 0)],
     "panel04": [(69, 3.0, 23, 3.4, "Back", C, None),
-                (1, 25.6, 80, 4.4, "Choose a BURGER.", L, None),
-                (1, 39.2, 80, 4.4, "Choose a SIDE.", L, None),
+                # Collapsed headers end 0.4% short of the chosen-item thumbnail
+                # (left edge 79.94) — at 80 wide the chip shaved its corner off.
+                (1, 25.6, 78.5, 4.4, "Choose a BURGER.", L, None),
+                (1, 39.2, 78.5, 4.4, "Choose a SIDE.", L, None),
                 (1, 78, 97, 12, "Choose a DRINK.", L, 0)],
     "panel05": [(69, 3.0, 23, 3.4, "Back", C, None),
-                # Tight rows under the circled numbers, ending 0.1% before the
-                # item thumbnails: the Korean line runs right up against them,
-                # and a wider or taller window either let its last glyphs peek
-                # out past the chip (w=70) or swallowed the thumbnail and blew
-                # the chip up to the whole band (w=80).
-                (1, 25.0, 78.05, 4.7, "Choose a BURGER.", L, None),
-                (1, 38.8, 78.05, 4.8, "Choose a SIDE.", L, None),
+                # Tight rows under the circled numbers, ending 0.9% before the
+                # item thumbnails (left edge 79.29): the Korean line ends at
+                # 76.6, and a wider or taller window either let its last glyphs
+                # peek out past the chip (w=70) or swallowed the thumbnail and
+                # blew the chip up to the whole band (w=80).
+                (1, 25.0, 77.4, 4.7, "Choose a BURGER.", L, None),
+                (1, 38.8, 77.4, 4.8, "Choose a SIDE.", L, None),
                 (1, 48, 97, 12, "Choose a DRINK.", L, 0)],
     "panel06": [(69, 3.0, 23, 3.4, "Back", C, None),
                 (4, 18, 86, 12, "Check your order.", L, 0),
