@@ -37,6 +37,8 @@ LAB_URL = "https://hai.seoultech.ac.kr/index.do"
 ADVISOR_URL = "https://hai.seoultech.ac.kr/subList/20000004988"
 SCHOLAR_URL = "https://scholar.google.com/citations?user=HusX3nUAAAAJ&hl=en"
 GITHUB_URL = "https://github.com/BogyeomPark"
+ORCID_ID = "0009-0005-3046-9621"
+ORCID_URL = f"https://orcid.org/{ORCID_ID}"
 
 PORTRAIT = "/assets/bogyeom-park-224.webp"
 PORTRAIT_SIZE = (224, 288)
@@ -458,13 +460,14 @@ def person_schema():
         f'"name":"{NAME}",',
         f'"alternateName":["{NAME_KO}","{FORMER_NAME}"],',
         f'"jobTitle":"{ROLE}",',
+        f'"identifier":{{"@type":"PropertyValue","propertyID":"ORCID","value":"{ORCID_ID}"}},',
         '"affiliation":{"@type":"Organization",'
         f'"name":"{UNIVERSITY}","department":"{LAB}"}},',
         f'"worksFor":{{"@type":"Organization","name":"{UNIVERSITY}"}},',
         f'"url":"{SITE}/",',
         f'"image":"{SITE}{OG_IMAGE}",',
         f'"email":"mailto:{EMAIL}",',
-        f'"sameAs":["{SCHOLAR_URL}","{GITHUB_URL}"],',
+        f'"sameAs":["{SCHOLAR_URL}","{ORCID_URL}","{GITHUB_URL}"],',
         '"knowsAbout":["Agentic AI","Human-AI Interaction","AI in Education",'
         '"Learning Analytics","Accessibility"]}',
     ]
@@ -553,12 +556,16 @@ def build_sidebar(page):
         f'<p class="role">{ROLE}<br>'
         f'<a href="{LAB_URL}" target="_blank" rel="noopener noreferrer">{LAB_SHORT}</a>'
         '<br>Human-Centered Agentic AI</p></div></div>',
+        # The lab is already named above; only the formal university name is new here.
+        f'      <p class="sidebar-note">{UNIVERSITY}</p>',
         '      <nav class="side-nav" aria-label="Main navigation">' + "".join(links) + "</nav>",
+        # The address itself, not the word "Email": it is the thing a reader copies,
+        # and moving it out leaves three profile links on one row instead of two.
+        f'      <a class="sidebar-email" href="mailto:{EMAIL}">{EMAIL}</a>',
         '      <div class="profile-links" aria-label="External profiles">'
         f'<a href="{esc(SCHOLAR_URL)}" target="_blank" rel="noopener noreferrer">Scholar</a>'
-        f'<a href="{GITHUB_URL}" target="_blank" rel="noopener noreferrer">GitHub</a>'
-        f'<a href="mailto:{EMAIL}">Email</a></div>',
-        f'      <p class="sidebar-note">{LAB}<br>{UNIVERSITY}</p>',
+        f'<a href="{ORCID_URL}" target="_blank" rel="noopener noreferrer">ORCID</a>'
+        f'<a href="{GITHUB_URL}" target="_blank" rel="noopener noreferrer">GitHub</a></div>',
         "    </aside>",
     ])
 

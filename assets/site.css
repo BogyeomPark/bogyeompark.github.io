@@ -120,13 +120,13 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
 
 .profile-photo {
   display: block;
-  width: 112px;
+  width: 108px;
   height: auto;
   max-width: 100%;
   object-fit: contain;
+  border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--soft);
-  box-shadow: 0 10px 28px rgba(22, 54, 60, 0.11);
 }
 
 .identity { margin-top: 21px; }
@@ -136,19 +136,23 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
 .role { margin: 13px 0 0; color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
 .role a { font-weight: 600; text-decoration: none; }
 
+/* Three zones, marked by two hairlines: who this is, where to go, how to reach
+   them. Without them the column reads as one undifferentiated stack. */
 .side-nav {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
-  margin: 25px 0 0;
+  gap: 3px;
+  margin: 24px 0 0;
+  padding-top: 21px;
+  border-top: 1px solid var(--line);
 }
 
 .side-nav a {
   position: relative;
   padding: 4px 0 4px 17px;
   color: var(--ink);
-  font-size: 0.94rem;
+  font-size: 0.97rem;
   text-decoration: none;
 }
 
@@ -169,7 +173,10 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
 .side-nav a:hover::before,
 .side-nav a[aria-current="page"]::before { width: 10px; background: var(--accent); }
 
-.profile-links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 22px; }
+/* The address sits above these, so three fit on one row at 250px. */
+.sidebar-email { display: block; margin-top: 22px; padding-top: 19px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.78rem; text-decoration: none; word-break: break-all; }
+.sidebar-email:hover { color: var(--accent); }
+.profile-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
 .profile-links a {
   display: inline-flex;
   align-items: center;
@@ -183,7 +190,7 @@ a:focus-visible { outline: 3px solid rgba(15, 107, 120, 0.28); outline-offset: 4
   text-decoration: none;
 }
 .profile-links a:hover { border-color: var(--accent); background: var(--accent-pale); color: var(--accent-dark); }
-.sidebar-note { margin: 27px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.75rem; }
+.sidebar-note { margin: 9px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.45; }
 
 main { min-width: 0; padding: 51px 0 66px 50px; }
 .page-header { padding-bottom: 40px; border-bottom: 1px solid var(--line); }

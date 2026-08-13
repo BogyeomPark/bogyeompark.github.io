@@ -50,15 +50,24 @@ def font(name, size):
 
 
 def load_upright(path):
-    """Open an image with its EXIF rotation baked into the pixels.
+    """Open an image upright and opaque, on white.
 
-    Phone photos store rotation as an EXIF tag rather than rotating the pixels.
-    Browsers honour that tag on the original JPEG, but re-encoding drops it — so
-    without this the derived thumbnail comes out sideways (chi-2025.jpg is
-    orientation 6).
+    Two things go wrong otherwise. Phone photos store rotation as an EXIF tag
+    rather than rotating the pixels, and re-encoding drops the tag, so the
+    derived file comes out sideways (chi-2025.jpg is orientation 6).
+
+    And .convert("RGB") on a transparent PNG composites onto black, not white —
+    eight of the figures are RGBA, and they turned into black plates. Paper
+    figures are drawn for white paper, so white is what the transparency means.
     """
-    with Image.open(path) as im:
-        return ImageOps.exif_transpose(im).convert("RGB")
+    with Image.open(path) as opened:
+        im = ImageOps.exif_transpose(opened)
+        if im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info):
+            im = im.convert("RGBA")
+            white = Image.new("RGB", im.size, "white")
+            white.paste(im, mask=im.getchannel("A"))
+            return white
+        return im.convert("RGB")
 
 
 def kb(path):
