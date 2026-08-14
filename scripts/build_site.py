@@ -475,10 +475,19 @@ def esc(text):
 
 
 def asset_version(rel_path):
-    """Short content hash, so the cache key changes iff the asset changes."""
+    """Short content hash, so the cache key changes iff the asset changes.
+
+    Line endings are normalised to LF first. core.autocrlf=true gives the working
+    copy CRLF while the repository — and therefore what GitHub Pages serves —
+    keeps LF, so hashing the bytes on disk produced a different token on a Windows
+    checkout than on the served file. The two tokens then took turns overwriting
+    each other on every build, which made --check permanently noisy about a
+    difference that was never a content change. Normalising makes the token a
+    property of the asset rather than of the machine that built the page.
+    """
     path = os.path.join(ROOT, rel_path.lstrip("/"))
     with open(path, "rb") as fh:
-        return hashlib.sha1(fh.read()).hexdigest()[:8]
+        return hashlib.sha1(fh.read().replace(b"\r\n", b"\n")).hexdigest()[:8]
 
 
 def person_schema():

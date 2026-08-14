@@ -65,8 +65,9 @@ if ghosts:
 TAG = re.compile(r'<[^>]+>')
 
 # 캐시 토큰이 자산의 실제 내용과 맞는가 (§6).
-# 이 값은 sha1 이라 "무관한 잡음"이 아니라 캐시 키 그 자체다 — 어긋나면 옛 파일을
-# 캐시한 방문자가 새 JS·CSS 를 못 받는다.
+# build_site.py 의 asset_version() 과 같은 계산이어야 한다 — 줄끝을 LF 로 정규화한 뒤
+# sha1. 정규화를 빼면 Windows 체크아웃(CRLF)에서 라이브(LF)와 다른 값이 나와,
+# 내용이 바뀐 적 없는데도 매번 어긋난 것처럼 보인다.
 import hashlib
 _hash_cache = {}
 
@@ -74,8 +75,9 @@ _hash_cache = {}
 def asset_hash(rel_asset):
     if rel_asset not in _hash_cache:
         p = os.path.join(ROOT, rel_asset.lstrip('/'))
-        _hash_cache[rel_asset] = (hashlib.sha1(open(p, 'rb').read()).hexdigest()[:8]
-                                  if os.path.exists(p) else None)
+        _hash_cache[rel_asset] = (
+            hashlib.sha1(open(p, 'rb').read().replace(b'\r\n', b'\n')).hexdigest()[:8]
+            if os.path.exists(p) else None)
     return _hash_cache[rel_asset]
 
 
