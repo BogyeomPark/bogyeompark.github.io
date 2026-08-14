@@ -283,7 +283,11 @@ def build():
     story += section(cv_data.SECTION_TITLES["experience"])
     for affiliation in cv_data.RESEARCH_EXPERIENCE:
         story.append(two_col(affiliation["org"], affiliation["place"]))
-        story.append(two_col(affiliation["role"], affiliation["dates"]))
+        # Dates are italic everywhere in this CV; the left column carries the
+        # hierarchy on its own (bold for an affiliation, italic for a project).
+        # One line per student status, under a single org heading.
+        for role, dates in affiliation["roles"]:
+            story.append(two_col(role, dates, right_style="CVItalicRight"))
         for proj in affiliation["projects"]:
             story += project(proj["title"], proj["role"], proj["dates"], proj["bullets"])
 
@@ -291,7 +295,7 @@ def build():
     for index, course in enumerate(cv_data.TEACHING):
         if index:
             story.append(Spacer(1, 6))
-        story.append(two_col(course["title"], course["dates"]))
+        story.append(two_col(course["title"], course["dates"], right_style="CVItalicRight"))
         story.append(Paragraph(course["role"], styles["Meta"]))
         story += [bullet(text) for text in course["bullets"]]
 
