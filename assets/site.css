@@ -519,6 +519,30 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .status { display: inline-block; padding: 3px 10px; border: 1px dashed var(--line); border-radius: 999px; background: none; color: var(--muted); font-size: 0.7rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
 footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.75rem; }
 
+/* The four domains read as four separate interests unless something says
+   otherwise, so each card carries the question that domain asks and the
+   through-line becomes visible. Text rather than a diagram: it scales, it is
+   selectable, and a screen reader gets it. No icons — the page has none anywhere
+   else and four would arrive as a second visual language.
+
+   These sit inside the header, under the lead, rather than in a section of their
+   own. A heading over them made four projects read as the whole of the work. */
+.lens-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px; margin: 34px 0 0; padding: 0; list-style: none; }
+/* Explicit column counts, not auto-fit: a floor that fits four at 1440px gives
+   three and a stray at 1120px, and a lone card on its own row looks like a
+   mistake. Four, then two, then one. */
+@media (max-width: 1120px) { .lens-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 680px)  { .lens-grid { grid-template-columns: minmax(0, 1fr); } }
+/* A rule above each column, not a box around it. Filled rounded cards are a
+   pattern this page uses nowhere else, and four of them under the headline read
+   as a widget dropped onto an editorial layout. A hairline is what the rest of
+   the site already uses to separate things. */
+.lens { padding-top: 13px; border-top: 1px solid var(--line); }
+.lens-domain { display: block; margin-bottom: 7px; color: var(--muted); font-size: 0.66rem; font-weight: 600; letter-spacing: .11em; text-transform: uppercase; }
+/* The question carries the serif the other headings use. Not an <h3>: nothing
+   here starts a section. */
+.lens-q { margin: 0; color: var(--ink); font-family: var(--serif); font-size: 1.02rem; font-weight: 600; line-height: 1.38; letter-spacing: -0.01em; }
+
 @media (max-width: 1120px) {
   .site-shell { width: min(100% - 36px, 1040px); }
   .news-item { grid-template-columns: 1fr; gap: 10px; }
