@@ -54,7 +54,8 @@ EDUCATION = [
 
 AWARDS = [
     "AI SeoulTech Graduate Scholarship (KRW 10,000,000), Seoul Scholarship Foundation, 2025",
-    "Best Paper Award (co-author), HCI Korea 2025",
+    "Best Paper Award (co-author), HCI Korea 2025 - self-disclosing chatbots for academic "
+    "stress assessment",
     "Best Student Paper Bronze Award, IEEE Seoul Section, 2024",
     "National Science and Engineering Undergraduate Scholarship (full tuition), "
     "Korea Student Aid Foundation, 2021-2022",
@@ -158,6 +159,10 @@ EXTENDED_ABSTRACTS = [
     },
 ]
 
+# First-authored domestic papers only. An overseas committee cannot calibrate
+# HCI Korea, so the two co-authored entries were doing little for the reader; the
+# HCI Korea 2025 paper is credited on its award line instead, and the tree paper's
+# work is described under the SUNGHA project. The full list stays on the website.
 DOMESTIC = [
     {
         "title": "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
@@ -166,19 +171,6 @@ DOMESTIC = [
             "and Kyoungwon Seo"
         ),
         "venue": "Proceedings of HCI Korea 2026 - Oral Presentation",
-    },
-    {
-        "title": "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
-        "authors": "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
-        "venue": "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
-    },
-    {
-        "title": (
-            "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: "
-            "A Case Study of Zelkova serrata"
-        ),
-        "authors": "Sabin Lee, Bogyeom Park, Daejung Kim, and Kyoungwon Seo",
-        "venue": "Proceedings of HCI Korea 2024, pp. 212-219",
     },
     {
         "title": "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
@@ -231,14 +223,14 @@ RESEARCH_EXPERIENCE = [
                     "Planning & Evaluation"
                 ),
                 "dates": "Jul. 2023 - Dec. 2025",
-                # Four CHI EA papers came out of this grant. First author on the debate
-                # chatbot, second on the other two, so the verbs differ.
+                # The debate chatbot was first-authored and built here; the SDT career
+                # chatbot was co-developed. The self-disclosure study is a co-authored
+                # paper rather than a system built here, so it stays in Publications.
                 "bullets": [
                     "Designed and evaluated a multi-agent LLM debate chatbot that draws out a "
                     "student’s argument and assesses critical thinking from the exchange",
-                    "Supported the design and analysis of two further chatbot studies: self-disclosure "
-                    "in academic stress assessment, and motivational dialogue for career "
-                    "decision-making difficulties",
+                    "Co-developed a self-determination-theory career counseling chatbot that "
+                    "addresses career decision-making difficulties through motivational dialogue",
                 ],
             },
             {
