@@ -256,6 +256,9 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
   text-decoration: none;
   transition: transform 160ms ease, box-shadow 160ms ease;
 }
+/* Two teasers stacked read as one block without this: they are separate cards,
+   and the gap has to say so. */
+.demo-teaser + .demo-teaser { margin-top: 18px; }
 .demo-teaser:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .demo-teaser:hover h3 { color: var(--accent); }
 .demo-teaser img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }

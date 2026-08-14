@@ -97,7 +97,6 @@ PAGES = [
         "file": "demos/index.html",
         "url": "/demos/",
         "nav": "demos",
-        "assets": ["/assets/demos/watch.css"],
         "title": f"Demos | {NAME}",
         "og_title": f"Systems and demos — {NAME}",
         "description": (
