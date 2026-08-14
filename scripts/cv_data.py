@@ -291,7 +291,7 @@ TEACHING = [
         "dates": "Fall 2023",
         "role": "Teaching Assistant, Seoul National University of Science and Technology",
         "bullets": [
-            "Designed a final project using CNN-based models to predict drivers' physical and "
+            "Designed a final project using CNN-based models to predict drivers’ physical and "
             "cognitive states from image data",
             "Supported lectures, advised student projects, and graded assignments and examinations",
         ],
@@ -304,7 +304,7 @@ TEACHING = [
             "Mentored nine participants from across the company, each developing an individual "
             "big data project from proposal to final deliverable",
             "Advised on analysis design and revised project plans with participants through the "
-            "boot camp's project-based sprints",
+            "boot camp’s project-based sprints",
         ],
     },
 ]
@@ -318,7 +318,7 @@ SKILLS = [
 ]
 
 PATENT = (
-    "Explainable AI-Based System for Early Diagnosis and Prognosis Prediction of Alzheimer's Disease "
+    "Explainable AI-Based System for Early Diagnosis and Prognosis Prediction of Alzheimer’s Disease "
     "Using VR Biomarkers, and Method Thereof (Korean Patent Application No. 10-2023-0105821, "
     "filed Aug. 2023)"
 )
