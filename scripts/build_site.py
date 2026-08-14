@@ -102,7 +102,7 @@ PAGES = [
         "title": f"Demos | {NAME}",
         "og_title": f"Systems and demos — {NAME}",
         "description": (
-            f"Demos from {NAME}'s research: a playable virtual kiosk test and a narrated "
+            f"Demos from {NAME}’s research: a playable virtual kiosk test and a narrated "
             "agentic career-counseling system."
         ),
     },
@@ -115,7 +115,7 @@ PAGES = [
         "og_title": "Ordering a meal, as a cognitive test",
         "description": (
             "The six-step virtual kiosk task from our JMIR study, in a browser. Measures your time "
-            "and errors beside the study's two groups, then writes the result up two ways."
+            "and errors beside the study’s two groups, then writes the result up two ways."
         ),
     },
     {
@@ -402,7 +402,7 @@ PAGES = [
         "og_title": "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning",
         "description": (
             "Transfer learning for diagnosing disease in Zelkova serrata, the species that accounts "
-            "for most of Korea's protected trees. HCI Korea 2024."
+            "for most of Korea’s protected trees. HCI Korea 2024."
         ),
         "citation": {
             "title": (
