@@ -210,7 +210,7 @@ RESEARCH_EXPERIENCE = [
         "place": "Seoul, South Korea",
         "roles": [
             ("Graduate Researcher (Advisor: Kyoungwon Seo)", "Mar. 2023 - Present"),
-            ("Undergraduate Researcher", "Jul. 2021 - Feb. 2023"),
+            ("Undergraduate Researcher", "Mar. 2021 - Feb. 2023"),
         ],
         "projects": [
             {
@@ -275,7 +275,7 @@ RESEARCH_EXPERIENCE = [
                     "Daily-Living Data"
                 ),
                 "role": "Research Assistant | National Research Foundation of Korea",
-                "dates": "Mar. 2022 - Feb. 2024",
+                "dates": "Mar. 2021 - Feb. 2024",
                 "bullets": [
                     "Developed multimodal predictive models integrating VR behavioral and MRI biomarkers "
                     "for early detection of mild cognitive impairment",
