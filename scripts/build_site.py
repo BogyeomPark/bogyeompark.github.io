@@ -66,7 +66,7 @@ PAGES = [
         "url": "/",
         "nav": "home",
         "title": NAME,
-        "og_title": f"{NAME} — Human-Centered Agentic AI",
+        "og_title": f"{NAME} — AI that holds back, and what people do instead",
         "description": (
             f"{NAME} builds AI agents that ask instead of answer — tutors, debate "
             "partners, counselors — and runs the studies that test whether people "
