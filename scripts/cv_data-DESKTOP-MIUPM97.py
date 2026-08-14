@@ -11,6 +11,7 @@ Emphasis inside strings uses <b>…</b>; both renderers understand that tag
 # Section headings, shared by both renderers so the PDF and the page cannot
 # disagree (they already had, once: "Extended Abstracts" vs the wider list).
 SECTION_TITLES = {
+    "interest": "Research Interest",
     "education": "Education",
     "awards": "Honors & Awards",
     "journal": "Journal Articles",
@@ -31,9 +32,19 @@ CONTACT = {
     "github": "https://github.com/BogyeomPark",
 }
 
-# Research Interests was dropped from the CV. The publication list and the project
-# bullets carry the same ground, and a standalone paragraph of interests is the one
-# part of a CV nobody can check.
+RESEARCH_INTEREST = {
+    "summary": (
+        "I design and study <b>human-centered agentic AI systems</b> that support learning, "
+        "decision-making, and accessibility, at the intersection of Human-AI Interaction, "
+        "AI in Education, and Learning Analytics."
+    ),
+    "bullets": [
+        "<b>Agentic AI for learning and decision support</b> - designing agents that reason with "
+        "people, use tools, and adapt support while preserving human goals and oversight",
+        "<b>Human-centered interaction and evaluation</b> - analyzing conversational and behavioral "
+        "traces to understand engagement, accessibility, and real-world outcomes",
+    ],
+}
 
 EDUCATION = [
     {
@@ -158,10 +169,6 @@ EXTENDED_ABSTRACTS = [
     },
 ]
 
-# First-authored domestic papers only. An overseas committee cannot calibrate
-# HCI Korea, so the two co-authored entries were doing little for the reader; the
-# HCI Korea 2025 paper is credited on its award line instead, and the tree paper's
-# work is described under the SUNGHA project. The full list stays on the website.
 DOMESTIC = [
     {
         "title": "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
@@ -172,6 +179,19 @@ DOMESTIC = [
         "venue": "Proceedings of HCI Korea 2026 - Oral Presentation",
     },
     {
+        "title": "The Impact of Self-Disclosing Chatbots for Academic Stress Assessment on Student Self-Reflection",
+        "authors": "Minyoung Park, Bogyeom Park, and Kyoungwon Seo",
+        "venue": "Proceedings of HCI Korea 2025, pp. 560-568 - Best Paper Award",
+    },
+    {
+        "title": (
+            "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning: "
+            "A Case Study of Zelkova serrata"
+        ),
+        "authors": "Sabin Lee, Bogyeom Park, Daejung Kim, and Kyoungwon Seo",
+        "venue": "Proceedings of HCI Korea 2024, pp. 212-219",
+    },
+    {
         "title": "Counterfactual vs. Prefactual: Two Narrative AIs Improve Causability for Health Data by Different Mechanisms",
         "authors": "Hyobin Park (now Bogyeom Park) and Kyoungwon Seo",
         "venue": "Proceedings of HCI Korea 2023, pp. 828-835",
@@ -179,27 +199,20 @@ DOMESTIC = [
 ]
 
 # Each affiliation holds the projects carried out under it, in CV order.
-# One affiliation, not two. The lab and the advisor have been the same since 2021,
-# and splitting the block by student status printed the same org and the same name
-# twice while forcing every grant that crosses Feb. 2023 into one side or the other.
-# The status change is two lines here; Education already dates the degrees.
-# Projects run in one reverse-chronological list underneath, by start date.
 RESEARCH_EXPERIENCE = [
     {
         "org": "Human-centered Artificial Intelligence (HAI) Lab, SeoulTech",
         "place": "Seoul, South Korea",
-        "roles": [
-            ("Graduate Researcher (Advisor: Kyoungwon Seo)", "Mar. 2023 - Present"),
-            ("Undergraduate Researcher", "Mar. 2021 - Feb. 2023"),
-        ],
+        "role": "Graduate Researcher (Advisor: Kyoungwon Seo)",
+        "dates": "Mar. 2023 - Present",
         "projects": [
             {
                 "title": "ICAP-Based AI Tutoring System for Probability and Statistics Learning",
-                "role": "Research Assistant | Tutorus Labs",
+                "role": "Lead Researcher | Korea Education & Research Information Service",
                 "dates": "Mar. 2026 - Aug. 2026",
                 "bullets": [
-                    "Led the design and evaluation of an ICAP-based AI tutor that uses staged elicitation "
-                    "to promote active, constructive, and interactive engagement rather than answer delivery",
+                    "Designed and evaluated an ICAP-based AI tutor that uses staged elicitation to "
+                    "promote active, constructive, and interactive engagement rather than answer delivery",
                     "Developed an utterance-level coding and analytics workflow linking dialogue evidence "
                     "with tutor correctness, usage patterns, and learning outcomes",
                     "Built an interactive research dashboard for reviewing engagement labels and "
@@ -207,11 +220,22 @@ RESEARCH_EXPERIENCE = [
                 ],
             },
             {
+                "title": "GUI Agent Technologies for Automated UX Accessibility Evaluation",
+                "role": "Research Assistant | National Research Foundation of Korea",
+                "dates": "Sep. 2025 - Present",
+                "bullets": [
+                    "Designed a GUI agent capable of performing expert-level automated evaluations of "
+                    "UX accessibility",
+                    "Planned experimental protocols for validating human-AI comparative performance in "
+                    "accessibility assessments",
+                ],
+            },
+            {
                 "title": "Agentic AI for Personalized Career, Academic, and Counseling Support",
-                "role": "Research Assistant | Korea Education & Research Information Service",
+                "role": "Lead Researcher | Korean Educational Development Institute",
                 "dates": "Jun. 2025 - Dec. 2025",
                 "bullets": [
-                    "Led a study of how agentic AI could support personalized educational pathways, "
+                    "Investigated how agentic AI could support personalized educational pathways, "
                     "counseling, and decision-making",
                 ],
             },
@@ -221,60 +245,57 @@ RESEARCH_EXPERIENCE = [
                     "Research Assistant | Institute for Information & Communications Technology "
                     "Planning & Evaluation"
                 ),
-                "dates": "Jul. 2023 - Dec. 2025",
-                # The debate chatbot was first-authored and built here; the SDT career
-                # chatbot was co-developed. The self-disclosure study is a co-authored
-                # paper rather than a system built here, so it stays in Publications.
+                "dates": "Jul. 2023 - Aug. 2025",
                 "bullets": [
-                    "Designed and evaluated a multi-agent LLM debate chatbot that draws out a "
-                    "student’s argument and assesses critical thinking from the exchange",
-                    "Co-developed a self-determination-theory career counseling chatbot that "
-                    "addresses career decision-making difficulties through motivational dialogue",
+                    "Built counseling chatbot and analysis models supporting AI-driven student coaching",
+                    "Co-developed an integrated platform enabling personalized teacher-augmented learning",
+                ],
+            },
+        ],
+    },
+    {
+        "org": "Human-centered Artificial Intelligence (HAI) Lab, SeoulTech",
+        "place": "Seoul, South Korea",
+        "role": "Undergraduate Researcher (Advisor: Kyoungwon Seo)",
+        "dates": "Jul. 2021 - Feb. 2023",
+        "projects": [
+            {
+                "title": "LLMs to Support Teachers in Educational Settings",
+                "role": "Research Assistant | Lab Project",
+                "dates": "Mar. 2023 - Feb. 2024",
+                "bullets": [
+                    "Fine-tuned an LLM to generate student competency-analysis reports and assessed its "
+                    "usefulness through expert interviews",
+                    "Identified opportunities and limitations of LLM support for competency assessment "
+                    "and report generation",
                 ],
             },
             {
-                "title": (
-                    "AI-Based Early Screening and Prognosis Prediction for Landscape Tree Disease"
-                ),
-                "role": "Research Assistant | SUNGHA Co., Ltd.",
-                "dates": "Jul. 2023 - Dec. 2023",
-                "bullets": [
-                    "Built an expert-validated image dataset of Zelkova serrata, the species that "
-                    "accounts for more than half of Korea’s legally protected trees",
-                    "Compared transfer-learning models with and without plant-disease pre-training "
-                    "for early screening of tree disease",
-                ],
-            },
-            {
-                "title": "VR-EP-EEG-MRI Digital Biomarker Basic Research Laboratory",
+                "title": "Multimodal Digital Biomarkers for Early Dementia Diagnosis",
                 "role": "Research Assistant | National Research Foundation of Korea",
                 "dates": "Mar. 2022 - Feb. 2024",
                 "bullets": [
                     "Collected VR kiosk interaction data from participants with mild cognitive impairment "
                     "and healthy controls in collaboration with Hanyang University Guri Hospital",
-                ],
-            },
-            {
-                "title": (
-                    "Multimodal Deep Learning for Early Dementia Diagnosis from VR "
-                    "Daily-Living Data"
-                ),
-                "role": "Research Assistant | National Research Foundation of Korea",
-                "dates": "Mar. 2021 - Feb. 2024",
-                # First-authored the JMIR validation study this grant produced.
-                "bullets": [
-                    "Led the development and validation of a multimodal model combining VR behavioral "
-                    "biomarkers with MRI for early detection of mild cognitive impairment",
-                    "Derived hand-movement and gaze features from a virtual kiosk task and tested them "
-                    "against MRI-derived measures in a clinical sample",
+                    "Developed multimodal predictive models integrating VR behavioral and MRI biomarkers "
+                    "for early detection of mild cognitive impairment",
                 ],
             },
         ],
     },
 ]
 
-# Reverse chronological, like every other dated section here.
 TEACHING = [
+    {
+        "title": "Deep Learning",
+        "dates": "Fall 2023",
+        "role": "Teaching Assistant, Seoul National University of Science and Technology",
+        "bullets": [
+            "Designed a final project using CNN-based models to predict drivers' physical and "
+            "cognitive states from image data",
+            "Supported lectures, advised student projects, and graded assignments and examinations",
+        ],
+    },
     {
         "title": "2026 AX Academy Big Data Boot Camp",
         "dates": "May 2026 - Aug 2026",
@@ -283,17 +304,7 @@ TEACHING = [
             "Mentored nine participants from across the company, each developing an individual "
             "big data project from proposal to final deliverable",
             "Advised on analysis design and revised project plans with participants through the "
-            "boot camp’s project-based sprints",
-        ],
-    },
-    {
-        "title": "Deep Learning",
-        "dates": "Fall 2023",
-        "role": "Teaching Assistant, Seoul National University of Science and Technology",
-        "bullets": [
-            "Designed a final project using CNN-based models to predict drivers’ physical and "
-            "cognitive states from image data",
-            "Supported lectures, advised student projects, and graded assignments and examinations",
+            "boot camp's project-based sprints",
         ],
     },
 ]
@@ -307,7 +318,7 @@ SKILLS = [
 ]
 
 PATENT = (
-    "Explainable AI-Based System for Early Diagnosis and Prognosis Prediction of Alzheimer’s Disease "
+    "Explainable AI-Based System for Early Diagnosis and Prognosis Prediction of Alzheimer's Disease "
     "Using VR Biomarkers, and Method Thereof (Korean Patent Application No. 10-2023-0105821, "
     "filed Aug. 2023)"
 )

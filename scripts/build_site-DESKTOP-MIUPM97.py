@@ -65,11 +65,11 @@ PAGES = [
         "file": "index.html",
         "url": "/",
         "nav": "home",
-        "title": NAME,
-        "og_title": f"{NAME} — agentic AI that finds your blind spots",
+        "title": f"{NAME} | Agentic AI Researcher",
+        "og_title": f"{NAME} — Human-Centered Agentic AI",
         "description": (
-            f"{NAME} builds agentic AI that finds a person’s blind spots instead of "
-            "covering them — in tutoring, debate, counseling, and cognitive screening."
+            f"{NAME} is a human-centered Agentic AI researcher studying AI agents "
+            "for learning, accessibility, and decision support."
         ),
         "person_schema": True,
     },
@@ -101,7 +101,7 @@ PAGES = [
         "title": f"Demos | {NAME}",
         "og_title": f"Systems and demos — {NAME}",
         "description": (
-            f"Demos from {NAME}’s research: a playable virtual kiosk test and a narrated "
+            f"Demos from {NAME}'s research: a playable virtual kiosk test and a narrated "
             "agentic career-counseling system."
         ),
     },
@@ -114,20 +114,7 @@ PAGES = [
         "og_title": "Ordering a meal, as a cognitive test",
         "description": (
             "The six-step virtual kiosk task from our JMIR study, in a browser. Measures your time "
-            "and errors beside the study’s two groups, then writes the result up two ways."
-        ),
-    },
-    {
-        "file": "demos/career-agent/index.html",
-        "url": "/demos/career-agent/",
-        "nav": "demos",
-        "assets": ["/assets/demos/watch.css"],
-        "title": f"Agentic Career-Counseling System | {NAME}",
-        "og_title": "Student records in, a report out",
-        "description": (
-            "A narrated walkthrough of an agentic career-counseling system: it reads a student’s "
-            "school records, drafts the comprehensive opinion, and traces every claim back to the "
-            "record it came from. HCI Korea 2026."
+            "and errors beside the study's two groups, then writes the result up two ways."
         ),
     },
     {
@@ -414,7 +401,7 @@ PAGES = [
         "og_title": "Artificial Intelligence-Based Heritage Tree Disease Diagnosis Using Transfer Learning",
         "description": (
             "Transfer learning for diagnosing disease in Zelkova serrata, the species that accounts "
-            "for most of Korea’s protected trees. HCI Korea 2024."
+            "for most of Korea's protected trees. HCI Korea 2024."
         ),
         "citation": {
             "title": (

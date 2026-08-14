@@ -7,6 +7,16 @@
   border: 1px solid var(--line); border-radius: 11px;
   background: var(--soft);
 }
+/* The video's own caption on /demos/career-agent/. Not .kiosk-caption: that one
+   lives in kiosk.css, which this page has no reason to load. */
+.watch-caption { margin: 12px 0 0; max-width: 660px; color: var(--muted); font-size: 0.85rem; }
+
 .watch-copy { margin-top: 14px; }
-.watch-copy h3 { margin: 6px 0; font-size: 1.12rem; font-weight: 600; letter-spacing: -0.012em; }
-.watch-copy p { margin: 0 0 10px; max-width: 660px; color: var(--body); font-size: 0.91rem; line-height: 1.6; }
+/* Matches .publication-card: the two entries on /demos/ are the same kind of
+   thing, so only the media placement differs between them. This block was
+   setting its own sans-serif heading a size smaller, which read as a caption
+   beside the serif title above it. */
+.watch-copy h3 { margin: 5px 0 9px; font-family: var(--serif); font-size: 1.26rem; font-weight: 600; line-height: 1.35; }
+.watch-copy h3 a { color: var(--ink); text-decoration: none; }
+.watch-copy h3 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.watch-copy p { margin: 0 0 10px; max-width: 660px; color: var(--body); font-size: 0.89rem; line-height: 1.6; }
