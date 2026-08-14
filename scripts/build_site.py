@@ -66,11 +66,10 @@ PAGES = [
         "url": "/",
         "nav": "home",
         "title": NAME,
-        "og_title": f"{NAME} — agents that ask instead of answer",
+        "og_title": f"{NAME} — agentic AI that finds your blind spots",
         "description": (
-            f"{NAME} builds AI agents that ask instead of answer — tutors, debate "
-            "partners, counselors — and runs the studies that test whether people "
-            "actually think harder."
+            f"{NAME} builds agentic AI that finds a person’s blind spots instead of "
+            "covering them — in tutoring, debate, counseling, and cognitive screening."
         ),
         "person_schema": True,
     },

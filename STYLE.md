@@ -174,12 +174,12 @@ News는 §3-3-1⑤대로 **항목 제목 자체가 링크**다.
 venue가 센 순서로 고르지 않는다 — 그러면 홈이 실적 진열대가 되고, 주장과 무관한 논문이
 첫 화면에 올라온다.
 
-현재 헤드라인은 *"agents that ask instead of answer &mdash; and measuring what that does to thinking"* 이므로:
+현재 헤드라인은 *"agentic AI that finds your blind spots instead of covering them"* 이므로:
 
 | 자리 | 논문 | 왜 |
 |---|---|---|
-| 1 | Multi-Agent Debate Chatbot (CHI EA 2025) | 답 대신 반론을 세워 되묻고, 그 사고를 평가함 &mdash; 헤드라인 양쪽 |
-| 2 | VR/MRI Biomarkers (JMIR 2024) | 행동에서 인지를 **측정**하는 쪽 |
+| 1 | Multi-Agent Debate Chatbot (CHI EA 2025) | 반론으로 내 논증의 구멍을 드러냄 &mdash; 맹점을 찾는 쪽 |
+| 2 | VR/MRI Biomarkers (JMIR 2024) | 본인이 알아채기 전에 인지 저하를 찾아냄 &mdash; 가장 순수한 맹점 |
 | 3 | Agentic Career Counseling (HCI Korea 2026) | 지금 주도하는 방향 |
 
 세 편 모두 **1저자 또는 공동 1저자**여야 한다. 홈 첫 화면의 대표작에 남이 주도한 연구를
@@ -189,7 +189,7 @@ venue가 센 순서로 고르지 않는다 — 그러면 홈이 실적 진열대
 ### 3-3-1-B. 홈의 Demo 카드
 
 Selected Work 아래에 **플레이 가능한 데모 하나**를 카드로 둔다 (`.demo-teaser`).
-헤드라인이 "measuring what that does to thinking"을 주장하므로, 방문자가 직접 만질 수 있는
+소개문이 "measure whether seeing the gap changes what someone can do"를 주장하므로, 방문자가 직접 만질 수 있는
 측정이 홈에 있어야 주장이 선다. 규칙:
 
 - 카드는 **하나만.** 데모가 늘면 카드를 늘리지 말고 대표 하나를 고른다 — 나머지는
