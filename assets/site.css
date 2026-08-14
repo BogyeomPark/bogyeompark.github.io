@@ -33,6 +33,20 @@
   src: url('/assets/fonts/newsreader-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+/* Pretendard (SIL Open Font License 1.1), subset to the three syllables of the
+   name in the sidebar and nothing else — 2MB of Hangul reduced to 1.7KB. Inter
+   carries no Hangul, so those three characters were falling through to whatever
+   the machine had: Malgun Gothic on Windows, Apple SD Gothic Neo on macOS, and a
+   different shape and weight beside the Latin on each. The unicode-range keeps
+   Pretendard off every other character, so the Latin is still Inter. */
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/pretendard-ko-name.woff2') format('woff2');
+  unicode-range: U+ACB8, U+BC15, U+BCF4;
+}
 
 :root {
   color-scheme: light;
@@ -50,7 +64,7 @@
   --warm: #b55d3e;
   --sidebar: 250px;
   --radius: 14px;
-  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+  --sans: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
   --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
   --shadow: 0 1px 2px rgba(18, 52, 60, .04), 0 10px 28px rgba(18, 52, 60, .07);
   /* Text that sits on an --accent fill. */
@@ -478,7 +492,11 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .metric { padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--soft); }
 .metric strong { display: block; color: var(--accent-dark); font-family: var(--serif); font-size: 1.55rem; line-height: 1.15; font-weight: 600; }
 .metric span { display: block; margin-top: 5px; color: var(--muted); font-size: 0.76rem; line-height: 1.4; }
-.takeaway-list { display: grid; gap: 10px; max-width: 810px; margin: 0; padding: 0; list-style: none; }
+/* 690px, the same measure as .paper-section > p. At 810 these ran about 84
+   characters a line while the paragraphs above them ran 72, so the eye lost the
+   start of the next line on exactly the content that is a list of separate
+   points. */
+.takeaway-list { display: grid; gap: 10px; max-width: 690px; margin: 0; padding: 0; list-style: none; }
 .takeaway-list li { padding: 13px 15px 13px 42px; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); position: relative; }
 .takeaway-list li::before { content: "→"; position: absolute; left: 15px; color: var(--accent); font-weight: 700; }
 .citation-box { padding: 18px; border-left: 3px solid var(--accent); background: var(--soft); color: var(--body); font-size: 0.83rem; }
