@@ -65,11 +65,12 @@ PAGES = [
         "file": "index.html",
         "url": "/",
         "nav": "home",
-        "title": f"{NAME} | Agentic AI Researcher",
+        "title": NAME,
         "og_title": f"{NAME} — Human-Centered Agentic AI",
         "description": (
-            f"{NAME} is a human-centered Agentic AI researcher studying AI agents "
-            "for learning, accessibility, and decision support."
+            f"{NAME} builds AI agents that ask instead of answer — tutors, debate "
+            "partners, counselors — and runs the studies that test whether people "
+            "actually think harder."
         ),
         "person_schema": True,
     },
