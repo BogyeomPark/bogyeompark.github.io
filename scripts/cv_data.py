@@ -11,7 +11,6 @@ Emphasis inside strings uses <b>…</b>; both renderers understand that tag
 # Section headings, shared by both renderers so the PDF and the page cannot
 # disagree (they already had, once: "Extended Abstracts" vs the wider list).
 SECTION_TITLES = {
-    "interest": "Research Interest",
     "education": "Education",
     "awards": "Honors & Awards",
     "journal": "Journal Articles",
@@ -32,19 +31,9 @@ CONTACT = {
     "github": "https://github.com/BogyeomPark",
 }
 
-RESEARCH_INTEREST = {
-    "summary": (
-        "I design and study <b>human-centered agentic AI systems</b> that support learning, "
-        "decision-making, and accessibility, at the intersection of Human-AI Interaction, "
-        "AI in Education, and Learning Analytics."
-    ),
-    "bullets": [
-        "<b>Agentic AI for learning and decision support</b> - designing agents that reason with "
-        "people, use tools, and adapt support while preserving human goals and oversight",
-        "<b>Human-centered interaction and evaluation</b> - analyzing conversational and behavioral "
-        "traces to understand engagement, accessibility, and real-world outcomes",
-    ],
-}
+# Research Interests was dropped from the CV. The publication list and the project
+# bullets carry the same ground, and a standalone paragraph of interests is the one
+# part of a CV nobody can check.
 
 EDUCATION = [
     {
@@ -242,9 +231,14 @@ RESEARCH_EXPERIENCE = [
                     "Planning & Evaluation"
                 ),
                 "dates": "Jul. 2023 - Dec. 2025",
+                # Four CHI EA papers came out of this grant. First author on the debate
+                # chatbot, second on the other two, so the verbs differ.
                 "bullets": [
-                    "Built counseling chatbot and analysis models supporting AI-driven student coaching",
-                    "Co-developed an integrated platform enabling personalized teacher-augmented learning",
+                    "Designed and evaluated a multi-agent LLM debate chatbot that draws out a "
+                    "student’s argument and assesses critical thinking from the exchange",
+                    "Supported the design and analysis of two further chatbot studies: self-disclosure "
+                    "in academic stress assessment, and motivational dialogue for career "
+                    "decision-making difficulties",
                 ],
             },
             {
@@ -276,9 +270,12 @@ RESEARCH_EXPERIENCE = [
                 ),
                 "role": "Research Assistant | National Research Foundation of Korea",
                 "dates": "Mar. 2021 - Feb. 2024",
+                # First-authored the JMIR validation study this grant produced.
                 "bullets": [
-                    "Developed multimodal predictive models integrating VR behavioral and MRI biomarkers "
-                    "for early detection of mild cognitive impairment",
+                    "Led the development and validation of a multimodal model combining VR behavioral "
+                    "biomarkers with MRI for early detection of mild cognitive impairment",
+                    "Derived hand-movement and gaze features from a virtual kiosk task and tested them "
+                    "against MRI-derived measures in a clinical sample",
                 ],
             },
         ],

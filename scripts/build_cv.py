@@ -256,10 +256,6 @@ def build():
     )
     story = [header, Spacer(1, 5)]
 
-    story += section(cv_data.SECTION_TITLES["interest"])
-    story.append(Paragraph(cv_data.RESEARCH_INTEREST["summary"], styles["Body"]))
-    story += [bullet(text) for text in cv_data.RESEARCH_INTEREST["bullets"]]
-
     story += section(cv_data.SECTION_TITLES["education"])
     for index, school in enumerate(cv_data.EDUCATION):
         if index:
