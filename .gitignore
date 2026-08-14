@@ -1,2 +1,7 @@
 tmp/
 __pycache__/
+
+# OneDrive writes a second copy beside a file when the same one is edited on two
+# machines: index.html -> index-DESKTOP-MIUPM97.html. They are not part of the
+# site and a wide `git add` will otherwise sweep them in.
+*-DESKTOP-*
