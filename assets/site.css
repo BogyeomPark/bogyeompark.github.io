@@ -309,7 +309,10 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
   max-width: 100%;
 }
 .news-date span.award { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
-.news-item h3, .project-item h3 { margin: 0 0 6px; font-size: 1.12rem; line-height: 1.4; font-weight: 600; letter-spacing: -0.012em; }
+/* Serif, like every other title of a thing on this site. A news headline names a
+   talk or a paper or an award, so it belongs with .work h3 and .publication-card
+   h3 rather than with the labels around it. */
+.news-item h3, .project-item h3, .news-copy h3 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.12rem; line-height: 1.4; font-weight: 600; letter-spacing: -0.012em; }
 /* A linked item title stays a title: the whole row is the affordance. */
 .news-item h3 a, .project-item h3 a { color: var(--ink); text-decoration: none; }
 .news-item h3 a:hover, .project-item h3 a:hover { color: var(--accent); }
@@ -464,7 +467,11 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .video-note a { font-weight: 600; text-decoration: none; }
 .paper-section { padding-top: 37px; }
 .paper-section[id] { scroll-margin-top: 20px; }
-.paper-section h3 { margin: 0 0 14px; font-family: var(--serif); font-size: 1.55rem; letter-spacing: -0.02em; }
+/* h2, not h3. The paper pages' sections were raised a level so they stopped being
+   subheadings of a heading that was never there, and this rule was left pointing
+   at the old tag — which left Overview, Method, Key Findings, Contribution and
+   Citation unstyled on all twelve pages, at the browser's default sans. */
+.paper-section h2 { margin: 0 0 14px; font-family: var(--serif); font-size: 1.55rem; font-weight: 600; letter-spacing: -0.02em; }
 .paper-section > p { max-width: 690px; margin: 0; color: var(--body); }
 .paper-section > p + p { margin-top: 14px; }
 .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(196px, 1fr)); gap: 11px; margin-top: 18px; }
