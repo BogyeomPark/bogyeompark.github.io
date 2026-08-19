@@ -30,36 +30,50 @@ document.querySelectorAll('[data-media-tabs]').forEach((tabs) => {
 });
 
 // Swipe carousel (Home's "Watch it"). The scroll position is the single source
-// of truth: the arrows scroll the track, and whatever the track lands on drives
-// the arrow states, the caption, and which video is playing. Two videos both
-// autoplaying would be two soundtracks and twice the traffic, so only the
-// visible one runs.
+// of truth: arrows scroll the track, and whatever it lands on drives the caption
+// and which video is playing. Only the visible video runs - two at once would be
+// two soundtracks and twice the traffic.
+//
+// Sound: no browser will autoplay audio before the visitor has interacted with
+// the page, so the first video starts muted and everything unmutes on the first
+// real gesture. Trying to start unmuted does not produce a loud page, it
+// produces a stopped one.
+//
+// The videos do not loop. Each hands off to the next when it ends, and the last
+// wraps to the first, so the section plays through on its own.
 document.querySelectorAll('[data-media-carousel]').forEach((root) => {
   const track = root.querySelector('.carousel-track');
   if (!track || track.children.length < 2) return;
   const slides = [...track.children];
+  const videos = slides.map((slide) => slide.querySelector('video'));
   const captions = [...root.querySelectorAll('[data-caption]')];
+  const dots = root.querySelector('[data-carousel-dots]');
+  if (dots) slides.forEach(() => dots.appendChild(document.createElement('span')));
   const arrows = [...root.querySelectorAll('[data-step]')];
   let current = 0;
+  let wantsSound = false;
 
   const settle = (index) => {
     current = index;
-    slides.forEach((slide, n) => {
-      const video = slide.querySelector('video');
+    videos.forEach((video, n) => {
       if (!video) return;
-      if (n === index) video.play().catch(() => {});
-      else video.pause();
+      if (n === index) {
+        video.muted = !wantsSound;
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        video.currentTime = 0;
+      }
     });
     captions.forEach((caption, n) => { caption.hidden = n !== index; });
-    arrows.forEach((arrow) => {
-      const next = index + Number(arrow.dataset.step);
-      arrow.disabled = next < 0 || next > slides.length - 1;
-    });
+    if (dots) [...dots.children].forEach((dot, n) => dot.toggleAttribute('data-active', n === index));
   };
 
+  // Wrap around: an arrow that disappears at the end reads as a broken control,
+  // and with two slides either arrow is always a sensible move.
   const go = (index) => {
-    const clamped = Math.min(slides.length - 1, Math.max(0, index));
-    track.scrollTo({ left: slides[clamped].offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
+    const wrapped = (index + slides.length) % slides.length;
+    track.scrollTo({ left: slides[wrapped].offsetLeft - slides[0].offsetLeft, behavior: 'smooth' });
   };
 
   arrows.forEach((arrow) => arrow.addEventListener('click', () => go(current + Number(arrow.dataset.step))));
@@ -69,6 +83,22 @@ document.querySelectorAll('[data-media-carousel]').forEach((root) => {
     event.preventDefault();
     go(current + (event.key === 'ArrowRight' ? 1 : -1));
   });
+
+  videos.forEach((video) => {
+    if (!video) return;
+    video.addEventListener('ended', () => go(current + 1));
+    // Reaching for the volume control is the clearest possible statement of
+    // intent, so honour it for the rest of the section too.
+    video.addEventListener('volumechange', () => { if (!video.muted) wantsSound = true; });
+  });
+
+  const unmute = () => {
+    wantsSound = true;
+    const video = videos[current];
+    if (video) { video.muted = false; video.play().catch(() => {}); }
+  };
+  ['pointerdown', 'keydown'].forEach((type) =>
+    document.addEventListener(type, unmute, { once: true, passive: true }));
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {

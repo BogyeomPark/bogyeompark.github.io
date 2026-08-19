@@ -140,6 +140,18 @@ PAGES = [
         ),
     },
     {
+        "file": "demos/self-disclosure/index.html",
+        "url": "/demos/self-disclosure/",
+        "nav": "demos",
+        "assets": ["/assets/demos/self-disclosure.css", "/assets/demos/self-disclosure.js"],
+        "title": f"Self-Disclosing Chatbot | {NAME}",
+        "og_title": "The chatbot goes first",
+        "description": (
+            "The self-disclosing chatbot from our CHI EA 2025 study, rebuilt from its "
+            "conversation protocol: it says it cannot sleep before it asks whether you can."
+        ),
+    },
+    {
         "file": "demos/career-agent/index.html",
         "url": "/demos/career-agent/",
         "nav": "demos",

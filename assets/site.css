@@ -302,7 +302,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 /* A demo that does not exist yet still has to look like the others, or the row
    reads as broken rather than as forthcoming. Same card, no hover, no pointer -
    nothing here claims to be clickable except the paper links inside it. */
-.demo-teaser.is-upcoming { background: var(--paper); border-style: dashed; }
+.demo-teaser.is-upcoming { margin-top: 34px; background: var(--paper); border-style: dashed; }
 .demo-teaser.is-upcoming:hover { transform: none; box-shadow: none; }
 .demo-teaser.is-upcoming h3 { color: var(--ink); }
 .upcoming-chip {
@@ -534,8 +534,14 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    still reachable by scrolling sideways, which is why the track owns the state.
    The captions live outside the track so every slide is exactly the height of
    its video - that is what lets the arrows sit at a true 50%. */
-.media-carousel { max-width: 720px; }
+/* The carousel takes the whole column. At 720px it sat left of a full-width
+   heading with dead space beside it, which read as a mistake rather than a
+   measure; the video is the exhibit, so it gets the room. The arrows sit inset
+   over its edges, which keeps them symmetrical at every width - hanging them
+   outside works only while the column has margin to spare. */
+.media-carousel { max-width: none; }
 .carousel-viewport { position: relative; }
+.carousel-slide .watch-card { max-width: none; }
 .carousel-track {
   display: grid;
   grid-auto-flow: column;
@@ -548,38 +554,50 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .carousel-track::-webkit-scrollbar { display: none; }
 .carousel-track:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 12px; }
 .carousel-slide { min-width: 0; scroll-snap-align: start; }
+/* The controls sit under the video rather than on it. Overlaid arrows have to
+   cover the interface being demonstrated to be reachable, and on a full-width
+   video there is no margin left to hang them in - so they come down here and
+   pair with the dots, which is also the only row that has to say how many
+   systems there are. */
+.carousel-controls { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
 .carousel-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  padding: 0 0 4px;
-  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  padding: 0 0 3px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--paper);
-  box-shadow: var(--shadow);
   color: var(--accent-dark);
   font-family: var(--sans);
-  font-size: 1.7rem;
+  font-size: 1.35rem;
   line-height: 1;
   cursor: pointer;
-  transition: background 140ms ease, color 140ms ease, border-color 140ms ease, opacity 140ms ease;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
 }
-/* Outside the video where the column is wide enough, overlapping its edge where
-   it is not - the arrows must never cover the interface being demonstrated. */
-.carousel-arrow.prev { left: -21px; }
-.carousel-arrow.next { right: -21px; }
 .carousel-arrow:hover { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .carousel-arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.carousel-arrow[disabled] { opacity: 0; pointer-events: none; }
-.carousel-captions .watch-caption[hidden] { display: none; }
-@media (max-width: 820px) {
-  .carousel-arrow.prev { left: 6px; }
-  .carousel-arrow.next { right: 6px; }
+.carousel-captions .watch-caption[hidden],
+.carousel-captions .system-note[hidden] { display: none; }
+/* What the visitor just watched, and what they can do about it, in that order.
+   The actions sit here rather than in a section of their own because the moment
+   right after the video is the only moment the offer is obvious. Kept to 660px
+   while the video runs wider: the video is a picture, this is prose. */
+.system-note { max-width: 660px; margin: 15px 0 0; }
+.system-note h3 { margin: 0 0 5px; font-family: var(--serif); font-size: 1.12rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+.system-note p { margin: 0; color: var(--body); font-size: 0.89rem; line-height: 1.58; }
+/* The arrows wrap, so nothing else says how many systems there are or which one
+   is showing. Two jobs, one row of dots. */
+.carousel-dots { display: flex; gap: 7px; margin: 0; }
+.carousel-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 140ms ease, transform 140ms ease;
+}
+.carousel-dots span[data-active] { background: var(--accent); transform: scale(1.25); }
 }
 
 .media-panel .paper-figure { margin-top: 0; }

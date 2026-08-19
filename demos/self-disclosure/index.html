@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Disclosing Chatbot | Bogyeom Park</title>
+  <meta name="description" content="The self-disclosing chatbot from our CHI EA 2025 study, rebuilt from its conversation protocol: it says it cannot sleep before it asks whether you can.">
+  <meta name="author" content="Bogyeom Park">
+  <meta name="theme-color" content="#1b3a66">
+  <link rel="canonical" href="https://bogyeompark.github.io/demos/self-disclosure/">
+  <link rel="icon" href="/assets/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Bogyeom Park">
+  <meta property="og:title" content="The chatbot goes first">
+  <meta property="og:description" content="The self-disclosing chatbot from our CHI EA 2025 study, rebuilt from its conversation protocol: it says it cannot sleep before it asks whether you can.">
+  <meta property="og:url" content="https://bogyeompark.github.io/demos/self-disclosure/">
+  <meta property="og:image" content="https://bogyeompark.github.io/assets/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bogyeom Park (박보겸), Ph.D. Student at the SeoulTech HAI Lab">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/site.css?v=55e6f05b">
+  <link rel="stylesheet" href="/assets/demos/self-disclosure.css?v=c752386e">
+  <script src="/assets/demos/self-disclosure.js?v=f2ed0cef" defer></script>
+  <script data-goatcounter="https://bogyeompark.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="site-shell">
+    <aside class="sidebar" aria-label="Profile and navigation">
+      <div class="sidebar-top"><img class="profile-photo" src="/assets/bogyeom-park-224.webp" width="224" height="288" alt="Portrait of Bogyeom Park"><div class="identity"><p class="site-name"><a href="/">Bogyeom Park</a></p><span class="korean-name" lang="ko">박보겸</span><p class="role">Ph.D. Student<br><a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">SeoulTech HAI Lab</a></p><a class="sidebar-email" href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</a></div></div>
+      <nav class="side-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/publications/">Publications</a><a href="/projects/">Projects</a><a href="/news/">News</a><a href="/demos/" aria-current="page">Demos</a><a href="/cv/">CV</a></nav>
+      <div class="profile-links" aria-label="External profiles"><a href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Scholar</a><a href="https://orcid.org/0009-0005-3046-9621" target="_blank" rel="noopener noreferrer">ORCID</a><a href="https://github.com/BogyeomPark" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+    </aside>
+    <main id="main-content">
+      <header class="page-header">
+        <p class="paper-breadcrumb"><a href="/demos/">Demos</a> / Self-disclosing chatbot</p>
+        <h1>The chatbot goes first</h1>
+        <p class="lead">Asking a student to describe their academic stress gets you a short answer. In <a href="/publications/self-disclosure-chatbot/">our CHI EA 2025 study</a> we built two chatbots that asked exactly the same questions, and gave one of them something to say about itself first. This is that one. It tells you it cannot sleep before it asks whether you can.</p>
+        <p class="kiosk-disclaimer">A demonstration, not a screening tool &mdash; nothing here assesses anyone. Everything you type stays in your browser and is never sent anywhere.</p>
+      </header>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>Play it</h2></div>
+        <div class="sd-window">
+          <div class="sd-log" data-sd-log aria-live="polite" aria-label="Conversation"></div>
+          <form class="sd-form" data-sd-form>
+            <input type="text" data-sd-input placeholder="Type a reply&hellip;" aria-label="Your reply" autocomplete="off">
+            <button type="submit">Send</button>
+          </form>
+        </div>
+        <div class="sd-report" data-sd-report hidden></div>
+        <button type="button" class="button secondary sd-restart" data-sd-restart hidden>Start over</button>
+      </section>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>What this measures</h2></div>
+        <p>The bot works through the SISCO Inventory of Academic Stress &mdash; its causes, its physical, psychological and behavioural symptoms, and the ways people cope &mdash; but never as a questionnaire. Each list arrives only after the bot has said which item on it applies to itself.</p>
+        <ul class="takeaway-list">
+          <li><b>The disclosures are fixed, not generated.</b> Every message marked in the conversation is written out verbatim in the study&rsquo;s protocol, which is why this demo needs no model behind it. What a model supplied in the study was the thread between them.</li>
+          <li><b>The control asked the same questions.</b> The non-self-disclosing condition ran the identical inventory with the disclosures removed. That single difference is the whole independent variable.</li>
+          <li><b>The assessment is assembled, not answered.</b> A second pass scored each transcript against the inventory rather than asking anyone to fill it in. The closing screen here reads your own words back the same way.</li>
+        </ul>
+      </section>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>What the study found</h2></div>
+        <p>Forty university students were assigned to one of the two chatbots. Students who talked to the self-disclosing version identified their stressors more clearly and planned further ahead than students who talked to the version that only asked. An earlier round with twenty students, reported at HCI Korea 2025, <a href="/publications/self-disclosure-hci2025/">won a Best Paper Award</a>.</p>
+        <div class="paper-links"><a href="/publications/self-disclosure-chatbot/">The paper, CHI EA 2025</a><a href="/publications/self-disclosure-hci2025/">The award paper, HCI Korea 2025</a></div>
+      </section>
+
+      <footer><span>&copy; 2026 Bogyeom Park</span><span><a href="/demos/">&larr; All demos</a></span></footer>
+    </main>
+  </div>
+</body>
+</html>
