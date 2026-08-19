@@ -390,8 +390,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    one click apart rather than five hundred pixels. */
 .capability li a { display: block; color: inherit; text-decoration: none; }
 .capability li:hover { color: var(--accent-dark); }
-.capability li a::after { content: " 92"; color: var(--accent); opacity: 0; transition: opacity 120ms ease; }
-.capability li:hover a::after { opacity: 1; }
+.capability li a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* Landing on an entry should be visible, or the jump reads as nothing happening. */
 .project { scroll-margin-top: 24px; }
 .project:target { background: linear-gradient(var(--accent-pale), var(--accent-pale)) no-repeat left top / 3px 100%; padding-left: 20px; }
@@ -429,25 +428,14 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .project-figure { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
 .project-what { margin: 0 0 16px; color: var(--body); font-size: 0.95rem; line-height: 1.62; }
 .project-did { margin: 0 0 18px; padding-left: 15px; border-left: 3px solid var(--accent); color: var(--body); font-size: 0.92rem; line-height: 1.62; }
-/* The outcome is a list of things, not a paragraph about them. As prose the
-   numbers sat mid-sentence and the entry read as three identical blocks; as
-   short items they are the part of the entry that carries. */
-.results { margin: 0 0 4px; }
-.results ul { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
-/* Half of these open the thing they name, which is the point of listing
-   artifacts rather than findings: a number cannot be checked from here. */
-.results li a { color: inherit; text-decoration: none; }
-.results li:has(a) { border-color: var(--accent-pale); background: var(--accent-pale); color: var(--accent-dark); }
-.results li:has(a):hover { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
-.results li {
-  padding: 5px 12px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 0.81rem;
-  font-weight: 600;
-}
+/* Outputs are not chips. They were, and a chip row of outputs sat directly under
+   a chip row of capabilities looking identical to it, so the reader had to check
+   a label every time to know which kind of thing they were reading. One chip row
+   per entry, and it is the capabilities; what came out is a line of text, with
+   the papers and systems as links in it. */
+.results { margin: 0; color: var(--body); font-size: 0.88rem; line-height: 1.7; }
+.results a { color: var(--accent-dark); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent-pale); }
+.results a:hover { border-bottom-color: var(--accent); }
 .project-did span, .results > span {
   display: block;
   margin-bottom: 3px;
@@ -458,7 +446,6 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
   text-transform: uppercase;
 }
 .project-did > span { color: var(--accent); }
-.results > span { margin-bottom: 7px; }
 @media (max-width: 860px) {
   .project-cols { grid-template-columns: 1fr; gap: 20px; }
   .project-cols > div { order: 2; }
