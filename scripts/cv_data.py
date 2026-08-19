@@ -254,8 +254,10 @@ RESEARCH_EXPERIENCE = [
                 "role": "Research Assistant | National Research Foundation of Korea",
                 "dates": "Mar. 2022 - Feb. 2024",
                 "bullets": [
-                    "Collected VR kiosk interaction data from participants with mild cognitive impairment "
-                    "and healthy controls in collaboration with Hanyang University Guri Hospital",
+                    "Ran the VR data collection on site at Hanyang University Guri Hospital with patients "
+                    "with mild cognitive impairment and healthy controls",
+                    "Analyzed the resulting VEEM multimodal dataset - VR interaction, eye tracking, evoked "
+                    "potentials, EEG and MRI - including the VR-MRI-SNSB cohort of 54 participants",
                 ],
             },
             {
@@ -267,9 +269,11 @@ RESEARCH_EXPERIENCE = [
                 "dates": "Mar. 2021 - Feb. 2024",
                 # First-authored the JMIR validation study this grant produced.
                 "bullets": [
+                    "Developed the virtual kiosk task in Unity - the six-step daily-living scenario the "
+                    "study's VR biomarkers are derived from",
                     "Led the development and validation of a multimodal model combining VR behavioral "
                     "biomarkers with MRI for early detection of mild cognitive impairment",
-                    "Derived hand-movement and gaze features from a virtual kiosk task and tested them "
+                    "Derived hand-movement and gaze features from the kiosk task and tested them "
                     "against MRI-derived measures in a clinical sample",
                 ],
             },
@@ -307,6 +311,7 @@ SKILLS = [
     "multimodal learning analytics, statistical analysis, qualitative coding",
     "<b>AI and Data</b> - machine learning, deep learning, feature engineering, LLM applications, AI agents",
     "<b>Programming and Analysis</b> - Python, C/C#, SPSS",
+    "<b>VR and Interactive Systems</b> - Unity, VR task development, interaction logging and eye tracking",
     "<b>Design</b> - HCI theory, UX design, interaction prototyping, usability testing",
 ]
 
