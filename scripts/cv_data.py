@@ -43,12 +43,16 @@ EDUCATION = [
         "dates": "Mar. 2023 - Present",
         "bullets": ["Advisor: Kyoungwon Seo"],
     },
+    # The B.S. runs to one line. An undergraduate thesis title competes for
+    # attention with the funded projects below it and loses to them on every
+    # count a reader is weighing; the degree itself is the only part that has to
+    # be on record.
     {
         "org": "Seoul National University of Science and Technology",
         "place": "Seoul, South Korea",
         "degree": "B.S. in Electrical and Information Engineering",
         "dates": "Mar. 2019 - Feb. 2023",
-        "bullets": ["Thesis: Online Learning Support System Based on Facial Recognition"],
+        "bullets": [],
     },
 ]
 

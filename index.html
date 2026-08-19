@@ -22,7 +22,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/site.css?v=76947a4d">
+  <link rel="stylesheet" href="/assets/site.css?v=d40bbcc1">
+  <link rel="stylesheet" href="/assets/demos/watch.css?v=eadc29f2">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Bogyeom Park","alternateName":["박보겸","Hyobin Park"],"jobTitle":"Ph.D. Student","identifier":{"@type":"PropertyValue","propertyID":"ORCID","value":"0009-0005-3046-9621"},"affiliation":{"@type":"Organization","name":"Seoul National University of Science and Technology","department":"Human-centered Artificial Intelligence Lab"},"worksFor":{"@type":"Organization","name":"Seoul National University of Science and Technology"},"url":"https://bogyeompark.github.io/","image":"https://bogyeompark.github.io/assets/og-card.jpg","email":"mailto:bogyeom@seoultech.ac.kr","sameAs":["https://scholar.google.com/citations?user=HusX3nUAAAAJ&hl=en","https://orcid.org/0009-0005-3046-9621","https://github.com/BogyeomPark"],"knowsAbout":["Agentic AI","Human-AI Interaction","AI in Education","Learning Analytics","Accessibility"]}</script>
   <script data-goatcounter="https://bogyeompark.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
@@ -31,15 +32,44 @@
   <div class="site-shell">
     <aside class="sidebar" aria-label="Profile and navigation">
       <div class="sidebar-top"><img class="profile-photo" src="/assets/bogyeom-park-224.webp" width="224" height="288" alt="Portrait of Bogyeom Park"><div class="identity"><p class="site-name"><a href="/">Bogyeom Park</a></p><span class="korean-name" lang="ko">박보겸</span><p class="role">Ph.D. Student<br><a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">SeoulTech HAI Lab</a></p><a class="sidebar-email" href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</a></div></div>
-      <nav class="side-nav" aria-label="Main navigation"><a href="/" aria-current="page">Home</a><a href="/publications/">Publications</a><a href="/news/">News</a><a href="/demos/">Demos</a><a href="/cv/">CV</a></nav>
+      <nav class="side-nav" aria-label="Main navigation"><a href="/" aria-current="page">Home</a><a href="/publications/">Publications</a><a href="/projects/">Projects</a><a href="/news/">News</a><a href="/demos/">Demos</a><a href="/cv/">CV</a></nav>
       <div class="profile-links" aria-label="External profiles"><a href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Scholar</a><a href="https://orcid.org/0009-0005-3046-9621" target="_blank" rel="noopener noreferrer">ORCID</a><a href="https://github.com/BogyeomPark" target="_blank" rel="noopener noreferrer">GitHub</a></div>
     </aside>
     <main id="main-content">
       <header class="page-header">
-        <p class="eyebrow">Human-Centered Agentic AI · Human–AI Interaction</p>
+        <p class="eyebrow">Human-Centered Agentic AI &middot; Human&ndash;AI Interaction</p>
         <h1>Designing agentic AI that finds your blind spots instead of covering them.</h1>
-        <p class="lead">I am <strong>Bogyeom Park</strong>, a Ph.D. student at SeoulTech’s <a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">Human-centered Artificial Intelligence Lab</a> (HAI Lab), advised by <a href="https://hai.seoultech.ac.kr/subList/20000004988" target="_blank" rel="noopener noreferrer">Prof.&nbsp;Kyoungwon Seo</a>. Most AI fills a person’s gaps so smoothly they never see them. I build agents that surface those gaps rather than silently filling them, and study whether seeing what’s missing changes what someone can do. Underneath each system is the same question: which work an agent should take over, and which judgment has to stay with the person. I test that split where it carries stakes &mdash; tutoring, debate, career counseling, and early cognitive screening.</p>
+        <p class="lead">I am <strong>Bogyeom Park</strong>, a Ph.D. student at SeoulTech&rsquo;s <a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">Human-centered Artificial Intelligence Lab</a>, advised by <a href="https://hai.seoultech.ac.kr/subList/20000004988" target="_blank" rel="noopener noreferrer">Prof.&nbsp;Kyoungwon Seo</a>. I build multi-agent LLM systems and multimodal behavioral models, and test where the work should pass back from the agent to the person &mdash; in tutoring, debate, career counseling, and early cognitive screening.</p>
+        <ul class="credentials">
+          <li><b>12</b><span class="cred-label">Peer-reviewed papers</span><span class="cred-note">6 first-authored</span></li>
+          <li><b>87</b><span class="cred-label">Citations</span><span class="cred-note">h-index 5</span></li>
+          <li><b>4</b><span class="cred-label">CHI Late-Breaking Work</span><span class="cred-note">32&ndash;34% acceptance</span></li>
+          <li><b>Q1</b><span class="cred-label">JMIR, top 3%</span><span class="cred-note">First-authored</span></li>
+        </ul>
       </header>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>Watch it</h2></div>
+        <div class="watch-card">
+          <video controls autoplay muted loop playsinline preload="auto" width="1280" height="720"
+                 poster="/assets/demos/career-agent/poster.webp"
+                 src="/assets/demos/career-agent/system-demo.mp4"
+                 aria-label="Narrated demonstration of the agentic career-counseling system"></video>
+        </div>
+        <p class="watch-caption">Fifty-two seconds: a student&rsquo;s school records go into the agentic career-counseling system, and a report comes out with every claim traced to the record it came from. It starts muted and every step is captioned on screen, so nothing is lost with the sound off. <a href="/demos/career-agent/">Watch it &rarr;</a></p>
+      </section>
+
+      <section class="content-section">
+        <div class="section-heading"><h2>Play it</h2><a href="/demos/">All demos &rarr;</a></div>
+        <a class="demo-teaser" href="/demos/kiosk/">
+          <img src="/assets/demos/kiosk/sequence.webp" width="1500" height="988" alt="">
+          <div>
+            <h3>Virtual Kiosk Test</h3>
+            <p>Ordering a meal, as a cognitive test &mdash; the six-step task from the JMIR study, in your browser. Told once, about a minute; your time and errors land beside the two groups it was built to tell apart.</p>
+            <span class="demo-teaser-cta">Play it &rarr;</span>
+          </div>
+        </a>
+      </section>
 
       <section class="content-section">
         <div class="section-heading"><h2>Selected Work</h2><a href="/publications/">All publications &rarr;</a></div>
@@ -63,31 +93,24 @@
       </section>
 
       <section class="content-section">
-        <div class="section-heading"><h2>Demo</h2><a href="/demos/">All demos &rarr;</a></div>
-        <a class="demo-teaser" href="/demos/kiosk/">
-          <img src="/assets/demos/kiosk/sequence.webp" width="1500" height="988" alt="">
-          <div>
-            <h3>Virtual Kiosk Test</h3>
-            <p>Ordering a meal, as a cognitive test &mdash; the six-step task from the JMIR study, in your browser. Told once, about a minute; your time and errors land beside the two groups it was built to tell apart.</p>
-            <span class="demo-teaser-cta">Play it &rarr;</span>
-          </div>
-        </a>
-        <a class="demo-teaser" href="/demos/career-agent/">
-          <img src="/assets/demos/career-agent/poster.webp" width="1280" height="720" alt="">
-          <div>
-            <h3>Agentic Career-Counseling System</h3>
-            <p>Student records in, a report out &mdash; every claim traces back to the record it came from. Narrated: what the teacher decides, and what the AI handles.</p>
-            <span class="demo-teaser-cta">Watch it &rarr;</span>
-          </div>
-        </a>
-      </section>
-
-      <section class="content-section">
-        <div class="section-heading"><h2>Recent News</h2><a href="/news/">More news →</a></div>
-        <div class="news-list">
-          <article class="news-item"><div class="news-date"><time datetime="2026-08">Aug 2026</time><span>Teaching</span></div><div><h3><a href="/news/#ax-academy-2026">Tutored Hyundai Motor Group&rsquo;s 2026 AX Academy big data boot camp</a></h3><p>Four months with nine participants, each bringing a data project from their own part of the company.</p></div></article>
-          <article class="news-item"><div class="news-date"><time datetime="2026-07-06">Jul 2026</time><span>Talk</span></div><div><h3><a href="/news/#aied-2026">Presented agentic AI research at the HAI-Agency@AIED 2026 Workshop</a></h3><p>On closing the “cognitive last mile” between AI-generated information and an informed counseling action.</p></div></article>
-          <article class="news-item"><div class="news-date"><time datetime="2026-01-29">Jan 2026</time><span>Talk</span></div><div><h3><a href="/news/#hci-korea-2026">Presented a personalized career-counseling agent at HCI Korea 2026</a></h3><p>From teacher needs to an agentic system that reasons, gathers evidence, and supports guidance.</p></div></article></div>
+        <div class="section-heading"><h2>Talks &amp; Posters</h2><a href="/news/">More news &rarr;</a></div>
+        <div class="photo-band">
+          <a class="photo-card" href="/news/#aied-2026">
+            <img src="/assets/news/thumbs/aied-2026.webp" width="720" height="720" loading="lazy" alt="Bogyeom Park presenting agentic AI research at the HAI-Agency workshop at AIED 2026">
+            <span class="photo-venue">AIED 2026</span>
+            <span class="photo-note">Workshop talk &middot; Seoul</span>
+          </a>
+          <a class="photo-card" href="/news/#chi-2025">
+            <img src="/assets/news/thumbs/chi-2025.webp" width="720" height="960" loading="lazy" alt="Bogyeom Park discussing the multi-agent debate chatbot poster with an attendee at CHI 2025">
+            <span class="photo-venue">CHI 2025</span>
+            <span class="photo-note">Late-Breaking Work &middot; Yokohama</span>
+          </a>
+          <a class="photo-card" href="/news/#chi-2024">
+            <img src="/assets/news/thumbs/chi-2024.webp" width="720" height="473" loading="lazy" alt="Bogyeom Park standing beside the VR and MRI biomarker research poster at CHI 2024">
+            <span class="photo-venue">CHI 2024</span>
+            <span class="photo-note">Late-Breaking Work &middot; Honolulu</span>
+          </a>
+        </div>
       </section>
 
       <footer><span>© 2026 Bogyeom Park</span><span>Last updated <span data-last-updated>August 2026</span> · Hosted on GitHub Pages</span></footer>

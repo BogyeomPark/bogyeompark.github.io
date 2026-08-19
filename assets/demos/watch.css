@@ -1,14 +1,15 @@
-/* The video on /demos/career-agent/. It is the exhibit, so it takes the column
-   at a width where the interface is legible — a 52-second screen recording in a
-   thumbnail column shows nothing. /demos/ lists it as a card like every other
-   entry and links here; the copy rules that card used to need are gone with it. */
+/* The video on Home and on /demos/career-agent/. It is the exhibit, so it takes
+   the column at a width where the interface is legible — a 52-second screen
+   recording in a thumbnail column shows nothing. Home loads this file for the
+   same two rules rather than keeping a second copy in site.css; /demos/ lists the
+   system as a card like every other entry and links to the page. */
 .watch-card { max-width: 720px; }
 .watch-card video {
   display: block; width: 100%; height: auto;
   border: 1px solid var(--line); border-radius: 11px;
   background: var(--soft);
 }
-/* The video's own caption on /demos/career-agent/. Not .kiosk-caption: that one
-   lives in kiosk.css, which this page has no reason to load. */
+/* The video's own caption. Not .kiosk-caption: that one lives in kiosk.css,
+   which neither of these two pages has a reason to load. */
 .watch-caption { margin: 12px 0 0; max-width: 660px; color: var(--muted); font-size: 0.85rem; }
 

@@ -46,11 +46,16 @@ PORTRAIT_SIZE = (224, 288)
 OG_IMAGE = "/assets/og-card.jpg"
 OG_IMAGE_ALT = f"{NAME} ({NAME_KO}), {ROLE} at the {LAB_SHORT}"
 
-# research/ and projects/ were retired: dropped from the nav in fd5d842 and
-# deleted outright afterwards. Their content lives on Home and Publications.
+# research/ was retired in fd5d842 and deleted; its content lives on Home and
+# Publications. projects/ went with it and has now come back, because what it
+# used to hold and what it holds now are not the same thing: the old page listed
+# project titles, which Publications already implied. The new one carries the
+# award, the funder, the role and the deliverable — the four facts a hiring PI
+# reads a project entry for, and none of which a paper list can supply.
 NAV = [
     ("home", "Home", "/"),
     ("publications", "Publications", "/publications/"),
+    ("projects", "Projects", "/projects/"),
     ("news", "News", "/news/"),
     ("demos", "Demos", "/demos/"),
     ("cv", "CV", "/cv/"),
@@ -65,6 +70,9 @@ PAGES = [
         "file": "index.html",
         "url": "/",
         "nav": "home",
+        # Home leads with the career-agent video, so it needs the two rules that
+        # size it. Same file /demos/career-agent/ loads, not a second copy.
+        "assets": ["/assets/demos/watch.css"],
         "title": NAME,
         "og_title": f"{NAME} — agentic AI that finds your blind spots",
         "description": (
@@ -82,6 +90,17 @@ PAGES = [
         "description": (
             f"Publications by {NAME} in human-centered AI, AI in Education, "
             "and multimodal learning."
+        ),
+    },
+    {
+        "file": "projects/index.html",
+        "url": "/projects/",
+        "nav": "projects",
+        "title": f"Projects | {NAME}",
+        "og_title": f"Funded projects — {NAME}",
+        "description": (
+            f"Funded research projects {NAME} has worked on, with the award, the funder, "
+            "the role held on each, and what came out of it."
         ),
     },
     {

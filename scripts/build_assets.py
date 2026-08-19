@@ -201,7 +201,14 @@ def build_publication_figures():
     width stays generous and the quality high; the saving comes from webp.
     """
     rows = []
-    roots = [os.path.join(ASSETS, "publications"), os.path.join(ASSETS, "demos")]
+    roots = [
+        os.path.join(ASSETS, "publications"),
+        os.path.join(ASSETS, "demos"),
+        # Project figures come off the lab's project board and are diagrams with
+        # Korean and English labels baked in, so they belong with the paper
+        # figures rather than the news photographs: same width, same quality.
+        os.path.join(ASSETS, "projects"),
+    ]
     for src_root in roots:
       if not os.path.isdir(src_root):
         continue
