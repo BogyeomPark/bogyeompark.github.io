@@ -386,6 +386,15 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .capability ul { margin: 0; padding: 0; list-style: none; }
 .capability li { padding: 6px 0; border-top: 1px solid var(--line); color: var(--body); font-size: 0.85rem; line-height: 1.45; }
 .capability li:first-child { border-top: 0; padding-top: 0; }
+/* Each row goes to the entry that evidences it, so the claim and its proof are
+   one click apart rather than five hundred pixels. */
+.capability li a { display: block; color: inherit; text-decoration: none; }
+.capability li:hover { color: var(--accent-dark); }
+.capability li a::after { content: " 92"; color: var(--accent); opacity: 0; transition: opacity 120ms ease; }
+.capability li:hover a::after { opacity: 1; }
+/* Landing on an entry should be visible, or the jump reads as nothing happening. */
+.project { scroll-margin-top: 24px; }
+.project:target { background: linear-gradient(var(--accent-pale), var(--accent-pale)) no-repeat left top / 3px 100%; padding-left: 20px; }
 
 /* A project entry answers one question - what can this person do - so that is
    what the entry leads with. The order is title, one line of provenance, the
