@@ -52,6 +52,9 @@ f_small = F(UI, 17)
 f_cap = F(UI_B, 27)
 f_rep_h = F(UI_SB, 23)
 f_rep = F(UI, 19)
+f_rail = F(UI, 18)
+f_rail_b = F(UI_SB, 18)
+f_rail_h = F(UI_SB, 13)
 
 # (who, text, disclosure) - who is 'bot' or 'user'
 TURNS = [
@@ -87,8 +90,15 @@ REPORT = [
     ("Coping strategies", ["Venting emotions and confiding in others"]),
 ]
 
+# The five areas of the SISCO inventory, shown as a rail beside the chat. It is
+# not decoration: the whole design of the SD condition is that each area is
+# opened by a disclosure, and a viewer who cannot see the areas cannot see that.
+STAGES = ["Opening", "Stressors", "Physical", "Psychological", "Behavioural", "Coping"]
+STAGE_AT = {0: 0, 6: 1, 8: 2}          # turn index -> stage index
+
 PAD = 26
-CARD = (96, 34, W - 96, H - BAR_H - 26)          # chat card bounds
+RAIL = (44, 34, 268, H - BAR_H - 26)             # stage rail bounds
+CARD = (296, 34, W - 44, H - BAR_H - 26)         # chat card bounds
 VIEW_TOP = CARD[1] + 62
 VIEW_BOT = CARD[3] - 24
 
@@ -112,7 +122,7 @@ def measure(draw, turns):
     """Lay the transcript out once; frames then just pick a scroll offset."""
     laid, y = [], 0
     for who, text, disc in turns:
-        max_w = 640 if who == "bot" else 520
+        max_w = 590 if who == "bot" else 470
         lines = wrap(draw, text, f_msg, max_w - 2 * 18)
         h = len(lines) * 29 + 2 * 15
         laid.append({"who": who, "disc": disc, "lines": lines, "w": max_w, "h": h, "y": y})
@@ -124,10 +134,40 @@ def rounded(draw, box, radius, fill, outline=None, width=1):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
-def draw_frame(laid, shown, typing, caption, report=False):
+def draw_rail(d, stage):
+    d.text((RAIL[0] + 4, RAIL[1] + 6), "ACADEMIC STRESS", font=f_rail_h, fill=MUTED)
+    d.text((RAIL[0] + 4, RAIL[1] + 26), "INVENTORY", font=f_rail_h, fill=MUTED)
+    y = RAIL[1] + 74
+    for i, name in enumerate(STAGES):
+        done, now = i < stage, i == stage
+        colour = ACCENT if now else (INK if done else LINE)
+        if i:
+            d.line([(RAIL[0] + 13, y - 26), (RAIL[0] + 13, y - 6)], fill=LINE, width=2)
+        r = 9 if now else 6
+        d.ellipse([RAIL[0] + 13 - r, y - r, RAIL[0] + 13 + r, y + r],
+                  fill=colour if (now or done) else PAPER, outline=colour, width=2)
+        d.text((RAIL[0] + 34, y - 11), name, font=f_rail if not now else f_rail_b,
+               fill=INK if (now or done) else MUTED)
+        y += 46
+
+
+def avatar(d, box, who):
+    x0, y0, x1, y1 = box
+    if who == "bot":
+        d.ellipse(box, fill=WARM_BG, outline=WARM, width=2)
+        d.ellipse([x0 + 11, y0 + 10, x1 - 11, y0 + 20], fill=WARM)
+        d.arc([x0 + 8, y0 + 16, x1 - 8, y1 - 6], 20, 160, fill=WARM, width=3)
+    else:
+        d.ellipse(box, fill=ACCENT)
+
+
+def draw_frame(laid, shown, typing, caption, report=False, stage=0):
     im = Image.new("RGB", (W, H), SOFT)
     d = ImageDraw.Draw(im)
 
+    draw_rail(d, stage)
+    d.rounded_rectangle([CARD[0] + 3, CARD[1] + 5, CARD[2] + 3, CARD[3] + 5], radius=18,
+                        fill=(236, 242, 243))
     rounded(d, CARD, 18, PAPER, LINE, 1)
     d.line([(CARD[0] + 1, CARD[1] + 50), (CARD[2] - 1, CARD[1] + 50)], fill=LINE, width=1)
     d.ellipse([CARD[0] + 22, CARD[1] + 16, CARD[0] + 40, CARD[1] + 34], fill=ACCENT)
@@ -137,6 +177,14 @@ def draw_frame(laid, shown, typing, caption, report=False):
     if report:
         draw_report(d)
     else:
+        # Messages are drawn on their own surface and pasted into the card, so a
+        # bubble scrolling past the top edge is cut at the edge instead of drawn
+        # over the border. Drawing straight onto the frame let half-scrolled
+        # bubbles hang outside the window entirely.
+        view_w = CARD[2] - CARD[0]
+        view_h = VIEW_BOT - VIEW_TOP
+        layer = Image.new("RGB", (view_w, view_h), PAPER)
+        d = ImageDraw.Draw(layer)
         visible = laid[:shown]
         total = (visible[-1]["y"] + visible[-1]["h"]) if visible else 0
         if typing:
@@ -144,18 +192,23 @@ def draw_frame(laid, shown, typing, caption, report=False):
         offset = max(0, total - (VIEW_BOT - VIEW_TOP))
 
         for item in visible:
-            top = VIEW_TOP + item["y"] - offset
-            if top + item["h"] < VIEW_TOP - 40 or top > VIEW_BOT + 40:
+            top = item["y"] - offset
+            if top + item["h"] < -40 or top > view_h + 40:
                 continue
             if item["who"] == "bot":
-                x0 = CARD[0] + PAD
+                x0 = PAD + 46
                 bg = WARM_BG if item["disc"] else SOFT
                 fg = INK if item["disc"] else BODY
             else:
-                x0 = CARD[2] - PAD - item["w"]
+                x0 = view_w - PAD - 46 - item["w"]
                 bg, fg = ACCENT, PAPER
             box = [x0, top, x0 + item["w"], top + item["h"]]
             rounded(d, box, 15, bg)
+            av = 34
+            if item["who"] == "bot":
+                avatar(d, [x0 - av - 12, top + 4, x0 - 12, top + 4 + av], "bot")
+            else:
+                avatar(d, [x0 + item["w"] + 12, top + 4, x0 + item["w"] + 12 + av, top + 4 + av], "user")
             if item["disc"]:
                 d.rounded_rectangle([x0, top, x0 + 4, top + item["h"]], radius=2, fill=WARM)
             ty = top + 15
@@ -164,14 +217,17 @@ def draw_frame(laid, shown, typing, caption, report=False):
                 ty += 29
 
         if typing:
-            top = VIEW_TOP + total - 46 - offset
-            rounded(d, [CARD[0] + PAD, top, CARD[0] + PAD + 74, top + 38], 15, SOFT)
+            top = total - 46 - offset
+            rounded(d, [PAD + 46, top, PAD + 46 + 74, top + 38], 15, SOFT)
             for i in range(3):
-                cx = CARD[0] + PAD + 22 + i * 15
+                cx = PAD + 68 + i * 15
                 on = (typing + i) % 3 == 0
                 r = 5 if on else 4
                 d.ellipse([cx - r, top + 19 - r, cx + r, top + 19 + r],
                           fill=MUTED if on else LINE)
+
+        im.paste(layer, (CARD[0], VIEW_TOP))
+        d = ImageDraw.Draw(im)
 
     d.rectangle([0, H - BAR_H, W, H], fill=BAR_BG)
     lines = wrap(d, caption, f_cap, W - 140)
@@ -208,27 +264,28 @@ def main():
     laid, _ = measure(probe, TURNS)
 
     frames = []
-    caption = CAPTIONS[0]
+    caption, stage = CAPTIONS[0], 0
     for index, item in enumerate(laid):
         caption = CAPTIONS.get(index, caption)
+        stage = STAGE_AT.get(index, stage)
         if item["who"] == "bot":
             for tick in range(int(FPS * 0.7)):
-                frames.append((index, tick // 4 + 1, caption, False))
+                frames.append((index, tick // 4 + 1, caption, False, stage))
         # hold long enough to read it, with a floor so short lines do not flash
         hold = max(1.5, 0.055 * sum(len(l) for l in item["lines"]))
         for _ in range(int(FPS * hold)):
-            frames.append((index + 1, 0, caption, False))
+            frames.append((index + 1, 0, caption, False, stage))
 
     for _ in range(int(FPS * 2.2)):
-        frames.append((len(laid), 0, CAPTIONS[10], False))
+        frames.append((len(laid), 0, CAPTIONS[10], False, stage))
     for _ in range(int(FPS * 5.0)):
-        frames.append((len(laid), 0, REPORT_CAPTION, True))
+        frames.append((len(laid), 0, REPORT_CAPTION, True, len(STAGES) - 1))
     for _ in range(int(FPS * 4.0)):
-        frames.append((len(laid), 0, CLOSING_CAPTION, True))
+        frames.append((len(laid), 0, CLOSING_CAPTION, True, len(STAGES) - 1))
 
     print(f"{len(frames)} frames -> {len(frames) / FPS:.1f}s")
-    for n, (shown, typing, cap, report) in enumerate(frames):
-        draw_frame(laid, shown, typing, cap, report).save(
+    for n, (shown, typing, cap, report, stage) in enumerate(frames):
+        draw_frame(laid, shown, typing, cap, report, stage).save(
             os.path.join(OUT_DIR, f"f{n:05d}.png"), compress_level=1)
         if n % 200 == 0:
             print(f"  {n}/{len(frames)}")
