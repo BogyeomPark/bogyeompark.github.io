@@ -374,6 +374,19 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 
 .news-list { border-top: 1px solid var(--line); }
 .news-item { display: grid; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--line); grid-template-columns: 115px minmax(0, 1fr); }
+/* The seven entries answer "what did this person do" one at a time, and nobody
+   reads seven to find out whether a skill is there. This says it once, up front,
+   grouped by what the work asks of a person rather than by field - which is also
+   what shows the range without counting domains, since the same rows are used by
+   the clinical projects and the classroom ones. */
+.capability-note { max-width: 690px; margin: -6px 0 22px; color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+.capability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 22px; }
+.capability { padding: 20px 22px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
+.capability h3 { margin: 0 0 12px; font-family: var(--serif); font-size: 1.02rem; font-weight: 600; }
+.capability ul { margin: 0; padding: 0; list-style: none; }
+.capability li { padding: 6px 0; border-top: 1px solid var(--line); color: var(--body); font-size: 0.85rem; line-height: 1.45; }
+.capability li:first-child { border-top: 0; padding-top: 0; }
+
 /* A project entry answers one question - what can this person do - so that is
    what the entry leads with. The order is title, one line of provenance, the
    capabilities, then the detail. The admin facts had been a boxed row above the
@@ -382,9 +395,9 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    already carries. Both are gone. */
 .project { padding: 42px 0 46px; border-bottom: 1px solid var(--line); }
 .project:first-child { padding-top: 6px; }
-/* With the year groups gone each project is a section of the page in its
-   own right, so its title is an h2 (STYLE.md 3-1). */
-.project h2 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.38rem; font-weight: 600; line-height: 1.28; letter-spacing: -0.018em; }
+/* The list has one h2 of its own, so an entry title is an item title: h3, at a
+   size that still leads its entry (STYLE.md 3-1). */
+.project h3 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.38rem; font-weight: 600; line-height: 1.28; letter-spacing: -0.018em; }
 .project-meta { margin: 0 0 14px; color: var(--muted); font-size: 0.83rem; font-weight: 500; }
 
 /* The capabilities sit above the prose, not under it. A reader who stops after
