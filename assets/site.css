@@ -62,7 +62,7 @@
   --accent-dark: #1b3a66;
   --accent-pale: #e4eaf4;
   --warm: #b55d3e;
-  --sidebar: 250px;
+  --sidebar: 268px;
   --radius: 14px;
   --sans: 'Inter', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
   --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
@@ -111,10 +111,16 @@ a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4p
 
 .skip-link:focus { transform: translateY(0); }
 
+/* 1140px left roughly four hundred pixels of margin down each side of a normal
+   desktop screen and squeezed the portrait and the figures to pay for it. The
+   shell is wider now; the prose does not follow it, because every text block
+   carries its own measure and the 78-character rule is enforced by
+   audit_site.py. What the extra width buys is the pictures - the videos, the
+   project figures, the capability grid - which is where it was needed. */
 .site-shell {
   display: grid;
   grid-template-columns: var(--sidebar) minmax(0, 1fr);
-  width: min(1140px, calc(100% - 48px));
+  width: min(1340px, calc(100% - 56px));
   margin: 0 auto;
 }
 
@@ -129,7 +135,7 @@ a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4p
 
 .profile-photo {
   display: block;
-  width: 136px;
+  width: 168px;
   height: auto;
   max-width: 100%;
   object-fit: contain;
@@ -203,7 +209,7 @@ a:focus-visible { outline: 3px solid rgba(31, 66, 117, 0.28); outline-offset: 4p
 }
 .profile-links a:hover { border-color: var(--accent); background: var(--accent-pale); color: var(--accent-dark); }
 
-main { min-width: 0; padding: 51px 0 66px 50px; }
+main { min-width: 0; padding: 51px 0 66px 56px; }
 .page-header { padding-bottom: 40px; border-bottom: 1px solid var(--line); }
 .eyebrow { margin: 0 0 9px; color: var(--muted); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
 .page-header h1 {
@@ -431,14 +437,14 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    screen of the entry instead of pushed under a 520px-tall image. */
 .project-cols { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: 30px; align-items: start; }
 .project-figure { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
-.project-what { margin: 0 0 16px; color: var(--body); font-size: 0.95rem; line-height: 1.62; }
-.project-did { margin: 0 0 18px; padding-left: 15px; border-left: 3px solid var(--accent); color: var(--body); font-size: 0.92rem; line-height: 1.62; }
+.project-what { max-width: 660px; margin: 0 0 16px; color: var(--body); font-size: 0.95rem; line-height: 1.62; }
+.project-did { max-width: 660px; margin: 0 0 18px; padding-left: 15px; border-left: 3px solid var(--accent); color: var(--body); font-size: 0.92rem; line-height: 1.62; }
 /* Outputs are not chips. They were, and a chip row of outputs sat directly under
    a chip row of capabilities looking identical to it, so the reader had to check
    a label every time to know which kind of thing they were reading. One chip row
    per entry, and it is the capabilities; what came out is a line of text, with
    the papers and systems as links in it. */
-.results { margin: 0; color: var(--body); font-size: 0.88rem; line-height: 1.7; }
+.results { max-width: 690px; margin: 0; color: var(--body); font-size: 0.88rem; line-height: 1.7; }
 .results a { color: var(--accent-dark); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent-pale); }
 .results a:hover { border-bottom-color: var(--accent); }
 .project-did span, .results > span {
@@ -808,6 +814,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 4
 
 @media (max-width: 1120px) {
   .site-shell { width: min(100% - 36px, 1040px); }
+  .profile-photo { width: 140px; }
   .news-item { grid-template-columns: 1fr; gap: 10px; }
   .news-date { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
   .news-date time, .news-date span { display: inline; }
