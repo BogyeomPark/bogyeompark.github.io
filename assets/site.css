@@ -412,6 +412,11 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    short items they are the part of the entry that carries. */
 .results { margin: 0 0 4px; }
 .results ul { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+/* Half of these open the thing they name, which is the point of listing
+   artifacts rather than findings: a number cannot be checked from here. */
+.results li a { color: inherit; text-decoration: none; }
+.results li:has(a) { border-color: var(--accent-pale); background: var(--accent-pale); color: var(--accent-dark); }
+.results li:has(a):hover { border-color: var(--accent); background: var(--accent); color: var(--on-accent); }
 .results li {
   padding: 5px 12px;
   border: 1px solid var(--line);
