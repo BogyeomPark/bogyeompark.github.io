@@ -22,8 +22,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/site.css?v=d40bbcc1">
+  <link rel="stylesheet" href="/assets/site.css?v=7e9ab70a">
   <link rel="stylesheet" href="/assets/demos/watch.css?v=eadc29f2">
+  <script src="/assets/site.js?v=36cb089b" defer></script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Bogyeom Park","alternateName":["박보겸","Hyobin Park"],"jobTitle":"Ph.D. Student","identifier":{"@type":"PropertyValue","propertyID":"ORCID","value":"0009-0005-3046-9621"},"affiliation":{"@type":"Organization","name":"Seoul National University of Science and Technology","department":"Human-centered Artificial Intelligence Lab"},"worksFor":{"@type":"Organization","name":"Seoul National University of Science and Technology"},"url":"https://bogyeompark.github.io/","image":"https://bogyeompark.github.io/assets/og-card.jpg","email":"mailto:bogyeom@seoultech.ac.kr","sameAs":["https://scholar.google.com/citations?user=HusX3nUAAAAJ&hl=en","https://orcid.org/0009-0005-3046-9621","https://github.com/BogyeomPark"],"knowsAbout":["Agentic AI","Human-AI Interaction","AI in Education","Learning Analytics","Accessibility"]}</script>
   <script data-goatcounter="https://bogyeompark.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
@@ -41,22 +42,43 @@
         <h1>Designing agentic AI that finds your blind spots instead of covering them.</h1>
         <p class="lead">I am <strong>Bogyeom Park</strong>, a Ph.D. student at SeoulTech&rsquo;s <a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">Human-centered Artificial Intelligence Lab</a>, advised by <a href="https://hai.seoultech.ac.kr/subList/20000004988" target="_blank" rel="noopener noreferrer">Prof.&nbsp;Kyoungwon Seo</a>. I build the systems I study &mdash; multi-agent LLM pipelines, VR tasks in Unity, multimodal behavioral models &mdash; and test where the work should pass back from the agent to the person: tutoring, debate, career counseling, early cognitive screening.</p>
         <ul class="credentials">
-          <li><b>12</b><span class="cred-label">Peer-reviewed papers</span><span class="cred-note">6 first-authored</span></li>
+          <li><a href="/publications/"><b>12</b><span class="cred-label">Peer-reviewed papers</span><span class="cred-note">6 first-authored</span></a></li>
           <li><b>87</b><span class="cred-label">Citations</span><span class="cred-note">h-index 5</span></li>
           <li><b>4</b><span class="cred-label">CHI Late-Breaking Work</span><span class="cred-note">32&ndash;34% acceptance</span></li>
-          <li><b>Q1</b><span class="cred-label">JMIR, top 3%</span><span class="cred-note">First-authored</span></li>
+          <li><b>8.2</b><span class="cred-label">JMIR impact factor</span><span class="cred-note">JCR Q1, first-authored</span></li>
         </ul>
       </header>
 
       <section class="content-section">
-        <div class="section-heading"><h2>Watch it</h2></div>
-        <div class="watch-card">
-          <video controls autoplay muted loop playsinline preload="auto" width="1280" height="720"
-                 poster="/assets/demos/career-agent/poster.webp"
-                 src="/assets/demos/career-agent/system-demo.mp4"
-                 aria-label="Narrated demonstration of the agentic career-counseling system"></video>
+        <div class="section-heading"><h2>Watch it</h2><a href="/demos/">All demos &rarr;</a></div>
+        <div class="media-carousel" data-media-carousel>
+          <div class="carousel-viewport">
+            <button type="button" class="carousel-arrow prev" data-step="-1" aria-label="Previous video">&lsaquo;</button>
+            <div class="carousel-track" tabindex="0" role="region" aria-label="System videos, swipe or use the arrows">
+              <div class="carousel-slide" aria-label="Agentic career-counseling system">
+                <div class="watch-card">
+                  <video controls autoplay muted loop playsinline preload="auto" width="1280" height="720"
+                         poster="/assets/demos/career-agent/poster.webp"
+                         src="/assets/demos/career-agent/system-demo.mp4"
+                         aria-label="Screen recording of the agentic career-counseling system in use"></video>
+                </div>
+              </div>
+              <div class="carousel-slide" aria-label="Virtual kiosk cognitive test">
+                <div class="watch-card">
+                  <video controls muted loop playsinline preload="none" width="1280" height="720"
+                         poster="/assets/demos/vr-biomarker/kiosk-poster.webp"
+                         src="/assets/demos/vr-biomarker/kiosk-playthrough.mp4"
+                         aria-label="Screen recording of the virtual kiosk cognitive test being carried out"></video>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="carousel-arrow next" data-step="1" aria-label="Next video">&rsaquo;</button>
+          </div>
+          <div class="carousel-captions">
+            <p class="watch-caption" data-caption="0">Fifty-two seconds: a student&rsquo;s school records go into the agentic career-counseling system, and a report comes out with every claim traced to the record it came from. It starts muted and every step is captioned on screen, so nothing is lost with the sound off. <a href="/demos/career-agent/">Watch it &rarr;</a></p>
+            <p class="watch-caption" data-caption="1" hidden>A participant carrying out the virtual kiosk test &mdash; the six-step meal order from the JMIR study, built in Unity. Their headset view is on the right. How the task is done, not whether it is finished, is what the biomarkers are derived from. The same task is <a href="/demos/kiosk/">playable below</a>.</p>
+          </div>
         </div>
-        <p class="watch-caption">Fifty-two seconds: a student&rsquo;s school records go into the agentic career-counseling system, and a report comes out with every claim traced to the record it came from. It starts muted and every step is captioned on screen, so nothing is lost with the sound off. <a href="/demos/career-agent/">Watch it &rarr;</a></p>
       </section>
 
       <section class="content-section">
@@ -65,30 +87,17 @@
           <img src="/assets/demos/kiosk/sequence.webp" width="1500" height="988" alt="">
           <div>
             <h3>Virtual Kiosk Test</h3>
-            <p>Ordering a meal, as a cognitive test &mdash; the six-step task from the JMIR study, in your browser. Told once, about a minute; your time and errors land beside the two groups it was built to tell apart.</p>
+            <p>The task from the video above, in your browser rather than a headset. Ordering a meal, as a cognitive test: told once, about a minute; your time and errors land beside the two groups it was built to tell apart.</p>
             <span class="demo-teaser-cta">Play it &rarr;</span>
           </div>
         </a>
-      </section>
-
-      <section class="content-section">
-        <div class="section-heading"><h2>Selected Work</h2><a href="/publications/">All publications &rarr;</a></div>
-        <div class="work-grid">
-          <a class="work" href="/publications/debate-chatbot/">
-            <img src="/assets/publications/debate-chatbot/figure-1.webp" alt="">
-            <span class="work-venue">CHI EA 2025</span>
-            <h3>Assessing Critical Thinking through a Multi-Agent LLM-Based Debate Chatbot</h3>
-          </a>
-          <a class="work" href="/publications/multimodal-biomarkers-jmir/">
-            <img src="/assets/publications/multimodal-biomarkers-jmir/figure-3.webp" alt="">
-            <span class="work-venue">JMIR 2024</span>
-            <h3>Integrating VR and MRI Biomarkers for Early Detection of Mild Cognitive Impairment</h3>
-          </a>
-          <a class="work" href="/publications/agentic-career-hci2026/">
-            <img src="/assets/publications/agentic-career-hci2026/figure-3.webp" alt="">
-            <span class="work-venue">HCI Korea 2026</span>
-            <h3>From Teacher Needs to Agentic AI: a Personalized Career Counseling System</h3>
-          </a>
+        <div class="demo-teaser is-upcoming">
+          <img src="/assets/publications/self-disclosure-chatbot/figure-1.webp" width="1400" height="700" alt="">
+          <div>
+            <h3>Self-Disclosing Chatbot <span class="upcoming-chip">In preparation</span></h3>
+            <p>Two chatbots run the same academic-stress inventory. One of them first says something about itself &mdash; and which one a student talks to changes what they end up noticing about their own stress. The interactive version is being built; the study is published.</p>
+            <div class="paper-links"><a href="/publications/self-disclosure-chatbot/">The paper, CHI EA 2025</a><a href="/publications/self-disclosure-hci2025/">The award paper, HCI Korea 2025</a></div>
+          </div>
         </div>
       </section>
 

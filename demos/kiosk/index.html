@@ -22,8 +22,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/site.css?v=d40bbcc1">
+  <link rel="stylesheet" href="/assets/site.css?v=7e9ab70a">
   <link rel="stylesheet" href="/assets/demos/kiosk.css?v=07e6e879">
+  <link rel="stylesheet" href="/assets/demos/watch.css?v=eadc29f2">
   <script src="/assets/demos/kiosk-en.js?v=f4904a53" defer></script>
   <script src="/assets/demos/kiosk.js?v=4b3b7cd8" defer></script>
   <script data-goatcounter="https://bogyeompark.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -50,6 +51,17 @@
         <p class="kiosk-caption" id="kiosk-caption" aria-live="polite"></p>
 
         <div class="kiosk-result" id="kiosk-result" tabindex="-1" hidden></div>
+      </section>
+
+      <section class="content-section" id="recording">
+        <div class="section-heading"><h2>Watch it</h2></div>
+        <div class="watch-card">
+          <video controls muted loop playsinline preload="none" width="1280" height="720"
+                 poster="/assets/demos/vr-biomarker/kiosk-poster.webp"
+                 src="/assets/demos/vr-biomarker/kiosk-playthrough.mp4"
+                 aria-label="Recording of a participant carrying out the virtual kiosk test in VR"></video>
+        </div>
+        <p class="watch-caption">The same six steps as they were actually run &mdash; a participant in a headset on the left, what they see on the right, each step labelled as it comes. This is the version the study collected data from; the one above is it rebuilt for a browser.</p>
       </section>
 
       <section class="content-section">

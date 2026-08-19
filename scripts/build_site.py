@@ -73,6 +73,10 @@ PAGES = [
         # Home leads with the career-agent video, so it needs the two rules that
         # size it. Same file /demos/career-agent/ loads, not a second copy.
         "assets": ["/assets/demos/watch.css"],
+        # site.js drives the "Watch it" arrows. Without this the markup renders
+        # and both videos stay reachable by scrolling, but the arrows do nothing -
+        # which is how they shipped the first time.
+        "script": True,
         "title": NAME,
         "og_title": f"{NAME} — agentic AI that finds your blind spots",
         "description": (
@@ -127,7 +131,7 @@ PAGES = [
         "file": "demos/kiosk/index.html",
         "url": "/demos/kiosk/",
         "nav": "demos",
-        "assets": ["/assets/demos/kiosk.css", "/assets/demos/kiosk-en.js", "/assets/demos/kiosk.js"],
+        "assets": ["/assets/demos/kiosk.css", "/assets/demos/watch.css", "/assets/demos/kiosk-en.js", "/assets/demos/kiosk.js"],
         "title": f"Virtual Kiosk Test | {NAME}",
         "og_title": "Ordering a meal, as a cognitive test",
         "description": (

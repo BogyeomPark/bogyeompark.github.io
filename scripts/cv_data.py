@@ -78,7 +78,7 @@ JOURNAL_ARTICLES = [
         ),
         "venue": (
             "Journal of Medical Internet Research, 26, e54538 (2024) - "
-            "JCR Q1; Top 3%; JIF 8.2 (2025 JCR)"
+            "JCR Q1; JIF 8.2; 96th percentile, rank 8/194 in Health Care Sciences &amp; Services (2026 JCR)"
         ),
         "url": "/publications/multimodal-biomarkers-jmir/",
     },
@@ -199,7 +199,7 @@ RESEARCH_EXPERIENCE = [
         "projects": [
             {
                 "title": "ICAP-Based AI Tutoring System for Probability and Statistics Learning",
-                "role": "Research Assistant | Tutorus Labs",
+                "role": "Lead Graduate Researcher | Tutorus Labs",
                 "dates": "Mar. 2026 - Aug. 2026",
                 "bullets": [
                     "Led the design and evaluation of an ICAP-based AI tutor that uses staged elicitation "
@@ -212,7 +212,7 @@ RESEARCH_EXPERIENCE = [
             },
             {
                 "title": "Agentic AI for Personalized Career, Academic, and Counseling Support",
-                "role": "Research Assistant | Korea Education & Research Information Service",
+                "role": "Lead Graduate Researcher | Korea Education & Research Information Service",
                 "dates": "Jun. 2025 - Dec. 2025",
                 "bullets": [
                     "Led a study of how agentic AI could support personalized educational pathways, "
@@ -222,7 +222,7 @@ RESEARCH_EXPERIENCE = [
             {
                 "title": "AI Copilot Technologies for Adaptive, Teacher-Augmented Learning",
                 "role": (
-                    "Research Assistant | Institute for Information & Communications Technology "
+                    "Lead Graduate Researcher | Institute for Information & Communications Technology "
                     "Planning & Evaluation"
                 ),
                 "dates": "Jul. 2023 - Dec. 2025",
@@ -240,7 +240,7 @@ RESEARCH_EXPERIENCE = [
                 "title": (
                     "AI-Based Early Screening and Prognosis Prediction for Landscape Tree Disease"
                 ),
-                "role": "Research Assistant | SUNGHA Co., Ltd.",
+                "role": "Lead Graduate Researcher | SUNGHA Co., Ltd.",
                 "dates": "Jul. 2023 - Dec. 2023",
                 "bullets": [
                     "Built an expert-validated image dataset of Zelkova serrata, the species that "
@@ -251,7 +251,7 @@ RESEARCH_EXPERIENCE = [
             },
             {
                 "title": "VR-EP-EEG-MRI Digital Biomarker Basic Research Laboratory",
-                "role": "Research Assistant | National Research Foundation of Korea",
+                "role": "Lead Graduate Researcher | National Research Foundation of Korea",
                 "dates": "Mar. 2022 - Feb. 2024",
                 "bullets": [
                     "Ran the VR data collection on site at Hanyang University Guri Hospital with patients "
@@ -265,7 +265,7 @@ RESEARCH_EXPERIENCE = [
                     "Multimodal Deep Learning for Early Dementia Diagnosis from VR "
                     "Daily-Living Data"
                 ),
-                "role": "Research Assistant | National Research Foundation of Korea",
+                "role": "Lead Graduate Researcher | National Research Foundation of Korea",
                 "dates": "Mar. 2021 - Feb. 2024",
                 # First-authored the JMIR validation study this grant produced.
                 "bullets": [
@@ -309,8 +309,9 @@ TEACHING = [
 SKILLS = [
     "<b>Research Methods</b> - experimental design, usability evaluation, user research, prototyping, "
     "multimodal learning analytics, statistical analysis, qualitative coding",
-    "<b>AI and Data</b> - machine learning, deep learning, feature engineering, LLM applications, AI agents",
-    "<b>Programming and Analysis</b> - Python, C/C#, SPSS",
+    "<b>Machine Learning</b> - PyTorch, scikit-learn, Hugging Face, feature engineering, multimodal fusion",
+    "<b>LLM Systems</b> - OpenAI and Anthropic APIs, multi-agent pipelines, RAG, prompt engineering and evaluation, LLM-as-a-judge",
+    "<b>Programming and Tooling</b> - Python, C/C#, Docker, Streamlit, Git, SPSS",
     "<b>VR and Interactive Systems</b> - Unity, VR task development, interaction logging and eye tracking",
     "<b>Design</b> - HCI theory, UX design, interaction prototyping, usability testing",
 ]
