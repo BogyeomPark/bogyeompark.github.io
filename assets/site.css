@@ -380,7 +380,7 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    title, which gave the paperwork more weight than the work; year headings above
    that cost six hundred pixels of blank page and repeated a date the entry
    already carries. Both are gone. */
-.project { padding: 34px 0 38px; border-bottom: 1px solid var(--line); }
+.project { padding: 42px 0 46px; border-bottom: 1px solid var(--line); }
 .project:first-child { padding-top: 6px; }
 /* With the year groups gone each project is a section of the page in its
    own right, so its title is an h2 (STYLE.md 3-1). */
@@ -406,10 +406,22 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
 .project-cols { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr); gap: 30px; align-items: start; }
 .project-figure { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
 .project-what { margin: 0 0 16px; color: var(--body); font-size: 0.95rem; line-height: 1.62; }
-.project-did, .project-out { margin: 0 0 14px; color: var(--body); font-size: 0.91rem; line-height: 1.6; }
-.project-did { padding-left: 15px; border-left: 3px solid var(--accent); }
-.project-out { padding-left: 15px; border-left: 3px solid var(--line); }
-.project-did span, .project-out span {
+.project-did { margin: 0 0 18px; padding-left: 15px; border-left: 3px solid var(--accent); color: var(--body); font-size: 0.92rem; line-height: 1.62; }
+/* The outcome is a list of things, not a paragraph about them. As prose the
+   numbers sat mid-sentence and the entry read as three identical blocks; as
+   short items they are the part of the entry that carries. */
+.results { margin: 0 0 4px; }
+.results ul { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+.results li {
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.81rem;
+  font-weight: 600;
+}
+.project-did span, .results > span {
   display: block;
   margin-bottom: 3px;
   color: var(--muted);
@@ -418,7 +430,8 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
   letter-spacing: .1em;
   text-transform: uppercase;
 }
-.project-did span { color: var(--accent); }
+.project-did > span { color: var(--accent); }
+.results > span { margin-bottom: 7px; }
 @media (max-width: 860px) {
   .project-cols { grid-template-columns: 1fr; gap: 20px; }
   .project-cols > div { order: 2; }
