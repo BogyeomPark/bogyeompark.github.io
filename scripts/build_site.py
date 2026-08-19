@@ -143,7 +143,7 @@ PAGES = [
         "file": "demos/self-disclosure/index.html",
         "url": "/demos/self-disclosure/",
         "nav": "demos",
-        "assets": ["/assets/demos/self-disclosure.css", "/assets/demos/self-disclosure.js"],
+        "assets": ["/assets/demos/self-disclosure.css", "/assets/demos/watch.css", "/assets/demos/self-disclosure.js"],
         "title": f"Self-Disclosing Chatbot | {NAME}",
         "og_title": "The chatbot goes first",
         "description": (

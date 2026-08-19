@@ -584,7 +584,9 @@ main { min-width: 0; padding: 51px 0 66px 50px; }
    The actions sit here rather than in a section of their own because the moment
    right after the video is the only moment the offer is obvious. Kept to 660px
    while the video runs wider: the video is a picture, this is prose. */
-.system-note { max-width: 660px; margin: 15px 0 0; }
+/* One height for all three, or the page jumps by a line every time the slide
+   changes and the controls move under the reader's cursor. */
+.system-note { max-width: 660px; min-height: 132px; margin: 15px 0 0; }
 .system-note h3 { margin: 0 0 5px; font-family: var(--serif); font-size: 1.12rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
 .system-note p { margin: 0; color: var(--body); font-size: 0.89rem; line-height: 1.58; }
 /* The arrows wrap, so nothing else says how many systems there are or which one
