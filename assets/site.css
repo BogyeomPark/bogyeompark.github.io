@@ -408,9 +408,6 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
    It cannot be dropped - seven entries showing awards of a billion won read as
    this person's grants without it - but it does not have to stand between the
    title and the thing the page is for. */
-/* It sits between the capability cards and the first year of projects now, so
-   it needs room above rather than the negative margin it had when it hung
-   under a section heading. */
 .project-disclosure { max-width: 690px; margin: 40px 0 -14px; color: var(--muted); font-size: 0.84rem; line-height: 1.6; }
 .capability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 22px; }
 .capability { padding: 20px 22px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
@@ -427,17 +424,11 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
 .project { scroll-margin-top: 24px; }
 .project:target { background: linear-gradient(var(--accent-pale), var(--accent-pale)) no-repeat left top / 3px 100%; padding-left: 20px; }
 
-/* A project entry answers one question - what can this person do - so that is
-   what the entry leads with. The order is title, one line of provenance, the
-   capabilities, then the detail. The admin facts had been a boxed row above the
-   title, which gave the paperwork more weight than the work; year headings above
-   that cost six hundred pixels of blank page and repeated a date the entry
-   already carries. Both are gone. */
 .project { padding: 42px 0 46px; border-bottom: 1px solid var(--line); }
 .project:first-child { padding-top: 26px; }
 /* The list has one h2 of its own, so an entry title is an item title: h3, at a
    size that still leads its entry (STYLE.md 3-1). */
-.project h3 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.38rem; font-weight: 600; line-height: 1.28; letter-spacing: -0.018em; }
+.project h2 { margin: 0 0 6px; font-family: var(--serif); font-size: 1.38rem; font-weight: 600; line-height: 1.28; letter-spacing: -0.018em; }
 .project-meta { margin: 0 0 14px; color: var(--muted); font-size: 0.83rem; font-weight: 500; }
 
 /* The capabilities sit above the prose, not under it. A reader who stops after
@@ -548,9 +539,6 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
 }
 
 .publication-card:first-child { border-top: 1px solid var(--line); }
-/* A rule tells one card from the next. Where a year holds a single card -- which
-   is every year on /demos/ -- the pair of them draws a box round it instead, and
-   a box is a claim the card is not making. */
 .publication-cards.single .publication-card { padding: 4px 0 0; border: 0; }
 .publication-thumb-link { display: block; align-self: start; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
 .publication-thumb {
@@ -562,11 +550,11 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
   transition: transform 180ms ease;
 }
 .publication-thumb-link:hover .publication-thumb { transform: scale(1.018); }
-.publication-card h3 { margin: 5px 0 9px; font-family: var(--serif); font-size: 1.26rem; font-weight: 600; line-height: 1.35; }
-.publication-card h3 a { color: var(--ink); text-decoration: none; }
+.publication-card h2, .publication-card h3 { margin: 5px 0 9px; font-family: var(--serif); font-size: 1.26rem; font-weight: 600; line-height: 1.35; }
+.publication-card h2, .publication-card h3 a { color: var(--ink); text-decoration: none; }
 /* Every card title is a link, and it is now the way into the paper, so it shows
    the affordance on hover rather than relying on a repeated link below. */
-.publication-card h3 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+.publication-card h2, .publication-card h3 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .publication-card p { margin: 0; color: var(--body); font-size: 0.88rem; }
 .publication-card .venue { margin-top: 8px; color: var(--muted); font-size: 0.76rem; font-weight: 500; }
 
@@ -770,19 +758,6 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
 /* The role line has to be visibly not the overview paragraph under it: they sit
    two lines apart and inherited the same size and colour, which made the entry
    read as one run-on block. Role is metadata, so it takes the metadata treatment. */
-/* Year dividers on Projects, same treatment as the ones on News: a project list
-   ordered by anything other than time makes the reader hold two orders at once. */
-.project-year {
-  margin: 46px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: .04em;
-}
-.project-list .project-year:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 /* Project figures come from the lab's board at whatever size they were uploaded,
    from 367px to 1024px wide. Capping rather than stretching keeps the small ones
    sharp: an upscaled diagram with text in it is worse than a smaller one. */
