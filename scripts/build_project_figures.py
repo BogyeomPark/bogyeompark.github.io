@@ -250,14 +250,16 @@ SOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figure-sourc
 # crop is padded out to the ratio in the source's own background colour rather
 # than cut down to it.
 REAL = {
-    # already 16:9, so it needs no crop and gets no padding bands
+    # the worked solution runs to y=640 and the panel closes at 700; the blank
+    # half below that is dropped, and the white padding centres what is left
     "ai-tutoring-cluney": (
-        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None, (0, 0, 1703, 957)),
-    # the card border is at y=44 and its heading at 52; starting at 40 is the last fully clean row above it, so the card opens the frame instead of being sliced by it. 552 is the
-    # seam under the Subject Selection card, and 934 lands in the gutter before
-    # the chat panel starts at 945
+        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None, (0, 10, 1703, 706)),
+    # the card border is at y=44 and its heading at 52, and the Subject Selection
+    # card closes at 556, so this takes both sections whole with room either
+    # side and lets the white padding make up the ratio. Trimming to 16:9
+    # instead was what shaved the heading and cut the last table row.
     "agentic-career-keris": (
-        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0, (24, 40, 934, 552)),
+        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0, (24, 34, 938, 566)),
     # the debate chatbot is what this project built; the frame that was here came
     # from the self-disclosure demo, which is a different study. 415 stops above
     # the Stage 3 banner, and the white margin either side is what the padding
@@ -278,10 +280,13 @@ REAL = {
 # thumbnail keeps the part of the picture that reads as a shape: the handwriting,
 # the two career panels, the person in the headset.
 THUMB_W, THUMB_H = 900, 500
+# Cropping again for the card sliced an equation in half and cut the report's
+# text off top and bottom. At 212px nothing is legible either way, so the card
+# shows the whole picture and keeps its shape intact.
 REAL_THUMBS = {
-    "ai-tutoring-cluney": (0.42, 0.36, 1.00, 0.96),
-    "agentic-career-keris": (0.04, 0.225, 0.97, 0.555),
-    "vr-dementia-biomarker": (0.00, 0.00, 1.00, 1.00),
+    "ai-tutoring-cluney": (0.0, 0.0, 1.0, 1.0),
+    "agentic-career-keris": (0.0, 0.0, 1.0, 1.0),
+    "vr-dementia-biomarker": (0.0, 0.0, 1.0, 1.0),
 }
 
 
