@@ -25,7 +25,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-W, H, MARGIN = 1024, 576, 52
+W, H, MARGIN = 1200, 675, 52
 SOFT, PAPER, LINE = (245, 249, 249), (255, 255, 255), (223, 231, 233)
 INK, BODY, MUTED = (23, 37, 42), (70, 87, 92), (102, 120, 125)
 ACCENT, PALE, WARM = (31, 66, 117), (228, 234, 244), (181, 93, 62)
@@ -244,29 +244,31 @@ THUMBS = {
 FILMS = os.path.join(ROOT, "assets", "demos")
 SOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figure-sources")
 
+# Boxes are pixels in the source, and every edge sits in empty space - between
+# two cards, between two bubbles, at the border of a photograph - so nothing is
+# ever sliced through. What is left over after that rarely lands on 16:9, so the
+# crop is padded out to the ratio in the source's own background colour rather
+# than cut down to it.
 REAL = {
     "ai-tutoring-cluney": (
-        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None,
-        (0.000, 0.000, 1.000, 1.000)),
+        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None, (0, 0, 1703, 730)),
     "agentic-career-keris": (
-        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0,
-        (0.010, 0.085, 0.565, 0.550)),
+        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0, (26, 0, 943, 560)),
     "ai-copilot-iitp": (
-        os.path.join(FILMS, "self-disclosure", "demo.mp4"), 46.3,
-        (0.518, 0.039, 0.983, 0.504)),
+        os.path.join(FILMS, "self-disclosure", "demo.mp4"), 46.3, (655, 12, 1266, 330)),
     "veem-brl": (
-        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 42.8,
-        (0.000, 0.181, 0.600, 0.781)),
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 42.8, (42, 24, 1268, 609)),
     "vr-dementia-biomarker": (
-        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 3.3,
-        (0.000, 0.000, 0.660, 0.740)),
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 3.3, (0, 0, 800, 450)),
 }
 
-# the home page shows the same pictures in a shorter card
+# The home card is about 212x124, where no interface text can be read, so the
+# thumbnail keeps the part of the picture that reads as a shape: the handwriting,
+# the two career panels, the person in the headset.
 THUMB_W, THUMB_H = 900, 500
 REAL_THUMBS = {
-    "ai-tutoring-cluney": (0.28, 0.05, 1.00, 0.70),
-    "agentic-career-keris": (0.00, 0.05, 0.80, 0.65),
+    "ai-tutoring-cluney": (0.42, 0.36, 1.00, 0.96),
+    "agentic-career-keris": (0.04, 0.225, 0.97, 0.555),
     "vr-dementia-biomarker": (0.00, 0.00, 1.00, 1.00),
 }
 
@@ -282,23 +284,28 @@ def _frame(path, seconds):
     return Image.open(tmp).convert("RGB")
 
 
-def _fit(im, box, ratio):
-    """Settle a crop box on one aspect ratio without moving its centre."""
+def _pad_to(im, ratio):
+    """Grow the shorter side with the picture's own edge colour, never crop."""
     w, h = im.size
-    b = [int(box[0] * w), int(box[1] * h), int(box[2] * w), int(box[3] * h)]
-    bw, bh = b[2] - b[0], b[3] - b[1]
-    if bw / bh > ratio:
-        need = int(bw / ratio); c = (b[1] + b[3]) // 2
-        b[1] = max(0, min(c - need // 2, h - need)); b[3] = b[1] + need
-    else:
-        need = int(bh * ratio); c = (b[0] + b[2]) // 2
-        b[0] = max(0, min(c - need // 2, w - need)); b[2] = b[0] + need
-    return im.crop(b)
+    tw, th = (w, round(w / ratio)) if w / h > ratio else (round(h * ratio), h)
+    if (tw, th) == (w, h):
+        return im
+    edge = im.getpixel((2, 2)) if th > h else im.getpixel((2, h - 3))
+    out = Image.new("RGB", (tw, th), edge)
+    out.paste(im, ((tw - w) // 2, (th - h) // 2))
+    return out
+
+
+def _crop_fraction(im, box, ratio):
+    """A box given as fractions, then padded - used for the home thumbnails."""
+    w, h = im.size
+    return _pad_to(im.crop((int(box[0] * w), int(box[1] * h),
+                            int(box[2] * w), int(box[3] * h))), ratio)
 
 
 def real_figure(slug):
     path, seconds, box = REAL[slug]
-    return _fit(_frame(path, seconds), box, W / H).resize((W, H), Image.LANCZOS)
+    return _pad_to(_frame(path, seconds).crop(box), W / H).resize((W, H), Image.LANCZOS)
 
 
 def main():
@@ -313,7 +320,7 @@ def main():
             kind = "drawn"
         fig.save(os.path.join(out_dir, "figure.webp"), "WEBP", quality=90, method=6)
         if slug in REAL_THUMBS:
-            _fit(fig, REAL_THUMBS[slug], THUMB_W / THUMB_H).resize(
+            _crop_fraction(fig, REAL_THUMBS[slug], THUMB_W / THUMB_H).resize(
                 (THUMB_W, THUMB_H), Image.LANCZOS).save(
                 os.path.join(out_dir, "thumb.webp"), "WEBP", quality=92, method=6)
         elif slug in THUMBS:
