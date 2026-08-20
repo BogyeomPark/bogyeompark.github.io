@@ -279,10 +279,15 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
 }
 /* These were drawn cards, which had to be shown whole; they are photographs of
    the systems now, so the card crops to fill instead of letterboxing them. */
+/* The box used to be 124px tall whatever the column width, so at three columns
+   it was a 2.6:1 slot holding a 16:9 picture and cover cropped the top and
+   bottom off every one of them. The slot takes the picture's ratio instead, and
+   then there is nothing to crop. */
 .work img {
   display: block;
   width: 100%;
-  height: 124px;
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   border: 1px solid var(--line);
   border-radius: 10px;

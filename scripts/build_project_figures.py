@@ -279,7 +279,7 @@ REAL = {
 # The home card is about 212x124, where no interface text can be read, so the
 # thumbnail keeps the part of the picture that reads as a shape: the handwriting,
 # the two career panels, the person in the headset.
-THUMB_W, THUMB_H = 900, 500
+THUMB_W, THUMB_H = 960, 540   # exactly 16:9, so the card crops nothing
 # Cropping again for the card sliced an equation in half and cut the report's
 # text off top and bottom. At 212px nothing is legible either way, so the card
 # shows the whole picture and keeps its shape intact.
