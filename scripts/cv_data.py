@@ -31,9 +31,21 @@ CONTACT = {
     "github": "https://github.com/BogyeomPark",
 }
 
-# Research Interests was dropped from the CV. The publication list and the project
-# bullets carry the same ground, and a standalone paragraph of interests is the one
-# part of a CV nobody can check.
+# Research Interests was dropped from the CV: a standalone paragraph of interests
+# is the one part of a CV nobody can check. This is not that. It is the sentence
+# the homepage opens with, the keywords that page carries, and three counts that
+# can each be verified from the sections below - which is what the review asked
+# for when it said the CV and the site should say the same thing.
+SUMMARY = (
+    "I study how to design human-centered agentic AI systems that help people understand "
+    "their situation, make meaningful decisions, and take purposeful action. I build the "
+    "systems I study - multi-agent LLM pipelines, VR tasks in Unity, and multimodal "
+    "behavioral models - and test them where the judgement carries stakes: tutoring, "
+    "debate, career counseling, and early cognitive screening. "
+    "<b>12 peer-reviewed papers (6 first-authored)</b>, including a first-authored "
+    "validation study in <i>JMIR</i> (JCR Q1, JIF 8.2); <b>1 patent filed</b>; "
+    "<b>6 funded projects</b> since 2021."
+)
 
 EDUCATION = [
     {
@@ -191,6 +203,10 @@ DOMESTIC = [
 # twice while forcing every grant that crosses Feb. 2023 into one side or the other.
 # The status change is two lines here; Education already dates the degrees.
 # Projects run in one reverse-chronological list underneath, by start date.
+# Every project carries its funder and the size of the award, because that is what
+# a reader is weighing and leaving it out makes the entry unreadable. The award is
+# the project’s, not mine - the note under the affiliation says so once, rather
+# than repeating a disclaimer six times.
 RESEARCH_EXPERIENCE = [
     {
         "org": "Human-centered Artificial Intelligence (HAI) Lab, SeoulTech",
@@ -199,72 +215,85 @@ RESEARCH_EXPERIENCE = [
             ("Graduate Researcher (Advisor: Kyoungwon Seo)", "Mar. 2023 - Present"),
             ("Undergraduate Researcher", "Mar. 2021 - Feb. 2023"),
         ],
+        "note": (
+            "Amounts are each project’s total award, held by my advisor as principal "
+            "investigator; the role given is the one I held on the research team."
+        ),
         "projects": [
             {
-                "title": "ICAP-Based AI Tutoring System for Probability and Statistics Learning",
-                "role": "Lead Graduate Researcher | Tutorus Labs",
+                "title": "Usability Evaluation of a Compound AI Tutoring System",
+                "role": "Lead Graduate Researcher | Tutorus Labs | KRW 30M",
                 "dates": "Mar. 2026 - Aug. 2026",
                 "bullets": [
-                    "Led the design and evaluation of an ICAP-based AI tutor that uses staged elicitation "
-                    "to promote active, constructive, and interactive engagement rather than answer delivery",
-                    "Developed an utterance-level coding and analytics workflow linking dialogue evidence "
-                    "with tutor correctness, usage patterns, and learning outcomes",
-                    "Built an interactive research dashboard for reviewing engagement labels and "
-                    "comparing AI-tutored learning processes",
+                    "Designed the evaluation framework and wrote the utterance-level ICAP coding "
+                    "manual, then built the classifier that applies it",
+                    "Ran the sessions with school and first-year university students, and built the "
+                    "analytics dashboard linking engagement to learning outcome",
+                    "Produced a coded dialogue corpus and the project’s final report; journal "
+                    "manuscript in preparation",
                 ],
             },
             {
-                "title": "Agentic AI for Personalized Career, Academic, and Counseling Support",
-                "role": "Lead Graduate Researcher | Korea Education & Research Information Service",
+                "title": "Agentic AI for Personalized Career, Admission, and Counseling Support",
+                "role": "Lead Graduate Researcher | Korea Education & Research Information Service | KRW 50M",
                 "dates": "Jun. 2025 - Dec. 2025",
                 "bullets": [
-                    "Led a study of how agentic AI could support personalized educational pathways, "
-                    "counseling, and decision-making",
+                    "Ran the teacher focus groups, designed the multi-agent workflow, and ran two "
+                    "rounds of expert validation and a Delphi study",
+                    "Piloted the system with 30 teachers and 150 students; experts rated the design "
+                    "direction 4.37/5 and automatic record ingestion 5.00/5",
+                    "Produced KERIS Research Report RR 2025-3, an invention disclosure, and a "
+                    "first-authored HCI Korea 2026 paper",
                 ],
             },
             {
-                "title": "AI Copilot Technologies for Adaptive, Teacher-Augmented Learning",
+                "title": "AI Copilot for Teacher-Augmented, Competence-Adaptive Learning",
                 "role": (
-                    "Lead Graduate Researcher | Institute for Information & Communications Technology "
-                    "Planning & Evaluation"
+                    "Lead Graduate Researcher | Institute for Information & Communications "
+                    "Technology Planning & Evaluation | KRW 1B"
                 ),
                 "dates": "Jul. 2023 - Dec. 2025",
-                # The debate chatbot was first-authored and built here; the SDT career
-                # chatbot was co-developed. The self-disclosure study is a co-authored
-                # paper rather than a system built here, so it stays in Publications.
                 "bullets": [
                     "Designed and evaluated a multi-agent LLM debate chatbot that draws out a "
-                    "student’s argument and assesses critical thinking from the exchange",
-                    "Co-developed a self-determination-theory career counseling chatbot that "
-                    "addresses career decision-making difficulties through motivational dialogue",
+                    "student’s argument and scores critical thinking from the exchange",
+                    "Its evaluator agents matched human raters at an intraclass correlation of 0.78, "
+                    "agreeing within one point 97.37% of the time (CHI EA 2025, first-authored)",
+                    "Co-developed a self-determination-theory career counseling chatbot",
+                ],
+            },
+            {
+                "title": "AI Agents for Improving Teachers’ Instructional Design",
+                "role": "Lead Graduate Researcher | Korea Education & Research Information Service",
+                "dates": "2025",
+                "bullets": [
+                    "Authored the final report, designed the system prompts, and drafted the interface",
+                    "Produced a practitioner guide to collaborative instructional-design agents",
                 ],
             },
             {
                 "title": "VR-EP-EEG-MRI Digital Biomarker Basic Research Laboratory",
-                "role": "Lead Graduate Researcher | National Research Foundation of Korea",
-                "dates": "Mar. 2022 - Feb. 2024",
+                "role": "Lead Graduate Researcher | Ministry of Science and ICT | KRW 1.2B",
+                "dates": "Jun. 2021 - Feb. 2024",
                 "bullets": [
-                    "Ran the VR data collection on site at Hanyang University Guri Hospital with patients "
-                    "with mild cognitive impairment and healthy controls",
-                    "Analyzed the resulting VEEM multimodal dataset - VR interaction, eye tracking, evoked "
-                    "potentials, EEG and MRI - including the VR-MRI-SNSB cohort of 54 participants",
+                    "Ran the VR data collection on site at Hanyang University Guri Hospital, with "
+                    "patients rather than a convenience sample",
+                    "Analyzed the VEEM multimodal dataset - hand movement, gaze, evoked potentials, "
+                    "EEG and MRI - including the VR-MRI-SNSB cohort of 54 participants",
+                    "The dataset behind four of my papers; a filed patent was submitted as a project "
+                    "deliverable",
                 ],
             },
             {
-                "title": (
-                    "Multimodal Deep Learning for Early Dementia Diagnosis from VR "
-                    "Daily-Living Data"
-                ),
-                "role": "Lead Graduate Researcher | National Research Foundation of Korea",
+                "title": "Digital Biomarkers for Early Dementia Diagnosis from VR Daily-Living Data",
+                "role": "Lead Graduate Researcher | Ministry of Science and ICT | KRW 550M",
                 "dates": "Mar. 2021 - Feb. 2024",
-                # First-authored the JMIR validation study this grant produced.
                 "bullets": [
-                    "Developed the virtual kiosk task in Unity - the six-step daily-living scenario the "
-                    "study's VR biomarkers are derived from",
-                    "Led the development and validation of a multimodal model combining VR behavioral "
-                    "biomarkers with MRI for early detection of mild cognitive impairment",
-                    "Derived hand-movement and gaze features from the kiosk task and tested them "
-                    "against MRI-derived measures in a clinical sample",
+                    "Built the virtual kiosk task in Unity - the six-step daily-living scenario the "
+                    "study’s VR biomarkers are derived from",
+                    "Led the multimodal model, deriving hand-movement and gaze features and reading "
+                    "them together with MRI-derived measures",
+                    "Separated 22 healthy controls from 32 patients at 94.4% accuracy, higher than VR "
+                    "or MRI alone (JMIR 2024, first-authored)",
                 ],
             },
         ],
@@ -296,10 +325,13 @@ TEACHING = [
     },
 ]
 
+# Worded to match the capabilities the site's project entries claim, so a reader
+# who has seen one recognises the other.
 SKILLS = [
-    "<b>Research Methods</b> - experimental design, usability evaluation, user research, prototyping, "
-    "multimodal learning analytics, statistical analysis, qualitative coding",
-    "<b>Machine Learning</b> - PyTorch, scikit-learn, Hugging Face, feature engineering, multimodal fusion",
+    "<b>Research Methods</b> - experimental design, usability evaluation, focus group interviews, "
+    "Delphi and expert validation, school and field pilots, clinical data collection with patients, "
+    "utterance-level dialogue coding, inter-rater agreement, statistical analysis",
+    "<b>Machine Learning</b> - PyTorch, scikit-learn, Hugging Face, feature engineering, multimodal fusion, transfer learning, classifier development",
     "<b>LLM Systems</b> - OpenAI and Anthropic APIs, multi-agent pipelines, RAG, prompt engineering and evaluation, LLM-as-a-judge",
     "<b>Programming and Tooling</b> - Python, C/C#, Docker, Streamlit, Git, SPSS",
     "<b>VR and Interactive Systems</b> - Unity, VR task development, interaction logging and eye tracking",

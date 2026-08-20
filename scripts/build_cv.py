@@ -256,6 +256,10 @@ def build():
     )
     story = [header, Spacer(1, 5)]
 
+    # The identity sentence and the counts, in the same words the homepage uses.
+    # The review asked for the two to match; this is the half that was missing.
+    story += [Paragraph(cv_data.SUMMARY, styles["Body"]), Spacer(1, 7)]
+
     story += section(cv_data.SECTION_TITLES["education"])
     for index, school in enumerate(cv_data.EDUCATION):
         if index:
@@ -284,6 +288,8 @@ def build():
         # One line per student status, under a single org heading.
         for role, dates in affiliation["roles"]:
             story.append(two_col(role, dates, right_style="CVItalicRight"))
+        if affiliation.get("note"):
+            story.append(Paragraph(affiliation["note"], styles["Small"]))
         for proj in affiliation["projects"]:
             story += project(proj["title"], proj["role"], proj["dates"], proj["bullets"])
 
