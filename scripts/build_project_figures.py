@@ -142,7 +142,7 @@ def instructional_design():
     pipeline(d, [("Teacher", ["States the intent", "for the lesson"]),
                  ("Agent", ["Drafts the plan", "and the materials"]),
                  ("Teacher", ["Revises, and", "decides"])],
-             y=182, box_w=306, gap=64, height=178, accent_at=1)
+             y=214, box_w=306, gap=64, height=248, accent_at=1)
     foot(d, "Administrative load moves; the judgement about the class does not.")
     return im
 
@@ -152,7 +152,7 @@ def tree_disease():
                   "Zelkova serrata, the species over half of Korea's protected trees belong to")
     bars(d, [("ImageNet weights alone", 0.92, "92.0 \u2013 96.3%", False),
              ("Plus plant-disease pre-training", 1.0, "99.45%", True)],
-         top=214, bar_x=520, bar_w=396, row_h=110)
+         top=262, bar_x=520, bar_w=396, row_h=148)
     foot(d, "F1 on an expert-validated dataset built for the project.")
     return im
 
@@ -250,16 +250,28 @@ SOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figure-sourc
 # crop is padded out to the ratio in the source's own background colour rather
 # than cut down to it.
 REAL = {
+    # already 16:9, so it needs no crop and gets no padding bands
     "ai-tutoring-cluney": (
-        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None, (0, 0, 1703, 730)),
+        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None, (0, 0, 1703, 957)),
+    # the card border is at y=44 and its heading at 52; starting at 40 is the last fully clean row above it, so the card opens the frame instead of being sliced by it. 552 is the
+    # seam under the Subject Selection card, and 934 lands in the gutter before
+    # the chat panel starts at 945
     "agentic-career-keris": (
-        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0, (26, 0, 943, 560)),
+        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0, (24, 40, 934, 552)),
+    # the debate chatbot is what this project built; the frame that was here came
+    # from the self-disclosure demo, which is a different study. 415 stops above
+    # the Stage 3 banner, and the white margin either side is what the padding
+    # samples, so the bands it adds are invisible
     "ai-copilot-iitp": (
-        os.path.join(FILMS, "self-disclosure", "demo.mp4"), 46.3, (655, 12, 1266, 330)),
+        os.path.join(ROOT, "assets", "publications", "debate-chatbot", "figure-1.png"),
+        None, (8, 8, 842, 415)),
+    # 1276 leaves the sixth step a margin instead of ending flush against it
     "veem-brl": (
-        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 42.8, (42, 24, 1268, 609)),
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 42.8, (30, 18, 1276, 616)),
+    # 455 stops above the Base station callout, which belongs to the photograph
+    # on the other side of the join and was being sliced
     "vr-dementia-biomarker": (
-        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 3.3, (0, 0, 800, 450)),
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 3.3, (0, 0, 809, 455)),
 }
 
 # The home card is about 212x124, where no interface text can be read, so the
