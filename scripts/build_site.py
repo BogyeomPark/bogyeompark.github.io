@@ -56,8 +56,10 @@ NAV = [
     ("home", "Home", "/"),
     ("publications", "Publications", "/publications/"),
     ("projects", "Projects", "/projects/"),
-    ("news", "News", "/news/"),
+    # Demos above News: the demos are the thing almost no other applicant has,
+    # and News is conference travel. The weakest item sat one row from the top.
     ("demos", "Demos", "/demos/"),
+    ("news", "News", "/news/"),
     ("cv", "CV", "/cv/"),
 ]
 
@@ -78,10 +80,13 @@ PAGES = [
         # which is how they shipped the first time.
         "script": True,
         "title": NAME,
-        "og_title": f"{NAME} — agentic AI that finds your blind spots",
+        "og_title": f"{NAME} — Human-Centered Agentic AI",
+        # No thesis line here: the headline is the name, and the page makes its
+        # case with the lead, the numbers and the demos rather than a claim.
         "description": (
-            f"{NAME} builds agentic AI that finds a person’s blind spots instead of "
-            "covering them — in tutoring, debate, counseling, and cognitive screening."
+            f"{NAME} is a Ph.D. student at SeoulTech’s Human-centered Artificial "
+            "Intelligence Lab, building multi-agent LLM systems, VR tasks and multimodal "
+            "behavioral models for tutoring, debate, counseling, and cognitive screening."
         ),
         "person_schema": True,
     },

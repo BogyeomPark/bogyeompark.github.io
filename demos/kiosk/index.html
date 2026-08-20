@@ -22,11 +22,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/newsreader-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/assets/site.css?v=f98dcd93">
-  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=07e6e879">
-  <link rel="stylesheet" href="/assets/demos/watch.css?v=eadc29f2">
+  <link rel="stylesheet" href="/assets/site.css?v=edacb7e8">
+  <link rel="stylesheet" href="/assets/demos/kiosk.css?v=b1335649">
+  <link rel="stylesheet" href="/assets/demos/watch.css?v=a7e0fa1c">
   <script src="/assets/demos/kiosk-en.js?v=f4904a53" defer></script>
-  <script src="/assets/demos/kiosk.js?v=4b3b7cd8" defer></script>
+  <script src="/assets/demos/kiosk.js?v=2ff877ba" defer></script>
   <script data-goatcounter="https://bogyeompark.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -34,23 +34,24 @@
   <div class="site-shell">
     <aside class="sidebar" aria-label="Profile and navigation">
       <div class="sidebar-top"><img class="profile-photo" src="/assets/bogyeom-park-224.webp" width="224" height="288" alt="Portrait of Bogyeom Park"><div class="identity"><p class="site-name"><a href="/">Bogyeom Park</a></p><span class="korean-name" lang="ko">박보겸</span><p class="role">Ph.D. Student<br><a href="https://hai.seoultech.ac.kr/index.do" target="_blank" rel="noopener noreferrer">SeoulTech HAI Lab</a></p><a class="sidebar-email" href="mailto:bogyeom@seoultech.ac.kr">bogyeom@seoultech.ac.kr</a></div></div>
-      <nav class="side-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/publications/">Publications</a><a href="/projects/">Projects</a><a href="/news/">News</a><a href="/demos/" aria-current="page">Demos</a><a href="/cv/">CV</a></nav>
+      <nav class="side-nav" aria-label="Main navigation"><a href="/">Home</a><a href="/publications/">Publications</a><a href="/projects/">Projects</a><a href="/demos/" aria-current="page">Demos</a><a href="/news/">News</a><a href="/cv/">CV</a></nav>
       <div class="profile-links" aria-label="External profiles"><a href="https://scholar.google.com/citations?user=HusX3nUAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Scholar</a><a href="https://orcid.org/0009-0005-3046-9621" target="_blank" rel="noopener noreferrer">ORCID</a><a href="https://github.com/BogyeomPark" target="_blank" rel="noopener noreferrer">GitHub</a></div>
     </aside>
     <main id="main-content">
       <header class="page-header">
         <p class="paper-breadcrumb"><a href="/demos/">Demos</a> / Virtual kiosk test</p>
         <h1>Ordering a meal, as a cognitive test</h1>
-        <p class="lead">Using a kiosk asks more of you than it looks: hold an order in memory, find each item on an unfamiliar menu, and act. In <a href="/publications/multimodal-biomarkers-jmir/">our JMIR study</a>, how people did exactly that separated participants with mild cognitive impairment from healthy controls. This is that task, in a browser — told once, no reminders, about a minute. Then <a href="/publications/counterfactual-prefactual-hci2023/">a second study</a> writes your result up two ways.</p>
-        <p class="kiosk-disclaimer">A demonstration, not a screening test — nothing here can diagnose anyone. Your time and errors never leave the browser; the only things that leave are two anonymous counts &mdash; a run started, a run finished.</p>
+        <p class="lead">Using a kiosk asks more of you than it looks. Hold an order in memory, find each item on an unfamiliar menu, and act.</p>
       </header>
 
       <section class="content-section">
-        <div class="section-heading"><h2>The task</h2></div>
+        <div class="section-heading"><h2>Play it</h2></div>
         <div class="kiosk-stage" id="kiosk-stage"></div>
         <p class="kiosk-caption" id="kiosk-caption" aria-live="polite"></p>
 
         <div class="kiosk-result" id="kiosk-result" tabindex="-1" hidden></div>
+        <p class="watch-caption">Your time and errors stay in the browser. Two anonymous counts leave it: a run started, a run finished.</p>
+        <div class="paper-links"><a href="/publications/multimodal-biomarkers-jmir/">The paper, JMIR 2024 &rarr;</a></div>
       </section>
 
       <section class="content-section" id="recording">
@@ -61,18 +62,13 @@
                  src="/assets/demos/vr-biomarker/kiosk-playthrough.mp4"
                  aria-label="Recording of a participant carrying out the virtual kiosk test in VR"></video>
         </div>
-        <p class="watch-caption">The same six steps as they were actually run &mdash; a participant in a headset on the left, what they see on the right, and the instruction they were given as each step arrives. Then the three signals the task records, what the model makes of them, and why the study puts VR at the screening step and MRI at the confirming one. This is the version the study collected data from; the one above is it rebuilt for a browser.</p>
+        <p class="watch-caption">The task as the study ran it: the participant on the left, what they see on the right. Then the three signals it records, and what the model makes of them.</p>
       </section>
 
       <section class="content-section">
-        <div class="section-heading"><h2>What this measures</h2></div>
-        <p>The study drew four biomarkers from this task. Two survive the move to a browser:</p>
-        <ul class="takeaway-list">
-          <li><b>Time to completion</b> &mdash; how long the whole order takes.</li>
-          <li><b>Number of errors</b> &mdash; selections that were not the item asked for.</li>
-        </ul>
-        <p>The other two stay with the study&rsquo;s hardware. <b>Hand movement speed</b> came from a tracked hand controller, in meters per second, which a mouse in pixels cannot stand in for; <b>scanpath length</b> needed the eye tracker built into the headset, and it was there that the impaired group&rsquo;s eyes travelled furthest &mdash; the clearest answer to why the study used VR rather than a screen.</p>
-        <p>In the study the impaired group was slower and made more errors. With MRI biomarkers added, the study&rsquo;s model told the two groups apart with 94.4% accuracy &mdash; a number that belongs to that full study, not to anything this page measures.</p>
+        <div class="section-heading"><h2>What to know</h2></div>
+        <p>The study drew four biomarkers from this task. Time and errors survive the move to a browser; the other two do not. <b>Hand movement speed</b> needs a tracked controller, and <b>scanpath length</b> needs the eye tracker in the headset. That is where the impaired group&rsquo;s eyes traveled furthest, which is why the study used VR.</p>
+        <p class="kiosk-disclaimer">A demonstration, not a screening test. Nothing here can diagnose anyone.</p>
       </section>
 
       <footer><span>© 2026 Bogyeom Park</span><span><a href="/demos/">← All demos</a></span></footer>

@@ -9,7 +9,46 @@
   border: 1px solid var(--line); border-radius: 11px;
   background: var(--soft);
 }
+
+/* The arrows stay in the row under the film. Hung on the edges they sit half
+   over the picture, which is what site.css already says happens on a
+   full-width video: there is no margin left to hang them in. */
+/* The prev/next cluster centres under the film. The rest of the block is flush
+   left with the column, but this row is a control for the picture above it,
+   not part of the text, so it sits under the middle of what it drives. */
+.carousel-controls { justify-content: center; }
+
+.system-note h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.system-note h3 a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+.system-note h3 a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (max-width: 680px) {
+  .carousel-viewport > .carousel-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+  }
+  .carousel-viewport > .carousel-arrow[data-step="-1"] {
+    left: 8px;
+    transform: translateY(-50%);
+  }
+  .carousel-viewport > .carousel-arrow[data-step="1"] {
+    right: 8px;
+    transform: translateY(-50%);
+  }
+}
 /* The video's own caption. Not .kiosk-caption: that one lives in kiosk.css,
    which neither of these two pages has a reason to load. */
 .watch-caption { margin: 12px 0 0; max-width: 660px; color: var(--muted); font-size: 0.85rem; }
-

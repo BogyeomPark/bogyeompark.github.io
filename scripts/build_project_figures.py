@@ -192,11 +192,55 @@ BUILDERS = {
 }
 
 
+# --- home cards -------------------------------------------------------------
+# The full frames are built for 1200px on the projects page. The home shows them
+# in a 124px-tall box, where a 1200x520 panel lands at about a tenth of its size
+# and every one of them turns into the same grey rectangle. So the cards get
+# their own frame: one fact, set large enough to survive the shrink. Same
+# palette and type, so the two sizes still read as one system.
+TW, TH = 900, 300
+f_tnum = ImageFont.truetype(BD, 116)
+f_tlab = ImageFont.truetype(SB, 30)
+f_tsub = ImageFont.truetype(UI, 25)
+
+
+def thumb(big, label, sub, chips=None):
+    im = Image.new("RGB", (TW, TH), PAPER)
+    d = ImageDraw.Draw(im)
+    d.rectangle([0, 0, TW - 1, TH - 1], outline=LINE, width=2)
+    d.text((56, 62), big, font=f_tnum, fill=ACCENT)
+    w = d.textlength(big, font=f_tnum)
+    d.text((56, 196), label, font=f_tlab, fill=INK)
+    d.text((56, 238), sub, font=f_tsub, fill=BODY)
+    if chips:
+        x = max(56 + w + 60, 520)
+        for i, c in enumerate(chips):
+            y = 62 + i * 44
+            on = i == len(chips) - 1
+            d.rounded_rectangle([x, y, x + 300, y + 34], radius=8,
+                                fill=PALE if on else SOFT, outline=LINE, width=1)
+            d.text((x + 14, y + 6), c, font=f_tsub, fill=ACCENT if on else BODY)
+    return im
+
+
+THUMBS = {
+    "ai-tutoring-cluney": lambda: thumb(
+        "4", "ICAP levels", "every tutor reply coded against them",
+        ["Passive", "Active", "Constructive", "Interactive"]),
+    "agentic-career-keris": lambda: thumb(
+        "5.00", "out of 5", "expert rating, automatic record ingestion"),
+    "vr-dementia-biomarker": lambda: thumb(
+        "94.4%", "classification accuracy", "22 healthy controls  ·  32 patients"),
+}
+
+
 def main():
     for slug, build in BUILDERS.items():
         out_dir = os.path.join(ROOT, "assets", "projects", slug)
         os.makedirs(out_dir, exist_ok=True)
         build().save(os.path.join(out_dir, "figure.webp"), "WEBP", quality=90, method=6)
+        if slug in THUMBS:
+            THUMBS[slug]().save(os.path.join(out_dir, "thumb.webp"), "WEBP", quality=92, method=6)
         print(f"{slug:28s} built")
 
 

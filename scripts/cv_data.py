@@ -163,9 +163,12 @@ EXTENDED_ABSTRACTS = [
 ]
 
 # First-authored domestic papers only. An overseas committee cannot calibrate
-# HCI Korea, so the two co-authored entries were doing little for the reader; the
-# HCI Korea 2025 paper is credited on its award line instead, and the tree paper's
-# work is described under the SUNGHA project. The full list stays on the website.
+# HCI Korea, so the two co-authored entries were doing little for the reader, and
+# the HCI Korea 2025 paper is credited on its award line instead. The tree paper
+# is out on the same rule -- it is co-authored -- and the SUNGHA project that
+# would have carried it is out too: the records that would back a lead-researcher
+# claim are not held, and one entry that cannot be cross-examined puts the rest in
+# doubt. Both keep their pages on the website, which carries the full list.
 DOMESTIC = [
     {
         "title": "From Teacher Needs to Agentic AI: Designing and Validating a Personalized Career Counseling System",
@@ -234,19 +237,6 @@ RESEARCH_EXPERIENCE = [
                     "student’s argument and assesses critical thinking from the exchange",
                     "Co-developed a self-determination-theory career counseling chatbot that "
                     "addresses career decision-making difficulties through motivational dialogue",
-                ],
-            },
-            {
-                "title": (
-                    "AI-Based Early Screening and Prognosis Prediction for Landscape Tree Disease"
-                ),
-                "role": "Lead Graduate Researcher | SUNGHA Co., Ltd.",
-                "dates": "Jul. 2023 - Dec. 2023",
-                "bullets": [
-                    "Built an expert-validated image dataset of Zelkova serrata, the species that "
-                    "accounts for more than half of Korea’s legally protected trees",
-                    "Compared transfer-learning models with and without plant-disease pre-training "
-                    "for early screening of tree disease",
                 ],
             },
             {

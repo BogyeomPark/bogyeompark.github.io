@@ -157,13 +157,26 @@
 /* One table for the whole result: the four measures as rows, you beside the
    study's two groups. The You column carries the weight; grey cells are the
    measures this page cannot take, and dashes are study figures not quoted. */
-.kiosk-vs { width: 100%; max-width: 560px; margin: 14px 0 0; border-collapse: collapse; font-size: 0.9rem; }
-.kiosk-vs th, .kiosk-vs td { padding: 10px 0 10px 14px; border-bottom: 1px solid var(--line); text-align: right; font-weight: 400; color: var(--body); }
-.kiosk-vs tbody th { padding-left: 0; text-align: left; }
-.kiosk-vs thead th { padding-top: 0; color: var(--muted); font-size: 0.68rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
-.kiosk-vs td { white-space: nowrap; }
-.kiosk-vs td:nth-child(2), .kiosk-vs thead th:nth-child(2) { color: var(--ink); font-weight: 600; }
-.kiosk-vs td.na { color: var(--muted); font-weight: 400; white-space: normal; }
+/* The four measures as one picture: a line between the study's two printed
+   means with this run marked on it, numbers written in place. No shaded halves
+   — the point is distance to a mean, not which side of a gap someone is on. */
+.kiosk-places { max-width: 560px; margin: 18px 0 4px; }
+.kiosk-na { max-width: 560px; margin: 16px 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
+.kiosk-na b { color: var(--body); font-weight: 600; }
+.kiosk-place { margin: 0 0 26px; }
+.kiosk-place:last-child { margin-bottom: 6px; }
+.kiosk-place figcaption {
+  color: var(--muted); font-size: 0.68rem; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase;
+}
+.kiosk-place svg { display: block; width: 100%; height: auto; overflow: visible; }
+.kv-track { stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
+.kv-tick line { stroke: var(--line); stroke-width: 2; }
+.kv-ref { fill: var(--muted); font-size: 11px; text-anchor: middle; }
+.kv-refval { fill: var(--body); font-size: 12.5px; text-anchor: middle; }
+.kv-you { fill: var(--accent); }
+.kv-youlabel { fill: var(--ink); font-size: 13px; font-weight: 700; text-anchor: middle; }
+
 .kiosk-vs-note { margin-top: 12px; max-width: 560px; color: var(--muted); font-size: 0.85rem; line-height: 1.6; }
 
 .kiosk-best { margin-top: 13px; color: var(--muted); font-size: 0.85rem; }

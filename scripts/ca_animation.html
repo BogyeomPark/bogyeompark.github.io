@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Career-Counseling Agentic AI — Live Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{
+    --accent:#1e40af; --accent-light:#eff6ff; --accent-dark:#1e3a8a;
+    --text:#0f172a; --text2:#475569; --muted:#94a3b8; --bd:#e2e8f0;
+    --str-bg:#ecfdf5; --str-bd:#a7f3d0; --str-tx:#047857;
+    --wk-bg:#f5f3ff; --wk-bd:#ddd6fe; --wk-tx:#5b21b6;
+    --subj-bg:#eef2ff; --subj-bd:#c7d2fe; --subj-tx:#4338ca;
+    --success:#16a34a;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; overflow:hidden; background:#0b1020; }
+  body{ font-family:'Inter',sans-serif; color:var(--text); display:flex; align-items:center; justify-content:center; }
+  #stage{ position:fixed; top:50%; left:50%; transform-origin:center center; width:1280px; height:720px; background:#f1f5f9; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+
+  .rep-card{ background:#fff; border:1px solid var(--bd); border-radius:16px; padding:13px 15px; box-shadow:0 1px 3px rgba(15,23,42,.04); }
+  .report-sec{ margin-bottom:12px; }
+  .rep-head{ display:flex; align-items:center; gap:11px; padding-bottom:8px; border-bottom:2px solid var(--accent-light); margin-bottom:10px; }
+  .rep-icon{ width:34px; height:34px; border-radius:10px; background:var(--accent-light); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:16px; }
+  .rep-title{ font-size:1.12rem; font-weight:800; color:var(--accent-dark); }
+  .sec-intro{ font-size:.78rem; color:var(--text2); margin-bottom:9px; }
+  .sum-box{ background:var(--subj-bg); border-left:5px solid var(--accent); border-radius:10px; padding:10px 13px; margin-bottom:10px; }
+  .rtext{ font-size:.88rem; line-height:1.46; color:#334155; }
+  .subcard{ border-radius:12px; padding:10px 12px; }
+  .subcard.str{ background:var(--str-bg); border:1px solid var(--str-bd); }
+  .subcard.wk{ background:var(--wk-bg); border:1px solid var(--wk-bd); }
+  .subcard.subj{ background:var(--subj-bg); border:1px solid var(--subj-bd); }
+  .sc-title{ font-weight:700; font-size:.92rem; margin-bottom:7px; display:flex; align-items:center; gap:7px; }
+  .item{ display:flex; flex-wrap:wrap; align-items:baseline; margin-bottom:8px; }
+  .item:last-child{ margin-bottom:0; }
+  .item > .tag{ box-sizing:border-box; flex:0 0 150px; white-space:nowrap; text-align:left; margin-right:6px; margin-bottom:0; }
+  .item > .rtext{ flex:1 1 0; min-width:0; }
+  .item > .dev{ flex-basis:100%; margin-left:156px; margin-top:2px; }
+  .tag{ display:inline-block; padding:2px 9px; border-radius:7px; font-size:.7rem; font-weight:700; background:#fff; border:1px solid var(--bd); color:#334155; margin-right:6px; margin-bottom:3px; vertical-align:middle; }
+  .dev{ font-size:.74rem; color:var(--accent); font-weight:600; margin-top:2px; }
+  .refno{ background:var(--accent-light); color:var(--accent); font-size:.72rem; font-weight:800; border-radius:5px; padding:0 5px; margin-left:1px; vertical-align:super; cursor:help; transition:all .2s ease; }
+  .refno.active{ background:var(--accent); color:#fff; box-shadow:0 0 0 3px rgba(37,99,235,.35); }
+  .badge-updated{ background:#fefce8; border:1px solid #fde68a; border-radius:6px; padding:2px 9px; color:#b45309; font-size:.66rem; font-weight:800; display:inline-flex; align-items:center; gap:4px; }
+  .update-highlight{ background:#fef08a; border-bottom:2px solid #facc15; padding:0 4px; border-radius:4px; color:#1e293b; font-weight:600; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+  .row{ display:flex; align-items:baseline; gap:8px; padding:5px 0; border-bottom:1px dashed #eef0f4; }
+  .row:last-child{ border-bottom:none; }
+  .row .nm{ font-weight:700; font-size:.84rem; color:var(--accent-dark); min-width:148px; }
+  .row .rs{ font-size:.8rem; color:var(--text2); }
+
+  @keyframes spin-slow{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  ::-webkit-scrollbar{ display:none; }
+  .reveal{ opacity:0; transform:translateY(6px); transition:opacity .45s ease, transform .45s ease; }
+  .reveal.show{ opacity:1; transform:none; }
+  #app{ opacity:0; transition:opacity .55s ease; }
+  #app.show{ opacity:1; }
+  .pop{ opacity:0; transform:scale(.6); transition:opacity .3s ease, transform .35s cubic-bezier(.2,1.4,.4,1); }
+  .pop.show{ opacity:1; transform:scale(1); }
+
+  .scene{ position:absolute; top:0; left:0; right:0; bottom:100px; z-index:40; background:#eef2f7; display:flex; align-items:center; justify-content:center; transition:opacity .55s ease; }
+  .scene.hide{ opacity:0; pointer-events:none; }
+
+  .up-panel{ width:1160px; background:#fff; border:1px solid var(--bd); border-radius:16px; box-shadow:0 12px 40px rgba(15,23,42,.10); padding:22px 26px 20px; }
+  .sec-h{ display:flex; align-items:center; gap:8px; font-weight:800; font-size:1rem; color:#334155; margin:6px 0 10px; }
+  .upcard{ border:1px solid #eceff4; border-radius:12px; padding:10px 12px; background:#fcfdff; }
+  .upcard .h{ font-size:.76rem; font-weight:700; color:var(--text2); margin-bottom:7px; display:flex; align-items:center; gap:6px; line-height:1.2; }
+  .dz{ border:1.5px dashed #cdd6e4; border-radius:9px; padding:11px; min-height:92px; display:flex; flex-direction:column; justify-content:center; transition:all .35s ease; background:#fff; }
+  .dz .e .t1{ font-size:.72rem; color:var(--text2); font-weight:600; }
+  .dz .e .t2{ font-size:.64rem; color:var(--muted); margin:2px 0 7px; }
+  .dz .e .br{ display:inline-block; border:1px solid #d7dde7; border-radius:7px; padding:3px 11px; font-size:.68rem; font-weight:700; color:var(--text2); background:#f8fafc; }
+  .dz .d{ display:none; align-items:center; gap:8px; }
+  .dz.done{ border-style:solid; border-color:#a7f3d0; background:#f0fdf4; }
+  .dz.done .e{ display:none; } .dz.done .d{ display:flex; }
+  .opt-dz{ border:1.5px dashed #cdd6e4; border-radius:9px; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; background:#fff; }
+  .genbtn{ width:100%; margin-top:16px; background:linear-gradient(135deg,#1e40af 0%,#1e3a8a 100%); color:#fff; border:none; border-radius:11px; padding:13px; font-size:1rem; font-weight:800; box-shadow:0 8px 20px rgba(30,64,175,.28); transition:transform .15s ease; }
+  .spin-big{ width:66px; height:66px; border:6px solid #e2e8f0; border-top-color:var(--accent); border-radius:50%; margin:0 auto 22px; animation:spin-slow 1s linear infinite; }
+  .barfill{ height:100%; width:0; background:linear-gradient(90deg,#1e40af,#3b82f6); border-radius:999px; transition:width .4s ease; }
+
+  .msg-user{ background:#f1f5f9; border-left:4px solid var(--accent); border-radius:10px; padding:9px 12px; margin-left:22px; }
+  .msg-ai{ background:#fff; border:1px solid var(--bd); border-left:4px solid var(--success); border-radius:10px; padding:9px 12px; margin-right:14px; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .apply-btn{ margin-top:8px; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:6px 13px; font-size:.74rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; }
+  .apply-btn.done{ background:#ecfdf5; color:#047857; border:1px solid #a7f3d0; }
+  #chat-input{ width:100%; background:#fff; border:2px solid var(--subj-bd); border-radius:14px; padding:11px 52px 11px 15px; min-height:48px; font-size:1.02rem; line-height:1.5; color:#0f172a; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.05); white-space:pre-wrap; word-break:break-word; }
+  #chat-input:empty::before{ content:attr(data-ph); color:var(--muted); font-weight:500; }
+
+  #pointer{ position:absolute; z-index:60; left:0; top:0; width:56px; height:56px; pointer-events:none; opacity:0; transition:transform .85s cubic-bezier(.4,0,.2,1), opacity .3s ease; filter:drop-shadow(0 4px 6px rgba(0,0,0,.3)); }
+  #pointer i{ font-size:36px; color:var(--accent); }
+  #pointer .ring{ position:absolute; inset:-10px; border:3px solid var(--accent); border-radius:50%; opacity:0; }
+  #pointer.ping .ring{ animation:ping 1s ease-out 1; }
+  @keyframes ping{ 0%{transform:scale(.4);opacity:.9} 100%{transform:scale(1.6);opacity:0} }
+
+  #ev-tip{ position:absolute; z-index:66; max-width:384px; background:#0b1226; color:#fff; font-size:.86rem; line-height:1.46; padding:13px 16px; border-radius:12px; border:1px solid rgba(125,211,252,.35); box-shadow:0 14px 34px rgba(0,0,0,.45); opacity:0; transform:translateY(8px) scale(.96); transform-origin:top left; transition:opacity .25s, transform .25s; pointer-events:none; }
+  #ev-tip.show{ opacity:1; transform:translateY(0) scale(1); }
+  #ev-tip .lbl{ display:block; color:#7dd3fc; font-weight:800; font-size:.66rem; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+
+  #caption{ position:absolute; bottom:0; left:0; width:100%; height:100px; display:flex; align-items:center; justify-content:center; background:#0b1226; border-top:3px solid var(--accent); padding:12px 70px; z-index:70; }
+  #cap{ color:#fff; font-size:1.8rem; font-weight:800; text-align:center; letter-spacing:-.01em; line-height:1.25; opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s ease; max-width:1130px; }
+  #cap.show{ opacity:1; transform:none; }
+  #cap .step{ display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:50%; background:var(--accent); color:#fff; font-size:1.15rem; font-weight:800; margin-right:14px; vertical-align:middle; }
+  .dots span{ display:inline-block; width:6px; height:6px; margin:0 2px; background:#94a3b8; border-radius:50%; animation:bounce 1.2s infinite; }
+  .dots span:nth-child(2){ animation-delay:.15s } .dots span:nth-child(3){ animation-delay:.3s }
+  /* The build reads this patch back out of the recording to find where
+     each beat starts, so it sits inside the band the burned-on caption
+     bar covers completely -- it can never show in the finished film. */
+  #tc{ position:absolute; left:0; bottom:0; width:48px; height:36px; background:#000; z-index:80; }
+  @keyframes bounce{ 0%,60%,100%{transform:translateY(0);opacity:.5} 30%{transform:translateY(-5px);opacity:1} }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="pointer"><div class="ring"></div><i class="fa-solid fa-arrow-pointer"></i></div>
+  <div id="ev-tip"></div>
+
+  <!-- ============ REPORT + CHAT ============ -->
+  <div id="app" class="flex flex-col h-[620px]">
+    <header class="h-11 bg-white border-b border-gray-200 flex items-center justify-between px-7 shrink-0 shadow-sm">
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center"><div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 shadow" style="background:var(--accent)"><i class="fa-solid fa-chart-line text-white text-xs"></i></div><h2 class="text-sm font-bold text-gray-800">Counseling Report</h2></div>
+        <div class="h-4 w-px bg-gray-300"></div>
+        <div class="flex items-center space-x-3"><span class="font-bold text-base" style="color:var(--accent)">Bogyeom Park</span><span class="h-3 w-px bg-gray-300"></span><span class="text-xs text-gray-500 font-medium">11th Grade</span><span class="h-3 w-px bg-gray-300"></span><span class="text-xs text-gray-500 font-medium">Intended Major: Computer Science</span></div>
+      </div>
+      <div class="flex items-center bg-gray-100 px-3 py-1 rounded-full border border-gray-200"><i class="fa-solid fa-user-tie mr-2 text-gray-400 text-xs"></i><span class="text-xs font-bold text-gray-600 italic">Teacher: Ms. Kang</span></div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+      <main class="flex-1 px-7 py-2 bg-slate-50/60 flex flex-col overflow-hidden">
+        <div id="report-scroll" class="flex-1 overflow-hidden relative">
+
+          <!-- 1. Comprehensive Summary -->
+          <div class="rep-card report-sec" id="p-summary">
+            <div class="rep-head"><div class="rep-icon">📋</div><div class="rep-title">Comprehensive Summary</div><div id="badge-sum" class="badge-updated pop ml-auto"><i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> UPDATED</div></div>
+            <div class="sum-box"><p class="rtext">Bogyeom is a <b style="color:var(--accent)">self-directed learner who turns broad goals into clear, daily milestones.</b><span class="refno" data-ev="“Sets a daily study plan and reviews it on their own initiative — often revising it several times a day.” — Behavioral Development">[1]</span><span id="sum-update"></span><span id="sum-tail" class="reveal"> Their structured, problem-solving approach is a strong asset for interdisciplinary work.<span class="refno" data-ev="“Prefers independent study; limited experience coordinating opinions in team activities.” — Behavioral Development">[7]</span><span class="refno" data-ev="“As study-team lead, showed responsibility but rarely initiated feedback within the team.” — Behavioral Development">[9]</span></span></p></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="subcard str">
+                <div class="sc-title" style="color:var(--str-tx)">💪 Strength Areas</div>
+                <div class="item"><span class="tag">Self-Directedness</span><span class="rtext" style="font-size:.8rem">Plans and reviews their own learning daily, revising it as they go.<span class="refno" data-ev="“Sets a daily study plan and reviews it on their own initiative — often revising it several times a day.” — Behavioral Development">[1]</span></span><div class="dev">→ Channel into self-directed research or project-based learning.</div></div>
+                <div class="item"><span class="tag">Career Clarity</span><span class="rtext" style="font-size:.8rem">Set a clear goal of becoming a software engineer and researched its competencies.<span class="refno" data-ev="“Researched and presented the competencies needed to become a software engineer.” — Career Activity">[3]</span></span><div class="dev">→ Refine by exploring domains: backend, ML, systems.</div></div>
+              </div>
+              <div class="subcard wk">
+                <div class="sc-title" style="color:var(--wk-tx)">🎯 Growth Areas</div>
+                <div class="item"><span class="tag">In-depth Inquiry</span><span class="rtext" style="font-size:.8rem">Career exploration is broad, but sustained inquiry on one topic is limited.<span class="refno" data-ev="“Career exploration was thorough, but sustained in-depth inquiry on a single topic was limited.” — Behavioral Development">[8]</span></span><div class="dev">→ Extend one project: question → method → results → refine.</div></div>
+                <div class="item"><span class="tag">Collaboration</span><span class="rtext" style="font-size:.8rem">Prefers independent study; limited experience coordinating roles in teams.<span class="refno" data-ev="“Prefers independent study; limited experience coordinating opinions in team activities.” — Behavioral Development">[7]</span></span><div class="dev">→ Take a role needing shared decisions and communication.</div></div>
+              </div>
+            </div>
+            <div class="subcard subj" style="margin-top:10px">
+              <div class="sc-title" style="color:var(--subj-tx)">📚 Subject-Specific Observations <span id="badge-subj" class="badge-updated pop" style="margin-left:6px"><i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> UPDATED</span></div>
+              <div class="item"><span class="tag" style="background:var(--accent-light);border-color:var(--subj-bd);color:var(--accent)">Integrated Science</span><span class="rtext" style="font-size:.8rem">Makes precise observations from visual data and overcomes trial-and-error through iteration.<span class="refno" data-ev="“In the optical-microscope lab, located precise images within the time limit, overcoming trial-and-error.” — Integrated Science">[5]</span></span></div>
+              <div class="item"><span class="tag" style="background:var(--accent-light);border-color:var(--subj-bd);color:var(--accent)">Mathematics</span><span class="rtext" style="font-size:.8rem">Applies logical, step-by-step reasoning to unfamiliar problems.<span class="refno" data-ev="“Sets a daily study plan and reviews it on their own initiative — often revising it several times a day.” — Behavioral Development">[1]</span></span></div>
+              <div id="subj-rec" class="reveal" style="margin-top:8px;padding-top:7px;border-top:1px dashed var(--subj-bd)"><p class="rtext" style="font-size:.8rem;color:var(--accent-dark);font-weight:600"><i class="fa-solid fa-arrow-right-long mr-1" style="color:var(--accent)"></i><span id="subj-update"></span></p></div>
+            </div>
+          </div>
+
+          <!-- 2. Major & Career -->
+          <div class="rep-card report-sec" id="p-career">
+            <div class="rep-head"><div class="rep-icon">🎓</div><div class="rep-title">Major &amp; Career</div></div>
+            <p class="sec-intro">Two career directions inferred from their record — with why each fits, and which majors support it.</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="subcard" style="background:var(--accent-light);border:1px solid var(--subj-bd)">
+                <div class="sc-title" style="color:var(--accent)">💼 Software Engineer <span class="tag" style="background:#dcfce7;border-color:#86efac;color:#047857;margin-left:auto">Strong fit</span></div>
+                <p class="rtext" style="font-size:.79rem"><b style="color:var(--accent-dark)">Why this career:</b> it matches their stated goal and their daily, self-directed coding.<span class="refno" data-ev="“Researched and presented the competencies needed to become a software engineer.” — Career Activity">[3]</span></p>
+                <p class="rtext" style="font-size:.79rem;margin-top:5px"><b style="color:var(--accent-dark)">Majors:</b> Computer Science · Software Engineering</p>
+                <p class="rtext" style="font-size:.76rem;margin-top:2px;color:var(--text2)">→ Build the algorithms, systems &amp; engineering foundations the role needs.</p>
+              </div>
+              <div class="subcard" style="background:var(--accent-light);border:1px solid var(--subj-bd)">
+                <div class="sc-title" style="color:var(--accent)">💼 Computational Scientist <span class="tag" style="margin-left:auto">Emerging</span></div>
+                <p class="rtext" style="font-size:.79rem"><b style="color:var(--accent-dark)">Why this career:</b> it bridges their programming strength with a growing science interest.<span class="refno" data-ev="“Sets a daily study plan and reviews it on their own initiative — often revising it several times a day.” — Behavioral Development">[1]</span></p>
+                <p class="rtext" style="font-size:.79rem;margin-top:5px"><b style="color:var(--accent-dark)">Majors:</b> Computational Science · Applied Mathematics</p>
+                <p class="rtext" style="font-size:.76rem;margin-top:2px;color:var(--text2)">→ Combine modeling &amp; data methods with deep domain science.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Subject Selection -->
+          <div class="rep-card report-sec" id="p-subject">
+            <div class="rep-head"><div class="rep-icon">📚</div><div class="rep-title">Subject Selection</div></div>
+            <p class="sec-intro">Electives that build toward the recommended path — each with the reason it was chosen.</p>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <div class="sc-title" style="color:var(--text2);font-size:.82rem">General Elective</div>
+                <div class="row"><span class="nm">Calculus</span><span class="rs">Foundation for algorithms &amp; modeling</span></div>
+                <div class="row"><span class="nm">Probability &amp; Statistics</span><span class="rs">Basis for data &amp; machine learning</span></div>
+                <div class="row"><span class="nm">Chemistry II</span><span class="rs">Supports their emerging interdisciplinary interest</span></div>
+              </div>
+              <div>
+                <div class="sc-title" style="color:var(--text2);font-size:.82rem">Career Elective</div>
+                <div class="row"><span class="nm">Advanced Programming</span><span class="rs">Directly builds software-engineering skill</span></div>
+                <div class="row"><span class="nm">Information Science</span><span class="rs">Data structures &amp; systems thinking</span></div>
+                <div class="row"><span class="nm">Science Inquiry Experiment</span><span class="rs">Sustained hands-on inquiry — targets their growth area</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Creative Activities -->
+          <div class="rep-card report-sec" id="p-creative">
+            <div class="rep-head"><div class="rep-icon">💡</div><div class="rep-title">Creative Activities</div></div>
+            <p class="sec-intro">What they have done in each area — and how to develop it toward their path.</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="subcard" style="background:#ecfdf5;border:1px solid var(--str-bd)"><div class="sc-title" style="color:var(--str-tx);font-size:.84rem">🧭 Autonomous</div><p class="rtext" style="font-size:.79rem">Led the class learning-management team, organizing peers’ study schedules.<span class="refno" data-ev="“Sets a daily study plan and reviews it on their own initiative — often revising it several times a day.” — Behavioral Development">[1]</span></p><p class="dev" style="color:var(--str-tx)">→ Develop: lead a small peer coding study group.</p></div>
+              <div class="subcard" style="background:#eff6ff;border:1px solid #bfdbfe"><div class="sc-title" style="color:var(--accent);font-size:.84rem">👥 Club</div><p class="rtext" style="font-size:.79rem">In the coding club, built and iterated on small apps.<span class="refno" data-ev="“Active member of the coding club; built and iterated on small software projects.” — Club Activity">[2]</span></p><p class="dev">→ Develop: grow one app into a semester-long project.</p></div>
+              <div class="subcard" style="background:#fff7ed;border:1px solid #fed7aa"><div class="sc-title" style="color:#9a3412;font-size:.84rem">🤝 Volunteer</div><p class="rtext" style="font-size:.79rem">Tutored peers in mathematics each week.<span class="refno" data-ev="“Prefers independent study; limited experience coordinating opinions in team activities.” — Behavioral Development">[7]</span></p><p class="dev" style="color:#9a3412">→ Develop: mentor juniors in introductory coding.</p></div>
+              <div class="subcard" style="background:#eef2ff;border:1px solid var(--subj-bd)"><div class="sc-title" style="color:var(--subj-tx);font-size:.84rem">🎯 Career</div><p class="rtext" style="font-size:.79rem">Researched the software-engineer pathway and presented the skills it needs.<span class="refno" data-ev="“Researched and presented the competencies needed to become a software engineer.” — Career Activity">[3]</span></p><p class="dev" style="color:var(--subj-tx)">→ Develop: explore computational chemistry as a bridge.</p></div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <aside class="w-[342px] bg-white border-l border-gray-200 flex flex-col p-3 shrink-0 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center"><div class="w-7 h-7 rounded-lg flex items-center justify-center mr-2.5 border" style="background:var(--accent-light);border-color:var(--subj-bd)"><i class="fa-solid fa-comments text-sm" style="color:var(--accent)"></i></div><h2 class="text-base font-bold text-gray-800">Chat</h2></div>
+          <span class="text-[11px] font-bold px-2 py-1 rounded-md" style="background:var(--accent-light);color:var(--accent)">🆕 New Chat</span>
+        </div>
+        <div id="chatbox" class="flex-1 rounded-2xl border border-gray-200 p-3 flex flex-col space-y-2.5 shadow-inner overflow-hidden" style="background:linear-gradient(180deg,#f1f5f9 0%,#fff 100%)">
+          <div id="msg-teacher" class="reveal"><div class="flex items-center justify-end mb-1 mr-1"><span class="text-[10px] font-bold text-gray-400 mr-1.5">TEACHER</span><div class="w-5 h-5 rounded-full flex items-center justify-center" style="background:var(--accent)"><i class="fa-solid fa-user text-[9px] text-white"></i></div></div><div class="msg-user"><p class="text-[.86rem] text-gray-800">Bogyeom has recently developed an interest in <b style="color:var(--accent)">Chemical Engineering</b>.</p></div></div>
+          <div id="msg-typing" class="reveal"><div class="msg-ai dots" style="display:inline-block"><span></span><span></span><span></span></div></div>
+          <div id="msg-ai" class="reveal"><div class="flex items-center mb-1 ml-1"><div class="w-5 h-5 rounded-full flex items-center justify-center mr-1.5" style="background:#dcfce7"><i class="fa-solid fa-robot text-[9px]" style="color:var(--success)"></i></div><span class="text-[10px] font-bold text-gray-400">AGENTIC AI</span></div>
+            <div class="msg-ai"><p class="text-[.86rem] text-gray-700 leading-relaxed">A helpful insight. To build on their <b style="color:var(--accent)">coding proficiency</b>, I recommend an <b style="color:var(--accent)">Integrated Inquiry</b> activity on molecular simulations.</p>
+              <button id="apply-btn" class="apply-btn"><i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Apply to Report</button></div>
+          </div>
+        </div>
+        <div class="pt-3"><div class="relative">
+          <div id="chat-input" data-ph="Ask anything…"></div>
+          <button id="send-btn" class="absolute right-2 bottom-2 w-10 h-10 text-white rounded-lg flex items-center justify-center shadow transition-transform" style="background:var(--accent)"><i class="fa-solid fa-paper-plane text-sm"></i></button>
+        </div></div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ============ SCENE 1: UPLOAD ============ -->
+  <div id="scene-upload" class="scene">
+    <div class="up-panel">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow" style="background:var(--accent)"><i class="fa-solid fa-cloud-arrow-up text-white text-sm"></i></div>
+        <h2 class="text-lg font-extrabold text-gray-800">Upload &amp; Manage Data — Bogyeom Park</h2>
+      </div>
+      <div class="sec-h" style="margin-top:4px">📌 Student records</div>
+      <div class="grid grid-cols-4 gap-3">
+        <div class="upcard"><div class="h">📂 Creative Activities <span class="text-gray-400">(CSV)</span></div>
+          <div class="dz" id="dz1"><div class="e"><div class="t1">Drag and drop file here</div><div class="t2">Limit 200MB · CSV</div><span class="br">Browse files</span></div><div class="d"><i class="fa-solid fa-file-csv text-emerald-500"></i><span class="text-[.72rem] font-bold text-gray-700">creative_activities.csv</span><i class="fa-solid fa-circle-check text-green-500 ml-auto"></i></div></div>
+        </div>
+        <div class="upcard"><div class="h">📊 Subject Performance <span class="text-gray-400">(CSV)</span></div>
+          <div class="dz" id="dz2"><div class="e"><div class="t1">Drag and drop file here</div><div class="t2">Limit 200MB · CSV</div><span class="br">Browse files</span></div><div class="d"><i class="fa-solid fa-file-csv text-blue-500"></i><span class="text-[.72rem] font-bold text-gray-700">subject_performance.csv</span><i class="fa-solid fa-circle-check text-green-500 ml-auto"></i></div></div>
+        </div>
+        <div class="upcard"><div class="h">📝 Behavior &amp; Opinion <span class="text-gray-400">(CSV)</span></div>
+          <div class="dz" id="dz3"><div class="e"><div class="t1">Drag and drop file here</div><div class="t2">Limit 200MB · CSV</div><span class="br">Browse files</span></div><div class="d"><i class="fa-solid fa-file-csv text-violet-500"></i><span class="text-[.72rem] font-bold text-gray-700">behavior_opinion.csv</span><i class="fa-solid fa-circle-check text-green-500 ml-auto"></i></div></div>
+        </div>
+        <div class="upcard"><div class="h">📋 Detailed Abilities <span class="text-gray-400">(XLSX)</span></div>
+          <div class="dz" id="dz4"><div class="e"><div class="t1">Drag and drop file here</div><div class="t2">Limit 200MB · XLSX</div><span class="br">Browse files</span></div><div class="d"><i class="fa-solid fa-file-excel text-green-600"></i><span class="text-[.72rem] font-bold text-gray-700">detailed_abilities.xlsx</span><i class="fa-solid fa-circle-check text-green-500 ml-auto"></i></div></div>
+        </div>
+      </div>
+      <div class="sec-h mt-3">➕ Optional Upload</div>
+      <div class="opt-dz"><div class="flex items-center gap-3"><i class="fa-solid fa-school text-slate-400 text-lg"></i><div><div class="text-[.78rem] font-bold text-gray-600">School Courses (CSV)</div><div class="text-[.64rem] text-gray-400">Limit 200MB · CSV</div></div></div><span style="border:1px solid #d7dde7;border-radius:7px;padding:4px 12px;font-size:.68rem;font-weight:700;color:#475569;background:#f8fafc">Browse files</span></div>
+      <button id="gen-btn" class="genbtn"><i class="fa-solid fa-rocket mr-1.5"></i> Generate Report</button>
+    </div>
+  </div>
+
+  <!-- ============ SCENE 2: GENERATING ============ -->
+  <div id="scene-gen" class="scene hide">
+    <div class="text-center" style="width:560px">
+      <div class="spin-big"></div>
+      <h2 class="text-2xl font-extrabold text-gray-800">Generating report. Please wait. 📄</h2>
+      <p class="text-sm text-gray-500 mt-2 mb-7">The agents are reasoning &amp; verifying…</p>
+      <div class="h-2.5 bg-gray-200 rounded-full overflow-hidden mx-auto" style="max-width:420px"><div id="bar" class="barfill"></div></div>
+    </div>
+  </div>
+
+  <div id="caption"><div id="cap"></div><div id="tc"></div></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const SPEED=1;
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*SPEED));
+function fit(){ const s=$('#stage'); const k=Math.min(window.innerWidth/1280, window.innerHeight/720); s.style.transform=`translate(-50%,-50%) scale(${k})`; }
+window.addEventListener('resize',fit); fit();
+
+const SUM_TXT=' Given their interest in software engineering, ';
+const SUM_HL='this report recommends an “Interdisciplinary Inquiry” pathway linking Chemical Engineering with their programming strengths through computational chemistry simulations.';
+const SUBJ_HL='Leverage their programming strengths by building chemical-reaction simulations for upcoming inquiry projects.';
+const INPUT_TXT='Bogyeom has recently developed an interest in Chemical Engineering.';
+
+const show=id=>$(id).classList.add('show');
+const hide=id=>$(id).classList.remove('show');
+async function typeInput(text,speed=42){ const el=$('#chat-input'); for(let i=0;i<text.length;i++){ el.textContent=text.slice(0,i+1)+'▏'; await sleep(speed); } el.textContent=text; }
+async function typeHTML(el,prefix,hl,speed=11){ el.innerHTML=prefix+'<span class="update-highlight" id="_t"></span>'; const t=el.querySelector('#_t'); for(const ch of hl){ t.textContent+=ch; await sleep(speed);} }
+// The caption is not drawn here. The build burns it on, in one bar of one
+// weight, and mixes the voice for it at the same instant -- which it can only
+// do if it knows exactly which recorded frame each beat starts on. So each
+// beat paints a colour patch naming itself, inside the band the bar covers,
+// and the build reads the patch back out of the recording. Nothing about the
+// timing is inferred from wall clocks that the recorder never saw.
+//
+// A beat also has to last at least as long as the line spoken over it, and
+// only the build knows how long that is -- edge-tts is asked first, and the
+// answer arrives here as window.__HOLD before the page starts.
+window.__T = [];
+window.__HOLD = window.__HOLD || [];
+window.__done = false;
+let _bi = -1, _bt = 0;
+const nowS = () => (performance.now() - window.__t0) / 1000;
+const rawSleep = ms => new Promise(r => setTimeout(r, ms));
+// 16 + 15i keeps the beats far enough apart in red that a frame the recorder
+// catches part-way through the change cannot be mistaken for either of them.
+// build_ca_video.py reads the same two numbers back.
+function mark(i){ $('#tc').style.background = (i < 0) ? '#000' : `rgb(${16 + i * 15},210,60)`; }
+async function hold(){
+  if (_bi < 0) return;
+  const need = window.__HOLD[_bi] || 0, el = nowS() - _bt;
+  if (el < need) await rawSleep((need - el) * 1000);
+}
+async function within(frac){
+  const target = (window.__HOLD[_bi] || 0) * frac, el = nowS() - _bt;
+  if (el < target) await rawSleep((target - el) * 1000);
+}
+// The same 700ms is a crawl over 60px and a lurch over 900. A move is given a
+// slice of the beat it belongs to -- so it lasts in proportion to the line
+// being spoken over it -- and inside that slice it runs no faster than
+// SCROLL_PX_S. Short hops finish early and stay calm; long ones use the slice.
+const SCROLL_PX_S = 240, SCROLL_MIN = 800;   // average; the ease peaks at twice it
+async function scrollIn(el, target, from, to){
+  await within(from);
+  const dist = Math.abs(target - el.scrollTop);
+  const slice = (window.__HOLD[_bi] || 0) * (to - from) * 1000;
+  await smoothScroll(el, target, Math.min(Math.max(dist / SCROLL_PX_S * 1000, SCROLL_MIN),
+                                          Math.max(SCROLL_MIN, slice)));
+}
+async function beat(i){
+  await hold();
+  _bi = i; _bt = nowS();
+  window.__T.push({ i: i, t: +_bt.toFixed(3) });
+  mark(i);
+}
+// A glide between two things on screen reads as a hand moving. A glide from
+// wherever the pointer was last hidden reads as a cursor swooping in from
+// off-frame -- and the first time, from the top-left corner, because nothing
+// had ever positioned it. So it jumps when it is hidden and glides when it is not.
+function pointTo(sel,dx=0,dy=0,ping=true){ const el=(typeof sel==='string')?$(sel):sel; const p=$('#pointer'),stg=$('#stage').getBoundingClientRect(),r=el.getBoundingClientRect(),k=stg.width/1280;
+  const x=(r.left-stg.left)/k+r.width/k/2+dx, y=(r.top-stg.top)/k+r.height/k/2+dy;
+  const hidden = p.style.opacity !== '1';
+  if(hidden) p.style.transition='none';
+  p.style.transform=`translate(${x-10}px,${y-6}px)`;
+  if(hidden){ void p.offsetWidth; p.style.transition=''; }
+  p.style.opacity='1';
+  if(ping){ p.classList.remove('ping'); void p.offsetWidth; p.classList.add('ping'); } }
+const hidePointer=()=>$('#pointer').style.opacity='0';
+const uploadDz=id=>$(id).classList.add('done');
+
+function easeIO(t){ return t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+// Stepping the scroll on setTimeout does not line up with the frames the
+// compositor paints: at 33ms a step the timers slip under recording load, and
+// the picture jumps 38px on one frame and 0 on the next. Asked for 300px/s it
+// measured 1140. rAF puts exactly one scroll position on every painted frame.
+function smoothScroll(el, target, dur=700){
+  return new Promise(done => {
+    const start = el.scrollTop, diff = target - start, t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / (dur * SPEED));
+      el.scrollTop = start + diff * easeIO(k);
+      if (k < 1) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
+}
+function showEv(el){ const ev=el.getAttribute('data-ev'); if(!ev) return; el.classList.add('active'); const tip=$('#ev-tip'); tip.innerHTML='<span class="lbl"><i class="fa-solid fa-quote-left mr-1"></i>From the student record</span>'+ev; const stg=$('#stage').getBoundingClientRect(), r=el.getBoundingClientRect(), k=stg.width/1280; const x=(r.left-stg.left)/k, y=(r.bottom-stg.top)/k+9; tip.style.left=Math.max(8,Math.min(x-6, 1280-396))+'px'; tip.style.top=y+'px'; tip.classList.add('show'); }
+function hideEv(){ $('#ev-tip').classList.remove('show'); document.querySelectorAll('.refno.active').forEach(b=>b.classList.remove('active')); }
+document.querySelectorAll('.refno').forEach(b=>{ b.addEventListener('mouseenter',()=>showEv(b)); b.addEventListener('mouseleave',hideEv); });
+
+function resetAll(){
+  ['#msg-teacher','#msg-typing','#msg-ai','#sum-tail','#subj-rec','#badge-sum','#badge-subj'].forEach(hide);
+  $('#sum-update').innerHTML=''; $('#subj-update').innerHTML=''; $('#chat-input').textContent=''; hidePointer();
+  const ab=$('#apply-btn'); ab.classList.remove('done'); ab.innerHTML='<i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Apply to Report';
+  $('#scene-upload').classList.remove('hide'); $('#scene-gen').classList.add('hide'); hide('#app');
+  ['#dz1','#dz2','#dz3','#dz4'].forEach(id=>$(id).classList.remove('done'));
+  $('#report-scroll').scrollTop=0; hideEv(); $('#bar').style.width='0';
+}
+
+let running=false;
+async function play(){
+  if(running) return; running=true;
+  window.__t0 = performance.now();
+  resetAll(); mark(-1); await sleep(500);
+
+  await beat(0);
+  uploadDz('#dz1'); await sleep(850); uploadDz('#dz2'); await sleep(850);
+  uploadDz('#dz3'); await sleep(850); uploadDz('#dz4'); await sleep(700);
+
+  await beat(1);
+  await within(0.45);
+  pointTo('#gen-btn',0,0); await sleep(700);
+  const gb=$('#gen-btn'); gb.style.transform='scale(.96)'; await sleep(220); gb.style.transform='scale(1)';
+  hidePointer(); await sleep(400);
+
+  $('#scene-upload').classList.add('hide'); $('#scene-gen').classList.remove('hide');
+  await beat(2);
+  $('#bar').style.width='0'; await sleep(450);
+  $('#bar').style.width='40%'; await sleep(1100);
+  $('#bar').style.width='75%'; await sleep(1100);
+  $('#bar').style.width='100%'; await sleep(900);
+
+  $('#scene-gen').classList.add('hide'); show('#app');
+  const rs=$('#report-scroll');
+  const foot=()=>Math.max(0, $('#p-summary').offsetHeight - rs.clientHeight);
+  rs.scrollTop=0;
+  // The report arrives whole and the line says so; the four sections it names
+  // are then visited one at a time, which is the only walk through the page.
+  // An earlier cut ran the whole length here and came back, and that flick --
+  // 916px twice inside six seconds -- was the fastest thing in the film.
+  await beat(3);
+  await within(0.35); await smoothScroll(rs, 90, 1100); await within(0.72); await smoothScroll(rs, 0, 1100);
+
+  await beat(4);
+  await within(0.05); pointTo('#p-summary .subcard.str .sc-title',-125,0);
+  await within(0.52); pointTo('#p-summary .subcard.wk .sc-title',-125,0);
+
+  await beat(5);
+  hidePointer();
+  await scrollIn(rs, $('#p-career').offsetTop-6, 0.08, 0.66);
+  await within(0.70); pointTo('#p-career .subcard .sc-title',-105,0);
+
+  await beat(6);
+  hidePointer();
+  await scrollIn(rs, $('#p-subject').offsetTop-6, 0.08, 0.66);
+  await within(0.70); pointTo(document.querySelectorAll('#p-subject .row')[3],0,0);
+
+  // this one is already nearly in frame, so the pointer carries "area by area"
+  await beat(7);
+  hidePointer();
+  await scrollIn(rs, rs.scrollHeight - rs.clientHeight, 0.06, 0.40);
+  await within(0.46); pointTo(document.querySelectorAll('#p-creative .subcard')[0],0,0);
+  await within(0.76); pointTo(document.querySelectorAll('#p-creative .subcard')[3],0,0);
+
+  // 916px, the longest move in the film. It gets almost the whole line, and
+  // the pointer waits for the next beat rather than squeezing in behind it.
+  await beat(8);
+  hidePointer();
+  await scrollIn(rs, 0, 0.03, 0.94);
+  const evb=document.querySelector('#p-summary .refno');
+
+  await beat(9);
+  await within(0.04); pointTo(evb,2,2);
+  await within(0.24); showEv(evb); await sleep(2500); hideEv();
+
+  await beat(10);
+  await within(0.12); pointTo(document.querySelector('aside h2'),40,0);
+  await within(0.55); pointTo('#chat-input',-135,-6);
+
+  await beat(11);
+  await typeInput(INPUT_TXT,42); await sleep(700);
+  pointTo('#send-btn',0,0); const sb=$('#send-btn'); sb.style.transform='scale(.86)'; await sleep(240); sb.style.transform='scale(1)';
+  $('#chat-input').textContent=''; hidePointer(); show('#msg-teacher'); await sleep(900);
+
+  await beat(12);
+  show('#msg-typing'); await sleep(1500); hide('#msg-typing');
+  show('#msg-ai'); await sleep(1600);
+
+  await beat(13);
+  pointTo('#apply-btn',0,0); await sleep(800);
+  const ab=$('#apply-btn'); ab.style.transform='scale(.9)'; await sleep(220); ab.style.transform='scale(1)';
+  ab.innerHTML='<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Applying…'; await sleep(900);
+  ab.classList.add('done'); ab.innerHTML='<i class="fa-solid fa-circle-check text-[10px]"></i> Applied to report ✅';
+  hidePointer(); await sleep(450);
+
+  // The updated subject line sits below the fold -- the card is 571px in a
+  // 560px view, and the update makes it taller still. Without this scroll it
+  // is typed where nobody can see it, and the pointer points off the screen.
+  await beat(14);
+  show('#badge-sum'); pointTo('#badge-sum',0,0); await sleep(400);
+  await typeHTML($('#sum-update'),SUM_TXT,SUM_HL,10); show('#sum-tail'); pointTo('#sum-update',0,-4); await sleep(900);
+  hidePointer(); await smoothScroll(rs, foot(), 900);
+  show('#badge-subj'); show('#subj-rec'); await sleep(300);
+  await typeHTML($('#subj-update'),'',SUBJ_HL,10); pointTo('#subj-update',0,-4); await sleep(900);
+
+  await beat(15);
+  hidePointer(); await within(0.15);
+  await smoothScroll(rs, 0, 1600);
+
+  await hold();
+  window.__T.push({ i: -1, t: +nowS().toFixed(3) });   // where the last beat ends
+  mark(-1);
+  window.__done = true;
+}
+window.addEventListener('load',()=>setTimeout(play,400));
+</script>
+</body>
+</html>

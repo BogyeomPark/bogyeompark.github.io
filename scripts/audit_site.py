@@ -23,7 +23,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # §3-3 링크 라벨 닫힌 어휘. 새 표현을 여기 추가하기 전에 STYLE.md 부터 고친다.
 LINK_LABELS = {
     'PDF ↗', 'Publisher ↗', 'Video ↗', 'Project page →',
-    'Play it →', 'Watch it →', 'Open PDF ↗', 'All demos →',
+    'Play it →', 'Watch it →', 'Open PDF ↗', 'All demos →', 'All news →', 'All publications →',
 }
 # §4-5 역할별 서체. 값은 CSS 변수가 가리키는 실제 첫 패밀리.
 SERIF, SANS = 'Newsreader', 'Inter'
@@ -45,8 +45,11 @@ def bad(rule, detail):
 # ── 정적 검사 ─────────────────────────────────────────────────────────
 pages = []
 for dirpath, dirnames, filenames in os.walk(ROOT):
+    # scripts/ 안의 .html 은 사이트의 쪽이 아니라 빌드 입력이다 —
+    # ca_animation.html 은 헤드리스 브라우저가 녹화할 화면이라 사이트의
+    # 서체·제목 규칙을 따르지 않으며, 따를 이유도 없다.
     dirnames[:] = [d for d in dirnames
-                   if d not in ('.git', 'node_modules', '__pycache__', 'assets')]
+                   if d not in ('.git', 'node_modules', '__pycache__', 'assets', 'scripts')]
     for fn in filenames:
         if fn.endswith('.html') and 'DESKTOP' not in fn:
             pages.append(os.path.join(dirpath, fn))
@@ -155,8 +158,11 @@ if sync_playwright:
 
     handler = functools.partial(Silent, directory=ROOT)
 
-    class Quiet(socketserver.TCPServer):
+    # 스레드가 하나면 홈의 자동재생 영상이 연결을 붙잡은 동안 나머지 요청이
+    # 줄을 서고, networkidle 이 영영 오지 않는다. 영상이 길어질수록 잘 걸린다.
+    class Quiet(socketserver.ThreadingTCPServer):
         allow_reuse_address = True
+        daemon_threads = True
 
         def handle_error(self, *a):
             pass
@@ -197,10 +203,14 @@ if sync_playwright:
         for path in pages:
             url = '/' + os.path.relpath(path, ROOT).replace('\\', '/')
             url = url.replace('/index.html', '/')
-            r = pg.goto('http://127.0.0.1:%d%s' % (PORT, url), wait_until='networkidle')
+            # networkidle 은 못 쓴다: 홈이 자동재생하는 영상이 재생 내내 연결을
+            # 붙잡고 있어서, 영상이 30초보다 길면 절대 오지 않는다. 여기서 재는
+            # 것은 서체와 배치이니 기다려야 할 것은 load 와 웹폰트뿐이다.
+            r = pg.goto('http://127.0.0.1:%d%s' % (PORT, url), wait_until='load')
             if r.status != 200:
                 bad('페이지', '%s → %d' % (url, r.status))
                 continue
+            pg.wait_for_function("document.fonts.status === 'loaded'")
             pg.wait_for_timeout(200)
             got = pg.evaluate(JS, FONT_ROLES)
 

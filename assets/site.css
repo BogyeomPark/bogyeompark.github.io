@@ -222,7 +222,15 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
   letter-spacing: -0.028em;
   line-height: 1.07;
 }
-.lead { max-width: 660px; margin: 24px 0 0; color: var(--body); font-size: 1.06rem; }
+/* The home page heading names the field instead of making a claim, so it is
+   set at label size: a 64px line saying "Human-Centered Agentic AI" pushed the
+   demo film off the first screen and read as a slogan it is not. */
+.page-header h1.field-title { font-size: 1.75rem; letter-spacing: -0.012em; }
+/* Three quarters of the column: at 660px the introduction read as a narrower
+   block than everything under it, and stretched to the full column it is 100
+   characters a line and the eye stops tracking. Here it is about 75, inside
+   the limit, and the block no longer looks like a different width. */
+.lead { max-width: 760px; margin: 24px 0 0; color: var(--body); font-size: 1.06rem; line-height: 1.6; }
 /* What is on the desk right now - the line a professor or recruiter looks for. */
 /* The quantities a hiring PI scans for before reading a word of prose. Four at
    most: a fifth turns a glance into a table. The value carries the weight, the
@@ -231,7 +239,10 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   gap: 16px 24px;
-  max-width: 660px;
+  /* The counters take the column, not the 660px the prose is held to: the rules
+     above and below them are the block's visible edges, and stopping them short
+     made the whole introduction look narrower than every section under it. The
+     paragraph stays at 660px, where a line is 78 characters. */
   margin: 28px 0 0;
   padding: 20px 0 0;
   border-top: 1px solid var(--line);
@@ -390,7 +401,10 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
    It cannot be dropped - seven entries showing awards of a billion won read as
    this person's grants without it - but it does not have to stand between the
    title and the thing the page is for. */
-.project-disclosure { max-width: 690px; margin: -8px 0 6px; color: var(--muted); font-size: 0.84rem; line-height: 1.6; }
+/* It sits between the capability cards and the first year of projects now, so
+   it needs room above rather than the negative margin it had when it hung
+   under a section heading. */
+.project-disclosure { max-width: 690px; margin: 40px 0 -14px; color: var(--muted); font-size: 0.84rem; line-height: 1.6; }
 .capability-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 22px; }
 .capability { padding: 20px 22px 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); }
 .capability h3 { margin: 0 0 12px; font-family: var(--serif); font-size: 1.02rem; font-weight: 600; }
@@ -527,6 +541,10 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
 }
 
 .publication-card:first-child { border-top: 1px solid var(--line); }
+/* A rule tells one card from the next. Where a year holds a single card -- which
+   is every year on /demos/ -- the pair of them draws a box round it instead, and
+   a box is a claim the card is not making. */
+.publication-cards.single .publication-card { padding: 4px 0 0; border: 0; }
 .publication-thumb-link { display: block; align-self: start; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--soft); }
 .publication-thumb {
   display: block;
@@ -673,7 +691,11 @@ main { min-width: 0; padding: 51px 0 66px 56px; }
    while the video runs wider: the video is a picture, this is prose. */
 /* One height for all three, or the page jumps by a line every time the slide
    changes and the controls move under the reader's cursor. */
-.system-note { max-width: 660px; min-height: 132px; margin: 15px 0 0; }
+/* The caption takes the film’s width rather than the 660px the prose elsewhere
+   is held to: under a full-width picture a short column reads as a mistake.
+   Each of these is one line at this measure, so the reason for the limit —
+   losing the start of the next line — does not arise. */
+.system-note { min-height: 132px; margin: 15px 0 0; }
 .system-note h3 { margin: 0 0 5px; font-family: var(--serif); font-size: 1.12rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
 .system-note p { margin: 0; color: var(--body); font-size: 0.89rem; line-height: 1.58; }
 /* The arrows wrap, so nothing else says how many systems there are or which one

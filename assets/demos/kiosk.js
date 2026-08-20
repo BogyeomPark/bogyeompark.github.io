@@ -463,25 +463,50 @@
         // however carefully the line around it is worded.
         : 'Your two values fall on opposite sides: one is nearer the healthy-control mean, the '
           + 'other nearer the mean of the group with MCI. Which is which is in the table above.');
-    // One table for everything: the four measures as rows, you beside the two
-    // groups. It used to be a list of your numbers followed by a second table
-    // repeating two of them against the study.
-    const na = s => '<td class="na">' + s + '</td>';
+    // The four measures as one picture. Each is a line between the study's two
+    // printed means with this run's value marked on it, and every number is
+    // written where it belongs rather than repeated in a table underneath --
+    // the table was saying the same four rows a second time.
+    //
+    // Deliberately no shaded halves and no "your side": the wording below states
+    // distance to a mean rather than which side of a gap a reader landed on, and
+    // a two-tone track would undo that before the sentence was read. References
+    // are neutral; the only ink is the reader's own mark.
+    const strip = (label, you, youText, hc, mci, unit, top) => {
+      const W = 560, mid = 46, x = v => 8 + Math.max(0, Math.min(1, v / top)) * (W - 16);
+      const ref = r => {
+        const px = x(r.v).toFixed(1);
+        return '<line x1="' + px + '" y1="38" x2="' + px + '" y2="54" />' +
+          '<text class="kv-ref" x="' + px + '" y="16">' + r.name + '</text>' +
+          '<text class="kv-refval" x="' + px + '" y="31">' + r.v + unit + '</text>';
+      };
+      const aria = label + ': your run at ' + youText +
+        ', against a healthy-control mean of ' + hc.v + unit + ' and a mean of ' + mci.v + unit +
+        ' for the group with mild cognitive impairment';
+      return '<figure class="kiosk-place">' +
+        '<figcaption>' + label + '</figcaption>' +
+        '<svg viewBox="0 0 ' + W + ' 78" role="img" aria-label="' + aria + '">' +
+        '<line class="kv-track" x1="8" y1="' + mid + '" x2="' + (W - 8) + '" y2="' + mid + '" />' +
+        '<g class="kv-tick">' + ref(hc) + ref(mci) + '</g>' +
+        '<circle class="kv-you" cx="' + x(you).toFixed(1) + '" cy="' + mid + '" r="7" />' +
+        '<text class="kv-youlabel" x="' + x(you).toFixed(1) + '" y="72">' + youText + '</text>' +
+        '</svg></figure>';
+    };
+    const HCn = n => ({ v: n, name: 'Healthy controls' });
+    const MCIn = n => ({ v: n, name: 'With MCI' });
     const vs =
-      // Every header says what it heads. Without a scope a screen reader reads the
-      // four numbers in a row without saying which measure or which group they
-      // belong to, which is the whole of what this table is for.
-      '<table class="kiosk-vs"><thead><tr><td></td><th scope="col">You</th>' +
-      '<th scope="col">Healthy controls (n=22)</th><th scope="col">With MCI (n=32)</th></tr></thead><tbody>' +
-      '<tr><th scope="row">Time to completion</th><td>' + seconds.toFixed(1) + ' s</td>' +
-      '<td>' + HC.time + ' s</td><td>' + MCI.time + ' s</td></tr>' +
-      '<tr><th scope="row">Number of errors</th><td>' + errors + '</td>' +
-      '<td>' + HC.errors + '</td><td>' + MCI.errors + '</td></tr>' +
-      '<tr><th scope="row">Hand movement speed</th>' + na('needs a hand controller') +
-      '<td>' + HC.speed + '</td><td>' + MCI.speed + '</td></tr>' +
-      '<tr><th scope="row">Scanpath length</th>' + na('needs an eye tracker') +
-      '<td>' + HC.scan + '</td><td>' + MCI.scan + '</td></tr>' +
-      '</tbody></table>' +
+      '<div class="kiosk-places">' +
+      strip('Time to completion', seconds, seconds.toFixed(1) + ' s',
+            HCn(HC.time), MCIn(MCI.time), ' s', Math.max(MCI.time * 1.25, seconds * 1.1)) +
+      strip('Number of errors', errors, String(errors),
+            HCn(HC.errors), MCIn(MCI.errors), '', Math.max(6, errors + 1)) +
+      '</div>' +
+      // The other two measures get a line, not a chart. Drawing their two means
+      // with no mark on them spent a third of the screen saying that a browser
+      // has neither a controller nor an eye tracker, which is one sentence.
+      '<p class="kiosk-na">The study&rsquo;s other two measures &mdash; <b>hand movement speed</b> and ' +
+      '<b>scanpath length</b> &mdash; need the headset&rsquo;s controller and eye tracker, so a browser ' +
+      'cannot take them.</p>' +
       // Where this run's numbers land, and nothing else. The line about a browser
       // not being able to screen anyone used to be repeated here; it is already
       // the disclaimer above the task, which is the place someone worried about
@@ -489,76 +514,7 @@
       '<p class="kiosk-vs-note">' + placing + ' These are the two groups&rsquo; averages from the ' +
       'study, not a score: a browser cannot screen anyone for anything.</p>';
 
-    // Both reports describe the same run, and the only thing that differs between
-    // them is where the conditional points: If you had / would have against If you /
-    // will. Those are the study's own two forms — it wrote "If you did something, you
-    // would do something" against "If you do something, you will do something" — and
-    // they are the whole of what it varied, so they are the whole of what varies here:
-    // same opening, same verb, same clause, same numbers on both sides.
-    const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
-    const misordered = wrongPanels.length;
-    const picked = misordered ? en(state.chosen[wrongPanels[0]]) : '';
-    const wanted = misordered ? en(asked[wrongPanels[0]]) : '';
-    const count = n => (WORDS[n] || n);
-
-    // What happened, in plain words and named, before either wording of it. The
-    // report used to open on the framing alone — "the one item you picked instead"
-    // — which is true and forgettable, and left the two versions reading as two
-    // sayings rather than two readings of one run.
-    const facts = [
-      'You completed the order with ' + (errors ? count(errors) + ' error' + (errors === 1 ? '' : 's') : 'no errors') + '.',
-      misordered === 1 ? 'You selected ' + picked + ' instead of ' + wanted + '.'
-        : misordered > 1 ? 'You selected ' + wrongPanels.map(k => en(state.chosen[k]) + ' instead of ' + en(asked[k])).join(', ') + '.'
-        : '',
-      fixes.length ? 'You went back to change ' + fixList + '.' : '',
-      wrongPin ? 'You typed ' + (state.code || 'nothing') + ' instead of ' + PIN + '.' : '',
-    ].filter(Boolean).join(' ');
-
-    // Both wordings say the same thing about the same choice; only the direction of
-    // the conditional moves, which is the whole of what the study varied. Naming the
-    // item is what makes that visible — the tense is easy to miss when the subject
-    // is "the one item you picked instead".
-    const taken = Math.max(1, Math.round(seconds));
-    const hc = Math.round(HC.time);
-    // One wrong item, or a time outside the control group's own spread: 39.48 s,
-    // SD 18.96, both from the study's table. Inside that spread is an ordinary
-    // control-group time with nothing to improve on, and a wording that promises an
-    // improvement of nothing says nothing. The line is the study's number rather
-    // than a round one picked here, and it decides what half the visitors read.
-    const room = errors > 0 || seconds > HC.time + HC.timeSD;
-    const pair = misordered === 1
-      ? ['If you had chosen <b>' + wanted + '</b> instead of <b>' + picked + '</b>, your order <b>would have matched</b> the request.',
-         'If you choose <b>' + wanted + '</b> instead of <b>' + picked + '</b> next time, your order <b>will match</b> the request.']
-      : misordered > 1
-      ? ['If you had chosen what was asked for at those ' + count(misordered) + ' steps, your order <b>would have matched</b> the request.',
-         'If you choose what was asked for at those ' + count(misordered) + ' steps next time, your order <b>will match</b> the request.']
-      : wrongPin
-      ? ['If you had typed <b>' + PIN + '</b>, this order <b>would have gone</b> through as asked.',
-         'If you type <b>' + PIN + '</b> next time, this order <b>will go</b> through as asked.']
-      : fixes.length
-      // Everything ended as asked and the error is a choice made and taken back, so
-      // the pair points at the going back rather than at the order.
-      ? ['If you had chosen <b>' + en(asked[fixes[0].panel]) + '</b> first, you <b>would not have gone</b> back to change it.',
-         'If you choose <b>' + en(asked[fixes[0].panel]) + '</b> first next time, you <b>will not go</b> back to change it.']
-      // Nothing was wrong, so the pair turns on pace, against the study's own mean
-      // rather than a target invented here.
-      : ['If you had matched the pace of the study&rsquo;s healthy controls, this order <b>would have taken</b> about ' + hc + ' seconds, not ' + taken + '.',
-         'If you match the pace of the study&rsquo;s healthy controls next time, this order <b>will take</b> about ' + hc + ' seconds, not ' + taken + '.'];
-
-    // One of the two, at random, and never both at once: side by side the reader
-    // sees the manipulation and it stops working on them, which is also why
-    // neither is labelled. The study gave one report to one person. The order of
-    // the two ways on is drawn separately, because a wording randomised into a
-    // fixed first position is still a fixed first position.
-    const shown = Math.random() < 0.5 ? 0 : 1;
-    const lookFirst = Math.random() < 0.5;
-    const KIND = ['counterfactual', 'prefactual'];
-    const LOOK = 'See this run step by step', AGAIN = 'Run it again';
-
-    // The run, step by step, in the order the steps came. What was asked for at each
-    // one comes from `asked` above, not from a second copy of the same five names:
-    // the copy had a typo in it, and a name that does not match marks a step wrong
-    // when it was right.
+    const AGAIN = 'Run it again';
     const ORDER = [['panel02', 'Where to eat'], ['panel03', 'Burger'], ['panel04', 'Side'],
                    ['panel05', 'Drink'], ['panel06', 'Payment']];
     const stepList = () => '<ol class="kiosk-steps">' +
@@ -580,129 +536,33 @@
     // What the wording was, once it can no longer act on the reader. The caveat
     // comes before the reader's own behaviour is named: after it, the sentence is
     // read as a verdict on the click that has already been made.
-    const TITLE = ['The impact of past inputs on present outcomes',
-                   'The impact of present inputs on future outcomes'];
-    const study =
-      '<p>Twenty people each read one of the two &mdash; reports on an MRI result, not a lunch order. ' +
-      'They rated them <b>equally clear</b>; what differed was where their attention went. The ' +
-      '<b>counterfactual</b> readers dwelt on what had already happened, the <b>prefactual</b> readers ' +
-      'on what to do next.</p>';
-    // A run with nothing wrong in it is the one a reader is most likely to have,
-    // and it used to end the section: no report, no wordings, nothing to see. The
-    // example is somebody else's run, in the third person and labelled as such, so
-    // that the best performance is not the one sent away from the point of the page.
-    const example = () =>
-      '<p class="kiosk-facts">An example, not your run. Someone completes the order with one error: ' +
-      'they select Beef Burger instead of Shrimp Burger.</p>' +
-      '<p class="kiosk-other"><b>' + KIND[0] + '</b> &mdash; &ldquo;' + TITLE[0] + '&rdquo;<br>' +
-      'If they had chosen <b>Shrimp Burger</b> instead of <b>Beef Burger</b>, their order ' +
-      '<b>would have matched</b> the request.</p>' +
-      '<p class="kiosk-other"><b>' + KIND[1] + '</b> &mdash; &ldquo;' + TITLE[1] + '&rdquo;<br>' +
-      'If they choose <b>Shrimp Burger</b> instead of <b>Beef Burger</b> next time, their order ' +
-      '<b>will match</b> the request.</p>';
-    const kept =
-      '<p class="kiosk-vs-note">The study did not watch anyone go again; it asked them what the report ' +
-      'made them think about. Nothing here was measured on you either: your time and errors never left ' +
-      'this browser, and the only things that leave are two anonymous counts &mdash; a run started, a ' +
-      'run finished.</p>';
-    const reveal = () =>
-      '<div class="research-note">' +
-      (room
-        ? '<p>Half of the people who get here read this instead:</p>' +
-          '<p class="kiosk-other">' + pair[1 - shown] + '</p>' +
-          '<p>Same facts, different tense. The study called yours the <b>' + KIND[shown] + '</b> report, ' +
-          '&ldquo;' + TITLE[shown] + '&rdquo;, and that one the <b>' + KIND[1 - shown] + '</b>, &ldquo;' +
-          TITLE[1 - shown] + '&rdquo;.</p>' +
-          study
-        : example() + study) +
-      kept +
-      '</div>';
 
-    // Only what this run produced: the four measures, where they landed, and what
-    // was ordered against what was asked for. A personal best from an earlier run
-    // sat here too, and every extra line pushed the one thing worth pressing —
-    // the report — further off the screen.
     const ways = [
-      '<button class="button" type="button" data-act="look">' + LOOK + '</button>',
       '<button class="button" type="button" data-act="again">' + AGAIN + '</button>',
     ];
     result.innerHTML =
       '<h3>Your measurements, against the study</h3>' + vs + orderNote +
 
-      '<div class="kiosk-handoff"><p><b>Your run is now a set of numbers</b> &mdash; and how a report words ' +
-      // Attention, not behaviour: the study asked its readers what the report made
-      // them think about rather than watching what they did, and this line is the
-      // first the reader meets. Promising a change in behaviour here and explaining
-      // a change in attention two screens later is the same overclaim twice.
-      'them changes where its reader&rsquo;s attention goes. A second study wrote the same result ' +
-      'two ways.</p>' +
-      '<button class="button" type="button" id="kiosk-open-report">Read your report &rarr;</button></div>' +
-
-      '<div id="kiosk-report-body" hidden>' +
+      '<div id="kiosk-report-body">' +
       '<h3 id="kiosk-report">Your result</h3>' +
-      '<p class="kiosk-facts">' + facts + '</p>' +
-      (room
-        ? '<p class="kiosk-report-line">' + pair[shown] + '</p>' +
-          '<div class="kiosk-actions" id="kiosk-next">' +
-            '<button class="button" type="button" data-act="other">See the other version</button>' +
-          '</div>'
-        : '<p class="kiosk-report-line">There is no error-based outcome to reframe. Open an example to ' +
-          'see how the two report styles differ.</p>' +
-          '<div class="kiosk-actions" id="kiosk-next">' +
-            '<button class="button" type="button" data-act="example">Show me an example anyway</button>' +
-          '</div>') +
-      '<div id="kiosk-reveal"></div>' +
-      // The two ways on come after the explanation rather than before it. They used
-      // to gate it, so that pressing one could not be coloured by knowing what the
-      // wordings were — which mattered while the press was thought to be what the
-      // study measured, and stopped mattering when it turned out to have asked its
-      // readers instead.
-      '<div class="kiosk-actions" id="kiosk-ways" hidden>' +
-        (lookFirst ? ways[0] + ways[1] : ways[1] + ways[0]) +
-      '</div>' +
-      '<div id="kiosk-steps-out"></div></div>' +
-      // The two studies leave in the same form, side by side — one used to be
-      // a button and the other an inline link, which read as different kinds
-      // of thing. The old "demonstration, not a screening test" note is gone:
-      // the one line under the comparison table already does that job.
-      '<div class="kiosk-actions"><a class="button" href="/publications/multimodal-biomarkers-jmir/">The kiosk study &rarr;</a>' +
-      '<a class="button secondary" href="/publications/counterfactual-prefactual-hci2023/">The narrative study &rarr;</a></div>';
+      stepList() +
+      // No study link here: the paper-links row at the top of the page is the
+      // page's one exit to its paper, and this was the same destination under a
+      // third name. Only the run leaves from the report.
+      '<div class="kiosk-actions">' + ways[0] + '</div>' +
+      '</div>';
 
     result.hidden = false;
     // Focused rather than announced: a live region would read the whole table, the
     // report and both study links out in one breath. Taking the reader to it lets
     // them read it at their own pace, and the scroll below does the same visually.
     result.focus({ preventScroll: true });
-    // Reading the run back explains nothing and takes nothing away: it opens in
-    // place, both ways on stay, and the reader can still go again afterwards. The
-    // explanation waits for that, or for the reader to ask for it outright — put on
-    // the first click, it would have contaminated every re-run that followed it.
-    result.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
-      const act = b.dataset.act;
-      if (act === 'look') {
-        b.disabled = true;
-        b.textContent = 'Steps shown ✓';
-        el('#kiosk-steps-out').innerHTML = stepList();
-        return;
-      }
-      if (act === 'again') {
-        renderStart();
-        stage.scrollIntoView({ behavior: SCROLL, block: 'center' });
-        return;
-      }
-      // The other version, or the worked one for a run that has none. Either way
-      // the ways on appear underneath it, now that there is nothing left to spoil.
-      b.disabled = true;
-      b.textContent = act === 'example' ? 'Example shown ✓' : 'Other version shown ✓';
-      el('#kiosk-reveal').innerHTML = reveal();
-      el('#kiosk-ways').hidden = false;
-      el('#kiosk-reveal').scrollIntoView({ behavior: SCROLL, block: 'nearest' });
+    // Nothing is gated any more: both wordings are on the page when the report
+    // opens, so the only thing left to press is another run.
+    result.querySelectorAll('[data-act="again"]').forEach(b => b.addEventListener('click', () => {
+      renderStart();
+      stage.scrollIntoView({ behavior: SCROLL, block: 'center' });
     }));
-    el('#kiosk-open-report').addEventListener('click', (e) => {
-      el('#kiosk-report-body').hidden = false;
-      e.currentTarget.parentNode.hidden = true;
-      el('#kiosk-report').scrollIntoView({ behavior: SCROLL, block: 'start' });
-    });
     result.scrollIntoView({ behavior: SCROLL, block: 'start' });
   }
 
