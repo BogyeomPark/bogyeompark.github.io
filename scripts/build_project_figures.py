@@ -1,16 +1,21 @@
-"""One frame per project, and each frame carries a fact.
+"""One frame per project, and each frame shows the thing that was built.
 
-The first version of these was decoration: a ladder of framework levels, a
-three-box loop, a screenshot. They sat at 1200x520 and said what the sentence
-beside them already said. Every panel here shows either a number the project
-produced or the pipeline it produced it with, in one frame, one type scale and
-one background, so seven of them down a page read as one system.
+The first version of these was decoration; the second was a data card - a bar
+and three numbers - which said what the sentence beside it already said. Both
+missed the point of a picture on this page, which is that you should be able to
+tell what a project is by looking at it.
 
-Nothing is invented. The ratings, the correlations, the F1 range and the cohort
-sizes are all on the site already, in the entries and on the paper pages. Two
-projects have published no numbers - the tutoring manuscript is in preparation
-and the instructional-design study produced a report - so those two show their
-method instead, which is a fact about the work rather than a claim about results.
+Five of the six now show the system itself: four are frames lifted from the
+demo films in this repository, and the tutoring shot is the paper's Figure 1
+with its a-e callouts painted out. The slot renders about 470px wide, so a
+whole application window is illegible in it; every crop here is tight enough
+that the screen reads at the size it is actually shown.
+
+Instructional design has no system to photograph - it produced a report - so it
+keeps a drawn frame, and says its method rather than claiming a result.
+
+Nothing is invented. The ratings, the correlations and the cohort sizes on the
+drawn frames are all on the site already, in the entries and on the paper pages.
 
 Run after adding a project:  python scripts/build_project_figures.py
 """
@@ -20,7 +25,7 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-W, H, MARGIN = 1200, 520, 52
+W, H, MARGIN = 1024, 576, 52
 SOFT, PAPER, LINE = (245, 249, 249), (255, 255, 255), (223, 231, 233)
 INK, BODY, MUTED = (23, 37, 42), (70, 87, 92), (102, 120, 125)
 ACCENT, PALE, WARM = (31, 66, 117), (228, 234, 244), (181, 93, 62)
@@ -234,14 +239,86 @@ THUMBS = {
 }
 
 
+# --- real project imagery ----------------------------------------------------
+# (source, seek seconds or None for a still, crop as fractions of the source)
+FILMS = os.path.join(ROOT, "assets", "demos")
+SOURCES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figure-sources")
+
+REAL = {
+    "ai-tutoring-cluney": (
+        os.path.join(SOURCES, "cluney-tutor-ui.webp"), None,
+        (0.000, 0.000, 1.000, 1.000)),
+    "agentic-career-keris": (
+        os.path.join(FILMS, "career-agent", "system-demo.mp4"), 30.0,
+        (0.010, 0.085, 0.565, 0.550)),
+    "ai-copilot-iitp": (
+        os.path.join(FILMS, "self-disclosure", "demo.mp4"), 46.3,
+        (0.518, 0.039, 0.983, 0.504)),
+    "veem-brl": (
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 42.8,
+        (0.000, 0.181, 0.600, 0.781)),
+    "vr-dementia-biomarker": (
+        os.path.join(FILMS, "vr-biomarker", "kiosk-playthrough.mp4"), 3.3,
+        (0.000, 0.000, 0.660, 0.740)),
+}
+
+# the home page shows the same pictures in a shorter card
+THUMB_W, THUMB_H = 900, 500
+REAL_THUMBS = {
+    "ai-tutoring-cluney": (0.28, 0.05, 1.00, 0.70),
+    "agentic-career-keris": (0.00, 0.05, 0.80, 0.65),
+    "vr-dementia-biomarker": (0.00, 0.00, 1.00, 1.00),
+}
+
+
+def _frame(path, seconds):
+    if seconds is None:
+        return Image.open(path).convert("RGB")
+    import subprocess, tempfile
+    import imageio_ffmpeg
+    tmp = os.path.join(tempfile.gettempdir(), "projfig.png")
+    subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error",
+                    "-ss", "%.2f" % seconds, "-i", path, "-frames:v", "1", tmp], check=True)
+    return Image.open(tmp).convert("RGB")
+
+
+def _fit(im, box, ratio):
+    """Settle a crop box on one aspect ratio without moving its centre."""
+    w, h = im.size
+    b = [int(box[0] * w), int(box[1] * h), int(box[2] * w), int(box[3] * h)]
+    bw, bh = b[2] - b[0], b[3] - b[1]
+    if bw / bh > ratio:
+        need = int(bw / ratio); c = (b[1] + b[3]) // 2
+        b[1] = max(0, min(c - need // 2, h - need)); b[3] = b[1] + need
+    else:
+        need = int(bh * ratio); c = (b[0] + b[2]) // 2
+        b[0] = max(0, min(c - need // 2, w - need)); b[2] = b[0] + need
+    return im.crop(b)
+
+
+def real_figure(slug):
+    path, seconds, box = REAL[slug]
+    return _fit(_frame(path, seconds), box, W / H).resize((W, H), Image.LANCZOS)
+
+
 def main():
-    for slug, build in BUILDERS.items():
+    for slug in list(REAL) + [k for k in BUILDERS if k not in REAL]:
         out_dir = os.path.join(ROOT, "assets", "projects", slug)
         os.makedirs(out_dir, exist_ok=True)
-        build().save(os.path.join(out_dir, "figure.webp"), "WEBP", quality=90, method=6)
-        if slug in THUMBS:
+        if slug in REAL:
+            fig = real_figure(slug)
+            kind = "photographed"
+        else:
+            fig = BUILDERS[slug]()
+            kind = "drawn"
+        fig.save(os.path.join(out_dir, "figure.webp"), "WEBP", quality=90, method=6)
+        if slug in REAL_THUMBS:
+            _fit(fig, REAL_THUMBS[slug], THUMB_W / THUMB_H).resize(
+                (THUMB_W, THUMB_H), Image.LANCZOS).save(
+                os.path.join(out_dir, "thumb.webp"), "WEBP", quality=92, method=6)
+        elif slug in THUMBS:
             THUMBS[slug]().save(os.path.join(out_dir, "thumb.webp"), "WEBP", quality=92, method=6)
-        print(f"{slug:28s} built")
+        print(f"{slug:28s} {kind}")
 
 
 if __name__ == "__main__":
